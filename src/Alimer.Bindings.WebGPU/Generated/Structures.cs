@@ -18,6 +18,7 @@ public partial struct WGPUChainedStruct
 {
 	public unsafe WGPUChainedStruct* next;
 	public WGPUSType sType;
+
 }
 
 [StructLayout(LayoutKind.Sequential)]
@@ -25,6 +26,7 @@ public partial struct WGPUChainedStructOut
 {
 	public unsafe WGPUChainedStructOut* next;
 	public WGPUSType sType;
+
 }
 
 [StructLayout(LayoutKind.Sequential)]

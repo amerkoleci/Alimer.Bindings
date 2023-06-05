@@ -16,7 +16,9 @@ public unsafe sealed class GraphicsDevice : IDisposable
 
     public GraphicsDevice(string applicationName, bool enableValidation, Window window)
     {
-        
+        WGPUInstanceDescriptor instanceDescriptor = new();
+        instanceDescriptor.nextInChain = null;
+        Instance = wgpuCreateInstance(&instanceDescriptor);
     }
 
     public void Dispose()
@@ -31,23 +33,4 @@ public unsafe sealed class GraphicsDevice : IDisposable
 
     #region Private Methods
     #endregion
-
-    private static readonly Lazy<bool> s_isSupported = new(CheckIsSupported);
-
-    public static bool IsSupported() => s_isSupported.Value;
-
-    private static bool CheckIsSupported()
-    {
-        try
-        {
-            if (!Initialize())
-                return false;
-
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
 }

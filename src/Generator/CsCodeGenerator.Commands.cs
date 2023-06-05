@@ -8,72 +8,6 @@ namespace Generator;
 
 public static partial class CsCodeGenerator
 {
-    private static readonly HashSet<string> s_outReturnFunctions = new()
-    {
-        "vkCreateInstance",
-        "vkCreateDevice",
-        "vkGetPhysicalDeviceFeatures",
-        "vkGetPhysicalDeviceFormatProperties",
-        "vkGetPhysicalDeviceImageFormatProperties",
-        "vkGetPhysicalDeviceProperties",
-        "vkGetPhysicalDeviceMemoryProperties",
-        "vkGetDeviceQueue",
-        "vkGetDeviceMemoryCommitment",
-        "vkGetBufferMemoryRequirements",
-        "vkGetImageMemoryRequirements",
-        "vkAllocateMemory",
-        "vkCreateAndroidSurfaceKHR",
-        "vkCreateWin32SurfaceKHR",
-        "vkCreateXlibSurfaceKHR",
-        "vkCreateWaylandSurfaceKHR",
-        "vkCreateMetalSurfaceEXT",
-        "vkCreateIOSSurfaceMVK",
-        "vkCreateMacOSSurfaceMVK",
-        "vkCreateFence",
-        "vkCreateSemaphore",
-        "vkCreateEvent",
-        "vkCreateQueryPool",
-        "vkCreateBuffer",
-        "vkCreateBufferView",
-        "vkCreateImage",
-        "vkGetImageSubresourceLayout",
-        "vkCreateImageView",
-        "vkCreateShaderModule",
-        "vkCreatePipelineCache",
-        //"vkCreateGraphicsPipelines",
-        //"vkCreateComputePipelines",
-        "vkCreatePipelineLayout",
-        "vkCreateSampler",
-        "vkCreateDescriptorSetLayout",
-        "vkCreateDescriptorPool",
-        //"vkAllocateDescriptorSets",
-        "vkCreateFramebuffer",
-        "vkCreateRenderPass",
-        "vkGetRenderAreaGranularity",
-        "vkCreateCommandPool",
-        //"vkAllocateCommandBuffers",
-
-        "vkGetDeviceGroupPeerMemoryFeaturesKHR",
-        "vkGetDeviceQueue2",
-        "vkCreateSamplerYcbcrConversion",
-        "vkCreateDescriptorUpdateTemplate",
-        "vkCreateRenderPass2",
-        "vkGetPhysicalDeviceSurfaceSupportKHR",
-        "vkGetPhysicalDeviceSurfaceCapabilitiesKHR",
-
-        "vkCreateSwapchainKHR",
-        "vkAcquireNextImageKHR",
-        "vkGetDeviceGroupSurfacePresentModesKHR",
-        "vkAcquireNextImage2KHR",
-
-        "vkCreateDisplayModeKHR",
-        "vkGetDisplayPlaneCapabilitiesKHR",
-        "vkCreateDisplayPlaneSurfaceKHR",
-        "vkCreateSharedSwapchainsKHR",
-
-        "vkCreateDebugUtilsMessengerEXT"
-    };
-
     private static string GetFunctionPointerSignature(CppFunction function, bool canUseOut, bool allowNonBlittable = true)
     {
         StringBuilder builder = new();
@@ -126,24 +60,14 @@ public static partial class CsCodeGenerator
             );
 
         Dictionary<string, CppFunction> commands = new();
-        Dictionary<string, CppFunction> deviceCommands = new();
         foreach (CppFunction? cppFunction in compilation.Functions)
         {
             string? returnType = GetCsTypeName(cppFunction.ReturnType, false);
-            bool canUseOut = s_outReturnFunctions.Contains(cppFunction.Name);
+            bool canUseOut = false;
             string? csName = cppFunction.Name;
             string argumentsString = GetParameterSignature(cppFunction, canUseOut);
 
             commands.Add(csName, cppFunction);
-
-            if (cppFunction.Parameters.Count > 0)
-            {
-                var firstParameter = cppFunction.Parameters[0];
-                if (firstParameter.Type is CppTypedef typedef)
-                {
-                    deviceCommands.Add(csName, cppFunction);
-                }
-            }
         }
 
         using (writer.PushBlock($"unsafe partial class WebGPU"))
@@ -152,7 +76,7 @@ public static partial class CsCodeGenerator
             {
                 CppFunction cppFunction = command.Value;
 
-                bool canUseOut = s_outReturnFunctions.Contains(cppFunction.Name);
+                bool canUseOut = false;
                 string functionPointerSignature = GetFunctionPointerSignature(cppFunction, false);
                 writer.WriteLine($"private static {functionPointerSignature} {command.Key}_ptr;");
                 WriteFunctionInvocation(writer, cppFunction, false);
@@ -166,7 +90,7 @@ public static partial class CsCodeGenerator
                 }
             }
 
-            WriteCommands(writer, "GenLoadCommands", deviceCommands);
+            WriteCommands(writer, "GenLoadCommands", commands);
         }
     }
 
@@ -177,7 +101,7 @@ public static partial class CsCodeGenerator
             foreach (KeyValuePair<string, CppFunction> instanceCommand in commands)
             {
                 string commandName = instanceCommand.Key;
-                bool canUseOut = s_outReturnFunctions.Contains(instanceCommand.Value.Name);
+                bool canUseOut = false;
                 string functionPointerSignature = GetFunctionPointerSignature(instanceCommand.Value, false);
                 writer.WriteLine($"{commandName}_ptr = ({functionPointerSignature}) LoadFunctionPointer(nameof({commandName}));");
 

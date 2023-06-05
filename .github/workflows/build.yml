@@ -23,4 +23,4 @@ jobs:
         dotnet-version: '7.0.x'
 
     - name: Pack
-      run: dotnet pack Alimer.Bindings.SDL.sln --configuration Release    
+      run: dotnet pack Alimer.Bindings.WebGPU.sln --configuration Release    

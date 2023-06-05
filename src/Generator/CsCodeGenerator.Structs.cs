@@ -103,12 +103,12 @@ public static partial class CsCodeGenerator
                     }
 
                     writer.WriteLine();
-                    using (writer.PushBlock($"public {csName}()"))
-                    {
-                        writer.WriteLine($"Unsafe.SkipInit(out this);");
-                        writer.WriteLine();
-                        writer.WriteLine($"sType = WGPUSType.{structureTypeValue};");
-                    }
+                    //using (writer.PushBlock($"public {csName}()"))
+                    //{
+                    //    writer.WriteLine($"Unsafe.SkipInit(out this);");
+                    //    writer.WriteLine();
+                    //    writer.WriteLine($"sType = WGPUSType.{structureTypeValue};");
+                    //}
                 }
             }
 

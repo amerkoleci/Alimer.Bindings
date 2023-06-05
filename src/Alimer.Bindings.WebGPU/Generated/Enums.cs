@@ -14,1003 +14,903 @@ namespace Alimer.Bindings.WebGPU;
 public enum WGPUAdapterType
 {
 	/// <unmanaged>WGPUAdapterType_DiscreteGPU</unmanaged>
-	WGPUAdapterType_DiscreteGPU = 0,
+	DiscreteGPU = 0,
 	/// <unmanaged>WGPUAdapterType_IntegratedGPU</unmanaged>
-	WGPUAdapterType_IntegratedGPU = 1,
+	IntegratedGPU = 1,
 	/// <unmanaged>WGPUAdapterType_CPU</unmanaged>
-	WGPUAdapterType_CPU = 2,
+	CPU = 2,
 	/// <unmanaged>WGPUAdapterType_Unknown</unmanaged>
-	WGPUAdapterType_Unknown = 3,
-	/// <unmanaged>WGPUAdapterType_Force32</unmanaged>
-	WGPUAdapterType_Force32 = 2147483647,
+	Unknown = 3,
 }
 
 public enum WGPUAddressMode
 {
 	/// <unmanaged>WGPUAddressMode_Repeat</unmanaged>
-	WGPUAddressMode_Repeat = 0,
+	Repeat = 0,
 	/// <unmanaged>WGPUAddressMode_MirrorRepeat</unmanaged>
-	WGPUAddressMode_MirrorRepeat = 1,
+	MirrorRepeat = 1,
 	/// <unmanaged>WGPUAddressMode_ClampToEdge</unmanaged>
-	WGPUAddressMode_ClampToEdge = 2,
-	/// <unmanaged>WGPUAddressMode_Force32</unmanaged>
-	WGPUAddressMode_Force32 = 2147483647,
+	ClampToEdge = 2,
 }
 
 public enum WGPUBackendType
 {
 	/// <unmanaged>WGPUBackendType_Null</unmanaged>
-	WGPUBackendType_Null = 0,
+	Null = 0,
 	/// <unmanaged>WGPUBackendType_WebGPU</unmanaged>
-	WGPUBackendType_WebGPU = 1,
+	WebGPU = 1,
 	/// <unmanaged>WGPUBackendType_D3D11</unmanaged>
-	WGPUBackendType_D3D11 = 2,
+	D3D11 = 2,
 	/// <unmanaged>WGPUBackendType_D3D12</unmanaged>
-	WGPUBackendType_D3D12 = 3,
+	D3D12 = 3,
 	/// <unmanaged>WGPUBackendType_Metal</unmanaged>
-	WGPUBackendType_Metal = 4,
+	Metal = 4,
 	/// <unmanaged>WGPUBackendType_Vulkan</unmanaged>
-	WGPUBackendType_Vulkan = 5,
+	Vulkan = 5,
 	/// <unmanaged>WGPUBackendType_OpenGL</unmanaged>
-	WGPUBackendType_OpenGL = 6,
+	OpenGL = 6,
 	/// <unmanaged>WGPUBackendType_OpenGLES</unmanaged>
-	WGPUBackendType_OpenGLES = 7,
-	/// <unmanaged>WGPUBackendType_Force32</unmanaged>
-	WGPUBackendType_Force32 = 2147483647,
+	OpenGLES = 7,
 }
 
 public enum WGPUBlendFactor
 {
 	/// <unmanaged>WGPUBlendFactor_Zero</unmanaged>
-	WGPUBlendFactor_Zero = 0,
+	Zero = 0,
 	/// <unmanaged>WGPUBlendFactor_One</unmanaged>
-	WGPUBlendFactor_One = 1,
+	One = 1,
 	/// <unmanaged>WGPUBlendFactor_Src</unmanaged>
-	WGPUBlendFactor_Src = 2,
+	Src = 2,
 	/// <unmanaged>WGPUBlendFactor_OneMinusSrc</unmanaged>
-	WGPUBlendFactor_OneMinusSrc = 3,
+	OneMinusSrc = 3,
 	/// <unmanaged>WGPUBlendFactor_SrcAlpha</unmanaged>
-	WGPUBlendFactor_SrcAlpha = 4,
+	SrcAlpha = 4,
 	/// <unmanaged>WGPUBlendFactor_OneMinusSrcAlpha</unmanaged>
-	WGPUBlendFactor_OneMinusSrcAlpha = 5,
+	OneMinusSrcAlpha = 5,
 	/// <unmanaged>WGPUBlendFactor_Dst</unmanaged>
-	WGPUBlendFactor_Dst = 6,
+	Dst = 6,
 	/// <unmanaged>WGPUBlendFactor_OneMinusDst</unmanaged>
-	WGPUBlendFactor_OneMinusDst = 7,
+	OneMinusDst = 7,
 	/// <unmanaged>WGPUBlendFactor_DstAlpha</unmanaged>
-	WGPUBlendFactor_DstAlpha = 8,
+	DstAlpha = 8,
 	/// <unmanaged>WGPUBlendFactor_OneMinusDstAlpha</unmanaged>
-	WGPUBlendFactor_OneMinusDstAlpha = 9,
+	OneMinusDstAlpha = 9,
 	/// <unmanaged>WGPUBlendFactor_SrcAlphaSaturated</unmanaged>
-	WGPUBlendFactor_SrcAlphaSaturated = 10,
+	SrcAlphaSaturated = 10,
 	/// <unmanaged>WGPUBlendFactor_Constant</unmanaged>
-	WGPUBlendFactor_Constant = 11,
+	Constant = 11,
 	/// <unmanaged>WGPUBlendFactor_OneMinusConstant</unmanaged>
-	WGPUBlendFactor_OneMinusConstant = 12,
-	/// <unmanaged>WGPUBlendFactor_Force32</unmanaged>
-	WGPUBlendFactor_Force32 = 2147483647,
+	OneMinusConstant = 12,
 }
 
 public enum WGPUBlendOperation
 {
 	/// <unmanaged>WGPUBlendOperation_Add</unmanaged>
-	WGPUBlendOperation_Add = 0,
+	Add = 0,
 	/// <unmanaged>WGPUBlendOperation_Subtract</unmanaged>
-	WGPUBlendOperation_Subtract = 1,
+	Subtract = 1,
 	/// <unmanaged>WGPUBlendOperation_ReverseSubtract</unmanaged>
-	WGPUBlendOperation_ReverseSubtract = 2,
+	ReverseSubtract = 2,
 	/// <unmanaged>WGPUBlendOperation_Min</unmanaged>
-	WGPUBlendOperation_Min = 3,
+	Min = 3,
 	/// <unmanaged>WGPUBlendOperation_Max</unmanaged>
-	WGPUBlendOperation_Max = 4,
-	/// <unmanaged>WGPUBlendOperation_Force32</unmanaged>
-	WGPUBlendOperation_Force32 = 2147483647,
+	Max = 4,
 }
 
 public enum WGPUBufferBindingType
 {
 	/// <unmanaged>WGPUBufferBindingType_Undefined</unmanaged>
-	WGPUBufferBindingType_Undefined = 0,
+	Undefined = 0,
 	/// <unmanaged>WGPUBufferBindingType_Uniform</unmanaged>
-	WGPUBufferBindingType_Uniform = 1,
+	Uniform = 1,
 	/// <unmanaged>WGPUBufferBindingType_Storage</unmanaged>
-	WGPUBufferBindingType_Storage = 2,
+	Storage = 2,
 	/// <unmanaged>WGPUBufferBindingType_ReadOnlyStorage</unmanaged>
-	WGPUBufferBindingType_ReadOnlyStorage = 3,
-	/// <unmanaged>WGPUBufferBindingType_Force32</unmanaged>
-	WGPUBufferBindingType_Force32 = 2147483647,
+	ReadOnlyStorage = 3,
 }
 
 public enum WGPUBufferMapAsyncStatus
 {
 	/// <unmanaged>WGPUBufferMapAsyncStatus_Success</unmanaged>
-	WGPUBufferMapAsyncStatus_Success = 0,
+	Success = 0,
 	/// <unmanaged>WGPUBufferMapAsyncStatus_Error</unmanaged>
-	WGPUBufferMapAsyncStatus_Error = 1,
+	Error = 1,
 	/// <unmanaged>WGPUBufferMapAsyncStatus_Unknown</unmanaged>
-	WGPUBufferMapAsyncStatus_Unknown = 2,
+	Unknown = 2,
 	/// <unmanaged>WGPUBufferMapAsyncStatus_DeviceLost</unmanaged>
-	WGPUBufferMapAsyncStatus_DeviceLost = 3,
+	DeviceLost = 3,
 	/// <unmanaged>WGPUBufferMapAsyncStatus_DestroyedBeforeCallback</unmanaged>
-	WGPUBufferMapAsyncStatus_DestroyedBeforeCallback = 4,
+	DestroyedBeforeCallback = 4,
 	/// <unmanaged>WGPUBufferMapAsyncStatus_UnmappedBeforeCallback</unmanaged>
-	WGPUBufferMapAsyncStatus_UnmappedBeforeCallback = 5,
-	/// <unmanaged>WGPUBufferMapAsyncStatus_Force32</unmanaged>
-	WGPUBufferMapAsyncStatus_Force32 = 2147483647,
+	UnmappedBeforeCallback = 5,
 }
 
 public enum WGPUBufferMapState
 {
 	/// <unmanaged>WGPUBufferMapState_Unmapped</unmanaged>
-	WGPUBufferMapState_Unmapped = 0,
+	Unmapped = 0,
 	/// <unmanaged>WGPUBufferMapState_Pending</unmanaged>
-	WGPUBufferMapState_Pending = 1,
+	Pending = 1,
 	/// <unmanaged>WGPUBufferMapState_Mapped</unmanaged>
-	WGPUBufferMapState_Mapped = 2,
-	/// <unmanaged>WGPUBufferMapState_Force32</unmanaged>
-	WGPUBufferMapState_Force32 = 2147483647,
+	Mapped = 2,
 }
 
 public enum WGPUCompareFunction
 {
 	/// <unmanaged>WGPUCompareFunction_Undefined</unmanaged>
-	WGPUCompareFunction_Undefined = 0,
+	Undefined = 0,
 	/// <unmanaged>WGPUCompareFunction_Never</unmanaged>
-	WGPUCompareFunction_Never = 1,
+	Never = 1,
 	/// <unmanaged>WGPUCompareFunction_Less</unmanaged>
-	WGPUCompareFunction_Less = 2,
+	Less = 2,
 	/// <unmanaged>WGPUCompareFunction_LessEqual</unmanaged>
-	WGPUCompareFunction_LessEqual = 3,
+	LessEqual = 3,
 	/// <unmanaged>WGPUCompareFunction_Greater</unmanaged>
-	WGPUCompareFunction_Greater = 4,
+	Greater = 4,
 	/// <unmanaged>WGPUCompareFunction_GreaterEqual</unmanaged>
-	WGPUCompareFunction_GreaterEqual = 5,
+	GreaterEqual = 5,
 	/// <unmanaged>WGPUCompareFunction_Equal</unmanaged>
-	WGPUCompareFunction_Equal = 6,
+	Equal = 6,
 	/// <unmanaged>WGPUCompareFunction_NotEqual</unmanaged>
-	WGPUCompareFunction_NotEqual = 7,
+	NotEqual = 7,
 	/// <unmanaged>WGPUCompareFunction_Always</unmanaged>
-	WGPUCompareFunction_Always = 8,
-	/// <unmanaged>WGPUCompareFunction_Force32</unmanaged>
-	WGPUCompareFunction_Force32 = 2147483647,
+	Always = 8,
 }
 
 public enum WGPUCompilationInfoRequestStatus
 {
 	/// <unmanaged>WGPUCompilationInfoRequestStatus_Success</unmanaged>
-	WGPUCompilationInfoRequestStatus_Success = 0,
+	Success = 0,
 	/// <unmanaged>WGPUCompilationInfoRequestStatus_Error</unmanaged>
-	WGPUCompilationInfoRequestStatus_Error = 1,
+	Error = 1,
 	/// <unmanaged>WGPUCompilationInfoRequestStatus_DeviceLost</unmanaged>
-	WGPUCompilationInfoRequestStatus_DeviceLost = 2,
+	DeviceLost = 2,
 	/// <unmanaged>WGPUCompilationInfoRequestStatus_Unknown</unmanaged>
-	WGPUCompilationInfoRequestStatus_Unknown = 3,
-	/// <unmanaged>WGPUCompilationInfoRequestStatus_Force32</unmanaged>
-	WGPUCompilationInfoRequestStatus_Force32 = 2147483647,
+	Unknown = 3,
 }
 
 public enum WGPUCompilationMessageType
 {
 	/// <unmanaged>WGPUCompilationMessageType_Error</unmanaged>
-	WGPUCompilationMessageType_Error = 0,
+	Error = 0,
 	/// <unmanaged>WGPUCompilationMessageType_Warning</unmanaged>
-	WGPUCompilationMessageType_Warning = 1,
+	Warning = 1,
 	/// <unmanaged>WGPUCompilationMessageType_Info</unmanaged>
-	WGPUCompilationMessageType_Info = 2,
-	/// <unmanaged>WGPUCompilationMessageType_Force32</unmanaged>
-	WGPUCompilationMessageType_Force32 = 2147483647,
+	Info = 2,
 }
 
 public enum WGPUComputePassTimestampLocation
 {
 	/// <unmanaged>WGPUComputePassTimestampLocation_Beginning</unmanaged>
-	WGPUComputePassTimestampLocation_Beginning = 0,
+	Beginning = 0,
 	/// <unmanaged>WGPUComputePassTimestampLocation_End</unmanaged>
-	WGPUComputePassTimestampLocation_End = 1,
-	/// <unmanaged>WGPUComputePassTimestampLocation_Force32</unmanaged>
-	WGPUComputePassTimestampLocation_Force32 = 2147483647,
+	End = 1,
 }
 
 public enum WGPUCreatePipelineAsyncStatus
 {
 	/// <unmanaged>WGPUCreatePipelineAsyncStatus_Success</unmanaged>
-	WGPUCreatePipelineAsyncStatus_Success = 0,
+	Success = 0,
 	/// <unmanaged>WGPUCreatePipelineAsyncStatus_ValidationError</unmanaged>
-	WGPUCreatePipelineAsyncStatus_ValidationError = 1,
+	ValidationError = 1,
 	/// <unmanaged>WGPUCreatePipelineAsyncStatus_InternalError</unmanaged>
-	WGPUCreatePipelineAsyncStatus_InternalError = 2,
+	InternalError = 2,
 	/// <unmanaged>WGPUCreatePipelineAsyncStatus_DeviceLost</unmanaged>
-	WGPUCreatePipelineAsyncStatus_DeviceLost = 3,
+	DeviceLost = 3,
 	/// <unmanaged>WGPUCreatePipelineAsyncStatus_DeviceDestroyed</unmanaged>
-	WGPUCreatePipelineAsyncStatus_DeviceDestroyed = 4,
+	DeviceDestroyed = 4,
 	/// <unmanaged>WGPUCreatePipelineAsyncStatus_Unknown</unmanaged>
-	WGPUCreatePipelineAsyncStatus_Unknown = 5,
-	/// <unmanaged>WGPUCreatePipelineAsyncStatus_Force32</unmanaged>
-	WGPUCreatePipelineAsyncStatus_Force32 = 2147483647,
+	Unknown = 5,
 }
 
 public enum WGPUCullMode
 {
 	/// <unmanaged>WGPUCullMode_None</unmanaged>
-	WGPUCullMode_None = 0,
+	None = 0,
 	/// <unmanaged>WGPUCullMode_Front</unmanaged>
-	WGPUCullMode_Front = 1,
+	Front = 1,
 	/// <unmanaged>WGPUCullMode_Back</unmanaged>
-	WGPUCullMode_Back = 2,
-	/// <unmanaged>WGPUCullMode_Force32</unmanaged>
-	WGPUCullMode_Force32 = 2147483647,
+	Back = 2,
 }
 
 public enum WGPUDeviceLostReason
 {
 	/// <unmanaged>WGPUDeviceLostReason_Undefined</unmanaged>
-	WGPUDeviceLostReason_Undefined = 0,
+	Undefined = 0,
 	/// <unmanaged>WGPUDeviceLostReason_Destroyed</unmanaged>
-	WGPUDeviceLostReason_Destroyed = 1,
-	/// <unmanaged>WGPUDeviceLostReason_Force32</unmanaged>
-	WGPUDeviceLostReason_Force32 = 2147483647,
+	Destroyed = 1,
 }
 
 public enum WGPUErrorFilter
 {
 	/// <unmanaged>WGPUErrorFilter_Validation</unmanaged>
-	WGPUErrorFilter_Validation = 0,
+	Validation = 0,
 	/// <unmanaged>WGPUErrorFilter_OutOfMemory</unmanaged>
-	WGPUErrorFilter_OutOfMemory = 1,
+	OutOfMemory = 1,
 	/// <unmanaged>WGPUErrorFilter_Internal</unmanaged>
-	WGPUErrorFilter_Internal = 2,
-	/// <unmanaged>WGPUErrorFilter_Force32</unmanaged>
-	WGPUErrorFilter_Force32 = 2147483647,
+	Internal = 2,
 }
 
 public enum WGPUErrorType
 {
 	/// <unmanaged>WGPUErrorType_NoError</unmanaged>
-	WGPUErrorType_NoError = 0,
+	NoError = 0,
 	/// <unmanaged>WGPUErrorType_Validation</unmanaged>
-	WGPUErrorType_Validation = 1,
+	Validation = 1,
 	/// <unmanaged>WGPUErrorType_OutOfMemory</unmanaged>
-	WGPUErrorType_OutOfMemory = 2,
+	OutOfMemory = 2,
 	/// <unmanaged>WGPUErrorType_Internal</unmanaged>
-	WGPUErrorType_Internal = 3,
+	Internal = 3,
 	/// <unmanaged>WGPUErrorType_Unknown</unmanaged>
-	WGPUErrorType_Unknown = 4,
+	Unknown = 4,
 	/// <unmanaged>WGPUErrorType_DeviceLost</unmanaged>
-	WGPUErrorType_DeviceLost = 5,
-	/// <unmanaged>WGPUErrorType_Force32</unmanaged>
-	WGPUErrorType_Force32 = 2147483647,
+	DeviceLost = 5,
 }
 
 public enum WGPUFeatureName
 {
 	/// <unmanaged>WGPUFeatureName_Undefined</unmanaged>
-	WGPUFeatureName_Undefined = 0,
+	Undefined = 0,
 	/// <unmanaged>WGPUFeatureName_DepthClipControl</unmanaged>
-	WGPUFeatureName_DepthClipControl = 1,
+	DepthClipControl = 1,
 	/// <unmanaged>WGPUFeatureName_Depth32FloatStencil8</unmanaged>
-	WGPUFeatureName_Depth32FloatStencil8 = 2,
+	Depth32FloatStencil8 = 2,
 	/// <unmanaged>WGPUFeatureName_TimestampQuery</unmanaged>
-	WGPUFeatureName_TimestampQuery = 3,
+	TimestampQuery = 3,
 	/// <unmanaged>WGPUFeatureName_PipelineStatisticsQuery</unmanaged>
-	WGPUFeatureName_PipelineStatisticsQuery = 4,
+	PipelineStatisticsQuery = 4,
 	/// <unmanaged>WGPUFeatureName_TextureCompressionBC</unmanaged>
-	WGPUFeatureName_TextureCompressionBC = 5,
+	TextureCompressionBC = 5,
 	/// <unmanaged>WGPUFeatureName_TextureCompressionETC2</unmanaged>
-	WGPUFeatureName_TextureCompressionETC2 = 6,
+	TextureCompressionETC2 = 6,
 	/// <unmanaged>WGPUFeatureName_TextureCompressionASTC</unmanaged>
-	WGPUFeatureName_TextureCompressionASTC = 7,
+	TextureCompressionASTC = 7,
 	/// <unmanaged>WGPUFeatureName_IndirectFirstInstance</unmanaged>
-	WGPUFeatureName_IndirectFirstInstance = 8,
+	IndirectFirstInstance = 8,
 	/// <unmanaged>WGPUFeatureName_ShaderF16</unmanaged>
-	WGPUFeatureName_ShaderF16 = 9,
+	ShaderF16 = 9,
 	/// <unmanaged>WGPUFeatureName_RG11B10UfloatRenderable</unmanaged>
-	WGPUFeatureName_RG11B10UfloatRenderable = 10,
+	RG11B10UfloatRenderable = 10,
 	/// <unmanaged>WGPUFeatureName_BGRA8UnormStorage</unmanaged>
-	WGPUFeatureName_BGRA8UnormStorage = 11,
-	/// <unmanaged>WGPUFeatureName_Force32</unmanaged>
-	WGPUFeatureName_Force32 = 2147483647,
+	BGRA8UnormStorage = 11,
 }
 
 public enum WGPUFilterMode
 {
 	/// <unmanaged>WGPUFilterMode_Nearest</unmanaged>
-	WGPUFilterMode_Nearest = 0,
+	Nearest = 0,
 	/// <unmanaged>WGPUFilterMode_Linear</unmanaged>
-	WGPUFilterMode_Linear = 1,
-	/// <unmanaged>WGPUFilterMode_Force32</unmanaged>
-	WGPUFilterMode_Force32 = 2147483647,
+	Linear = 1,
 }
 
 public enum WGPUFrontFace
 {
 	/// <unmanaged>WGPUFrontFace_CCW</unmanaged>
-	WGPUFrontFace_CCW = 0,
+	CCW = 0,
 	/// <unmanaged>WGPUFrontFace_CW</unmanaged>
-	WGPUFrontFace_CW = 1,
-	/// <unmanaged>WGPUFrontFace_Force32</unmanaged>
-	WGPUFrontFace_Force32 = 2147483647,
+	CW = 1,
 }
 
 public enum WGPUIndexFormat
 {
 	/// <unmanaged>WGPUIndexFormat_Undefined</unmanaged>
-	WGPUIndexFormat_Undefined = 0,
+	Undefined = 0,
 	/// <unmanaged>WGPUIndexFormat_Uint16</unmanaged>
-	WGPUIndexFormat_Uint16 = 1,
+	Uint16 = 1,
 	/// <unmanaged>WGPUIndexFormat_Uint32</unmanaged>
-	WGPUIndexFormat_Uint32 = 2,
-	/// <unmanaged>WGPUIndexFormat_Force32</unmanaged>
-	WGPUIndexFormat_Force32 = 2147483647,
+	Uint32 = 2,
 }
 
 public enum WGPULoadOp
 {
 	/// <unmanaged>WGPULoadOp_Undefined</unmanaged>
-	WGPULoadOp_Undefined = 0,
+	Undefined = 0,
 	/// <unmanaged>WGPULoadOp_Clear</unmanaged>
-	WGPULoadOp_Clear = 1,
+	Clear = 1,
 	/// <unmanaged>WGPULoadOp_Load</unmanaged>
-	WGPULoadOp_Load = 2,
-	/// <unmanaged>WGPULoadOp_Force32</unmanaged>
-	WGPULoadOp_Force32 = 2147483647,
+	Load = 2,
 }
 
 public enum WGPUMipmapFilterMode
 {
 	/// <unmanaged>WGPUMipmapFilterMode_Nearest</unmanaged>
-	WGPUMipmapFilterMode_Nearest = 0,
+	Nearest = 0,
 	/// <unmanaged>WGPUMipmapFilterMode_Linear</unmanaged>
-	WGPUMipmapFilterMode_Linear = 1,
-	/// <unmanaged>WGPUMipmapFilterMode_Force32</unmanaged>
-	WGPUMipmapFilterMode_Force32 = 2147483647,
+	Linear = 1,
 }
 
 public enum WGPUPipelineStatisticName
 {
 	/// <unmanaged>WGPUPipelineStatisticName_VertexShaderInvocations</unmanaged>
-	WGPUPipelineStatisticName_VertexShaderInvocations = 0,
+	VertexShaderInvocations = 0,
 	/// <unmanaged>WGPUPipelineStatisticName_ClipperInvocations</unmanaged>
-	WGPUPipelineStatisticName_ClipperInvocations = 1,
+	ClipperInvocations = 1,
 	/// <unmanaged>WGPUPipelineStatisticName_ClipperPrimitivesOut</unmanaged>
-	WGPUPipelineStatisticName_ClipperPrimitivesOut = 2,
+	ClipperPrimitivesOut = 2,
 	/// <unmanaged>WGPUPipelineStatisticName_FragmentShaderInvocations</unmanaged>
-	WGPUPipelineStatisticName_FragmentShaderInvocations = 3,
+	FragmentShaderInvocations = 3,
 	/// <unmanaged>WGPUPipelineStatisticName_ComputeShaderInvocations</unmanaged>
-	WGPUPipelineStatisticName_ComputeShaderInvocations = 4,
-	/// <unmanaged>WGPUPipelineStatisticName_Force32</unmanaged>
-	WGPUPipelineStatisticName_Force32 = 2147483647,
+	ComputeShaderInvocations = 4,
 }
 
 public enum WGPUPowerPreference
 {
 	/// <unmanaged>WGPUPowerPreference_Undefined</unmanaged>
-	WGPUPowerPreference_Undefined = 0,
+	Undefined = 0,
 	/// <unmanaged>WGPUPowerPreference_LowPower</unmanaged>
-	WGPUPowerPreference_LowPower = 1,
+	LowPower = 1,
 	/// <unmanaged>WGPUPowerPreference_HighPerformance</unmanaged>
-	WGPUPowerPreference_HighPerformance = 2,
-	/// <unmanaged>WGPUPowerPreference_Force32</unmanaged>
-	WGPUPowerPreference_Force32 = 2147483647,
+	HighPerformance = 2,
 }
 
 public enum WGPUPresentMode
 {
 	/// <unmanaged>WGPUPresentMode_Immediate</unmanaged>
-	WGPUPresentMode_Immediate = 0,
+	Immediate = 0,
 	/// <unmanaged>WGPUPresentMode_Mailbox</unmanaged>
-	WGPUPresentMode_Mailbox = 1,
+	Mailbox = 1,
 	/// <unmanaged>WGPUPresentMode_Fifo</unmanaged>
-	WGPUPresentMode_Fifo = 2,
-	/// <unmanaged>WGPUPresentMode_Force32</unmanaged>
-	WGPUPresentMode_Force32 = 2147483647,
+	Fifo = 2,
 }
 
 public enum WGPUPrimitiveTopology
 {
 	/// <unmanaged>WGPUPrimitiveTopology_PointList</unmanaged>
-	WGPUPrimitiveTopology_PointList = 0,
+	PointList = 0,
 	/// <unmanaged>WGPUPrimitiveTopology_LineList</unmanaged>
-	WGPUPrimitiveTopology_LineList = 1,
+	LineList = 1,
 	/// <unmanaged>WGPUPrimitiveTopology_LineStrip</unmanaged>
-	WGPUPrimitiveTopology_LineStrip = 2,
+	LineStrip = 2,
 	/// <unmanaged>WGPUPrimitiveTopology_TriangleList</unmanaged>
-	WGPUPrimitiveTopology_TriangleList = 3,
+	TriangleList = 3,
 	/// <unmanaged>WGPUPrimitiveTopology_TriangleStrip</unmanaged>
-	WGPUPrimitiveTopology_TriangleStrip = 4,
-	/// <unmanaged>WGPUPrimitiveTopology_Force32</unmanaged>
-	WGPUPrimitiveTopology_Force32 = 2147483647,
+	TriangleStrip = 4,
 }
 
 public enum WGPUQueryType
 {
 	/// <unmanaged>WGPUQueryType_Occlusion</unmanaged>
-	WGPUQueryType_Occlusion = 0,
+	Occlusion = 0,
 	/// <unmanaged>WGPUQueryType_PipelineStatistics</unmanaged>
-	WGPUQueryType_PipelineStatistics = 1,
+	PipelineStatistics = 1,
 	/// <unmanaged>WGPUQueryType_Timestamp</unmanaged>
-	WGPUQueryType_Timestamp = 2,
-	/// <unmanaged>WGPUQueryType_Force32</unmanaged>
-	WGPUQueryType_Force32 = 2147483647,
+	Timestamp = 2,
 }
 
 public enum WGPUQueueWorkDoneStatus
 {
 	/// <unmanaged>WGPUQueueWorkDoneStatus_Success</unmanaged>
-	WGPUQueueWorkDoneStatus_Success = 0,
+	Success = 0,
 	/// <unmanaged>WGPUQueueWorkDoneStatus_Error</unmanaged>
-	WGPUQueueWorkDoneStatus_Error = 1,
+	Error = 1,
 	/// <unmanaged>WGPUQueueWorkDoneStatus_Unknown</unmanaged>
-	WGPUQueueWorkDoneStatus_Unknown = 2,
+	Unknown = 2,
 	/// <unmanaged>WGPUQueueWorkDoneStatus_DeviceLost</unmanaged>
-	WGPUQueueWorkDoneStatus_DeviceLost = 3,
-	/// <unmanaged>WGPUQueueWorkDoneStatus_Force32</unmanaged>
-	WGPUQueueWorkDoneStatus_Force32 = 2147483647,
+	DeviceLost = 3,
 }
 
 public enum WGPURenderPassTimestampLocation
 {
 	/// <unmanaged>WGPURenderPassTimestampLocation_Beginning</unmanaged>
-	WGPURenderPassTimestampLocation_Beginning = 0,
+	Beginning = 0,
 	/// <unmanaged>WGPURenderPassTimestampLocation_End</unmanaged>
-	WGPURenderPassTimestampLocation_End = 1,
-	/// <unmanaged>WGPURenderPassTimestampLocation_Force32</unmanaged>
-	WGPURenderPassTimestampLocation_Force32 = 2147483647,
+	End = 1,
 }
 
 public enum WGPURequestAdapterStatus
 {
 	/// <unmanaged>WGPURequestAdapterStatus_Success</unmanaged>
-	WGPURequestAdapterStatus_Success = 0,
+	Success = 0,
 	/// <unmanaged>WGPURequestAdapterStatus_Unavailable</unmanaged>
-	WGPURequestAdapterStatus_Unavailable = 1,
+	Unavailable = 1,
 	/// <unmanaged>WGPURequestAdapterStatus_Error</unmanaged>
-	WGPURequestAdapterStatus_Error = 2,
+	Error = 2,
 	/// <unmanaged>WGPURequestAdapterStatus_Unknown</unmanaged>
-	WGPURequestAdapterStatus_Unknown = 3,
-	/// <unmanaged>WGPURequestAdapterStatus_Force32</unmanaged>
-	WGPURequestAdapterStatus_Force32 = 2147483647,
+	Unknown = 3,
 }
 
 public enum WGPURequestDeviceStatus
 {
 	/// <unmanaged>WGPURequestDeviceStatus_Success</unmanaged>
-	WGPURequestDeviceStatus_Success = 0,
+	Success = 0,
 	/// <unmanaged>WGPURequestDeviceStatus_Error</unmanaged>
-	WGPURequestDeviceStatus_Error = 1,
+	Error = 1,
 	/// <unmanaged>WGPURequestDeviceStatus_Unknown</unmanaged>
-	WGPURequestDeviceStatus_Unknown = 2,
-	/// <unmanaged>WGPURequestDeviceStatus_Force32</unmanaged>
-	WGPURequestDeviceStatus_Force32 = 2147483647,
+	Unknown = 2,
 }
 
 public enum WGPUSType
 {
 	/// <unmanaged>WGPUSType_Invalid</unmanaged>
-	WGPUSType_Invalid = 0,
+	Invalid = 0,
 	/// <unmanaged>WGPUSType_SurfaceDescriptorFromMetalLayer</unmanaged>
-	WGPUSType_SurfaceDescriptorFromMetalLayer = 1,
+	SurfaceDescriptorFromMetalLayer = 1,
 	/// <unmanaged>WGPUSType_SurfaceDescriptorFromWindowsHWND</unmanaged>
-	WGPUSType_SurfaceDescriptorFromWindowsHWND = 2,
+	SurfaceDescriptorFromWindowsHWND = 2,
 	/// <unmanaged>WGPUSType_SurfaceDescriptorFromXlibWindow</unmanaged>
-	WGPUSType_SurfaceDescriptorFromXlibWindow = 3,
+	SurfaceDescriptorFromXlibWindow = 3,
 	/// <unmanaged>WGPUSType_SurfaceDescriptorFromCanvasHTMLSelector</unmanaged>
-	WGPUSType_SurfaceDescriptorFromCanvasHTMLSelector = 4,
+	SurfaceDescriptorFromCanvasHTMLSelector = 4,
 	/// <unmanaged>WGPUSType_ShaderModuleSPIRVDescriptor</unmanaged>
-	WGPUSType_ShaderModuleSPIRVDescriptor = 5,
+	ShaderModuleSPIRVDescriptor = 5,
 	/// <unmanaged>WGPUSType_ShaderModuleWGSLDescriptor</unmanaged>
-	WGPUSType_ShaderModuleWGSLDescriptor = 6,
+	ShaderModuleWGSLDescriptor = 6,
 	/// <unmanaged>WGPUSType_PrimitiveDepthClipControl</unmanaged>
-	WGPUSType_PrimitiveDepthClipControl = 7,
+	PrimitiveDepthClipControl = 7,
 	/// <unmanaged>WGPUSType_SurfaceDescriptorFromWaylandSurface</unmanaged>
-	WGPUSType_SurfaceDescriptorFromWaylandSurface = 8,
+	SurfaceDescriptorFromWaylandSurface = 8,
 	/// <unmanaged>WGPUSType_SurfaceDescriptorFromAndroidNativeWindow</unmanaged>
-	WGPUSType_SurfaceDescriptorFromAndroidNativeWindow = 9,
+	SurfaceDescriptorFromAndroidNativeWindow = 9,
 	/// <unmanaged>WGPUSType_SurfaceDescriptorFromXcbWindow</unmanaged>
-	WGPUSType_SurfaceDescriptorFromXcbWindow = 10,
+	SurfaceDescriptorFromXcbWindow = 10,
 	/// <unmanaged>WGPUSType_RenderPassDescriptorMaxDrawCount</unmanaged>
-	WGPUSType_RenderPassDescriptorMaxDrawCount = 15,
-	/// <unmanaged>WGPUSType_Force32</unmanaged>
-	WGPUSType_Force32 = 2147483647,
+	RenderPassDescriptorMaxDrawCount = 15,
 }
 
 public enum WGPUSamplerBindingType
 {
 	/// <unmanaged>WGPUSamplerBindingType_Undefined</unmanaged>
-	WGPUSamplerBindingType_Undefined = 0,
+	Undefined = 0,
 	/// <unmanaged>WGPUSamplerBindingType_Filtering</unmanaged>
-	WGPUSamplerBindingType_Filtering = 1,
+	Filtering = 1,
 	/// <unmanaged>WGPUSamplerBindingType_NonFiltering</unmanaged>
-	WGPUSamplerBindingType_NonFiltering = 2,
+	NonFiltering = 2,
 	/// <unmanaged>WGPUSamplerBindingType_Comparison</unmanaged>
-	WGPUSamplerBindingType_Comparison = 3,
-	/// <unmanaged>WGPUSamplerBindingType_Force32</unmanaged>
-	WGPUSamplerBindingType_Force32 = 2147483647,
+	Comparison = 3,
 }
 
 public enum WGPUStencilOperation
 {
 	/// <unmanaged>WGPUStencilOperation_Keep</unmanaged>
-	WGPUStencilOperation_Keep = 0,
+	Keep = 0,
 	/// <unmanaged>WGPUStencilOperation_Zero</unmanaged>
-	WGPUStencilOperation_Zero = 1,
+	Zero = 1,
 	/// <unmanaged>WGPUStencilOperation_Replace</unmanaged>
-	WGPUStencilOperation_Replace = 2,
+	Replace = 2,
 	/// <unmanaged>WGPUStencilOperation_Invert</unmanaged>
-	WGPUStencilOperation_Invert = 3,
+	Invert = 3,
 	/// <unmanaged>WGPUStencilOperation_IncrementClamp</unmanaged>
-	WGPUStencilOperation_IncrementClamp = 4,
+	IncrementClamp = 4,
 	/// <unmanaged>WGPUStencilOperation_DecrementClamp</unmanaged>
-	WGPUStencilOperation_DecrementClamp = 5,
+	DecrementClamp = 5,
 	/// <unmanaged>WGPUStencilOperation_IncrementWrap</unmanaged>
-	WGPUStencilOperation_IncrementWrap = 6,
+	IncrementWrap = 6,
 	/// <unmanaged>WGPUStencilOperation_DecrementWrap</unmanaged>
-	WGPUStencilOperation_DecrementWrap = 7,
-	/// <unmanaged>WGPUStencilOperation_Force32</unmanaged>
-	WGPUStencilOperation_Force32 = 2147483647,
+	DecrementWrap = 7,
 }
 
 public enum WGPUStorageTextureAccess
 {
 	/// <unmanaged>WGPUStorageTextureAccess_Undefined</unmanaged>
-	WGPUStorageTextureAccess_Undefined = 0,
+	Undefined = 0,
 	/// <unmanaged>WGPUStorageTextureAccess_WriteOnly</unmanaged>
-	WGPUStorageTextureAccess_WriteOnly = 1,
-	/// <unmanaged>WGPUStorageTextureAccess_Force32</unmanaged>
-	WGPUStorageTextureAccess_Force32 = 2147483647,
+	WriteOnly = 1,
 }
 
 public enum WGPUStoreOp
 {
 	/// <unmanaged>WGPUStoreOp_Undefined</unmanaged>
-	WGPUStoreOp_Undefined = 0,
+	Undefined = 0,
 	/// <unmanaged>WGPUStoreOp_Store</unmanaged>
-	WGPUStoreOp_Store = 1,
+	Store = 1,
 	/// <unmanaged>WGPUStoreOp_Discard</unmanaged>
-	WGPUStoreOp_Discard = 2,
-	/// <unmanaged>WGPUStoreOp_Force32</unmanaged>
-	WGPUStoreOp_Force32 = 2147483647,
+	Discard = 2,
 }
 
 public enum WGPUTextureAspect
 {
 	/// <unmanaged>WGPUTextureAspect_All</unmanaged>
-	WGPUTextureAspect_All = 0,
+	All = 0,
 	/// <unmanaged>WGPUTextureAspect_StencilOnly</unmanaged>
-	WGPUTextureAspect_StencilOnly = 1,
+	StencilOnly = 1,
 	/// <unmanaged>WGPUTextureAspect_DepthOnly</unmanaged>
-	WGPUTextureAspect_DepthOnly = 2,
-	/// <unmanaged>WGPUTextureAspect_Force32</unmanaged>
-	WGPUTextureAspect_Force32 = 2147483647,
+	DepthOnly = 2,
 }
 
 public enum WGPUTextureComponentType
 {
 	/// <unmanaged>WGPUTextureComponentType_Float</unmanaged>
-	WGPUTextureComponentType_Float = 0,
+	Float = 0,
 	/// <unmanaged>WGPUTextureComponentType_Sint</unmanaged>
-	WGPUTextureComponentType_Sint = 1,
+	Sint = 1,
 	/// <unmanaged>WGPUTextureComponentType_Uint</unmanaged>
-	WGPUTextureComponentType_Uint = 2,
+	Uint = 2,
 	/// <unmanaged>WGPUTextureComponentType_DepthComparison</unmanaged>
-	WGPUTextureComponentType_DepthComparison = 3,
-	/// <unmanaged>WGPUTextureComponentType_Force32</unmanaged>
-	WGPUTextureComponentType_Force32 = 2147483647,
+	DepthComparison = 3,
 }
 
 public enum WGPUTextureDimension
 {
 	/// <unmanaged>WGPUTextureDimension_1D</unmanaged>
-	WGPUTextureDimension_1D = 0,
+	_1D = 0,
 	/// <unmanaged>WGPUTextureDimension_2D</unmanaged>
-	WGPUTextureDimension_2D = 1,
+	_2D = 1,
 	/// <unmanaged>WGPUTextureDimension_3D</unmanaged>
-	WGPUTextureDimension_3D = 2,
-	/// <unmanaged>WGPUTextureDimension_Force32</unmanaged>
-	WGPUTextureDimension_Force32 = 2147483647,
+	_3D = 2,
 }
 
 public enum WGPUTextureFormat
 {
 	/// <unmanaged>WGPUTextureFormat_Undefined</unmanaged>
-	WGPUTextureFormat_Undefined = 0,
+	Undefined = 0,
 	/// <unmanaged>WGPUTextureFormat_R8Unorm</unmanaged>
-	WGPUTextureFormat_R8Unorm = 1,
+	R8Unorm = 1,
 	/// <unmanaged>WGPUTextureFormat_R8Snorm</unmanaged>
-	WGPUTextureFormat_R8Snorm = 2,
+	R8Snorm = 2,
 	/// <unmanaged>WGPUTextureFormat_R8Uint</unmanaged>
-	WGPUTextureFormat_R8Uint = 3,
+	R8Uint = 3,
 	/// <unmanaged>WGPUTextureFormat_R8Sint</unmanaged>
-	WGPUTextureFormat_R8Sint = 4,
+	R8Sint = 4,
 	/// <unmanaged>WGPUTextureFormat_R16Uint</unmanaged>
-	WGPUTextureFormat_R16Uint = 5,
+	R16Uint = 5,
 	/// <unmanaged>WGPUTextureFormat_R16Sint</unmanaged>
-	WGPUTextureFormat_R16Sint = 6,
+	R16Sint = 6,
 	/// <unmanaged>WGPUTextureFormat_R16Float</unmanaged>
-	WGPUTextureFormat_R16Float = 7,
+	R16Float = 7,
 	/// <unmanaged>WGPUTextureFormat_RG8Unorm</unmanaged>
-	WGPUTextureFormat_RG8Unorm = 8,
+	RG8Unorm = 8,
 	/// <unmanaged>WGPUTextureFormat_RG8Snorm</unmanaged>
-	WGPUTextureFormat_RG8Snorm = 9,
+	RG8Snorm = 9,
 	/// <unmanaged>WGPUTextureFormat_RG8Uint</unmanaged>
-	WGPUTextureFormat_RG8Uint = 10,
+	RG8Uint = 10,
 	/// <unmanaged>WGPUTextureFormat_RG8Sint</unmanaged>
-	WGPUTextureFormat_RG8Sint = 11,
+	RG8Sint = 11,
 	/// <unmanaged>WGPUTextureFormat_R32Float</unmanaged>
-	WGPUTextureFormat_R32Float = 12,
+	R32Float = 12,
 	/// <unmanaged>WGPUTextureFormat_R32Uint</unmanaged>
-	WGPUTextureFormat_R32Uint = 13,
+	R32Uint = 13,
 	/// <unmanaged>WGPUTextureFormat_R32Sint</unmanaged>
-	WGPUTextureFormat_R32Sint = 14,
+	R32Sint = 14,
 	/// <unmanaged>WGPUTextureFormat_RG16Uint</unmanaged>
-	WGPUTextureFormat_RG16Uint = 15,
+	RG16Uint = 15,
 	/// <unmanaged>WGPUTextureFormat_RG16Sint</unmanaged>
-	WGPUTextureFormat_RG16Sint = 16,
+	RG16Sint = 16,
 	/// <unmanaged>WGPUTextureFormat_RG16Float</unmanaged>
-	WGPUTextureFormat_RG16Float = 17,
+	RG16Float = 17,
 	/// <unmanaged>WGPUTextureFormat_RGBA8Unorm</unmanaged>
-	WGPUTextureFormat_RGBA8Unorm = 18,
+	RGBA8Unorm = 18,
 	/// <unmanaged>WGPUTextureFormat_RGBA8UnormSrgb</unmanaged>
-	WGPUTextureFormat_RGBA8UnormSrgb = 19,
+	RGBA8UnormSrgb = 19,
 	/// <unmanaged>WGPUTextureFormat_RGBA8Snorm</unmanaged>
-	WGPUTextureFormat_RGBA8Snorm = 20,
+	RGBA8Snorm = 20,
 	/// <unmanaged>WGPUTextureFormat_RGBA8Uint</unmanaged>
-	WGPUTextureFormat_RGBA8Uint = 21,
+	RGBA8Uint = 21,
 	/// <unmanaged>WGPUTextureFormat_RGBA8Sint</unmanaged>
-	WGPUTextureFormat_RGBA8Sint = 22,
+	RGBA8Sint = 22,
 	/// <unmanaged>WGPUTextureFormat_BGRA8Unorm</unmanaged>
-	WGPUTextureFormat_BGRA8Unorm = 23,
+	BGRA8Unorm = 23,
 	/// <unmanaged>WGPUTextureFormat_BGRA8UnormSrgb</unmanaged>
-	WGPUTextureFormat_BGRA8UnormSrgb = 24,
+	BGRA8UnormSrgb = 24,
 	/// <unmanaged>WGPUTextureFormat_RGB10A2Unorm</unmanaged>
-	WGPUTextureFormat_RGB10A2Unorm = 25,
+	RGB10A2Unorm = 25,
 	/// <unmanaged>WGPUTextureFormat_RG11B10Ufloat</unmanaged>
-	WGPUTextureFormat_RG11B10Ufloat = 26,
+	RG11B10Ufloat = 26,
 	/// <unmanaged>WGPUTextureFormat_RGB9E5Ufloat</unmanaged>
-	WGPUTextureFormat_RGB9E5Ufloat = 27,
+	RGB9E5Ufloat = 27,
 	/// <unmanaged>WGPUTextureFormat_RG32Float</unmanaged>
-	WGPUTextureFormat_RG32Float = 28,
+	RG32Float = 28,
 	/// <unmanaged>WGPUTextureFormat_RG32Uint</unmanaged>
-	WGPUTextureFormat_RG32Uint = 29,
+	RG32Uint = 29,
 	/// <unmanaged>WGPUTextureFormat_RG32Sint</unmanaged>
-	WGPUTextureFormat_RG32Sint = 30,
+	RG32Sint = 30,
 	/// <unmanaged>WGPUTextureFormat_RGBA16Uint</unmanaged>
-	WGPUTextureFormat_RGBA16Uint = 31,
+	RGBA16Uint = 31,
 	/// <unmanaged>WGPUTextureFormat_RGBA16Sint</unmanaged>
-	WGPUTextureFormat_RGBA16Sint = 32,
+	RGBA16Sint = 32,
 	/// <unmanaged>WGPUTextureFormat_RGBA16Float</unmanaged>
-	WGPUTextureFormat_RGBA16Float = 33,
+	RGBA16Float = 33,
 	/// <unmanaged>WGPUTextureFormat_RGBA32Float</unmanaged>
-	WGPUTextureFormat_RGBA32Float = 34,
+	RGBA32Float = 34,
 	/// <unmanaged>WGPUTextureFormat_RGBA32Uint</unmanaged>
-	WGPUTextureFormat_RGBA32Uint = 35,
+	RGBA32Uint = 35,
 	/// <unmanaged>WGPUTextureFormat_RGBA32Sint</unmanaged>
-	WGPUTextureFormat_RGBA32Sint = 36,
+	RGBA32Sint = 36,
 	/// <unmanaged>WGPUTextureFormat_Stencil8</unmanaged>
-	WGPUTextureFormat_Stencil8 = 37,
+	Stencil8 = 37,
 	/// <unmanaged>WGPUTextureFormat_Depth16Unorm</unmanaged>
-	WGPUTextureFormat_Depth16Unorm = 38,
+	Depth16Unorm = 38,
 	/// <unmanaged>WGPUTextureFormat_Depth24Plus</unmanaged>
-	WGPUTextureFormat_Depth24Plus = 39,
+	Depth24Plus = 39,
 	/// <unmanaged>WGPUTextureFormat_Depth24PlusStencil8</unmanaged>
-	WGPUTextureFormat_Depth24PlusStencil8 = 40,
+	Depth24PlusStencil8 = 40,
 	/// <unmanaged>WGPUTextureFormat_Depth32Float</unmanaged>
-	WGPUTextureFormat_Depth32Float = 41,
+	Depth32Float = 41,
 	/// <unmanaged>WGPUTextureFormat_Depth32FloatStencil8</unmanaged>
-	WGPUTextureFormat_Depth32FloatStencil8 = 42,
+	Depth32FloatStencil8 = 42,
 	/// <unmanaged>WGPUTextureFormat_BC1RGBAUnorm</unmanaged>
-	WGPUTextureFormat_BC1RGBAUnorm = 43,
+	BC1RGBAUnorm = 43,
 	/// <unmanaged>WGPUTextureFormat_BC1RGBAUnormSrgb</unmanaged>
-	WGPUTextureFormat_BC1RGBAUnormSrgb = 44,
+	BC1RGBAUnormSrgb = 44,
 	/// <unmanaged>WGPUTextureFormat_BC2RGBAUnorm</unmanaged>
-	WGPUTextureFormat_BC2RGBAUnorm = 45,
+	BC2RGBAUnorm = 45,
 	/// <unmanaged>WGPUTextureFormat_BC2RGBAUnormSrgb</unmanaged>
-	WGPUTextureFormat_BC2RGBAUnormSrgb = 46,
+	BC2RGBAUnormSrgb = 46,
 	/// <unmanaged>WGPUTextureFormat_BC3RGBAUnorm</unmanaged>
-	WGPUTextureFormat_BC3RGBAUnorm = 47,
+	BC3RGBAUnorm = 47,
 	/// <unmanaged>WGPUTextureFormat_BC3RGBAUnormSrgb</unmanaged>
-	WGPUTextureFormat_BC3RGBAUnormSrgb = 48,
+	BC3RGBAUnormSrgb = 48,
 	/// <unmanaged>WGPUTextureFormat_BC4RUnorm</unmanaged>
-	WGPUTextureFormat_BC4RUnorm = 49,
+	BC4RUnorm = 49,
 	/// <unmanaged>WGPUTextureFormat_BC4RSnorm</unmanaged>
-	WGPUTextureFormat_BC4RSnorm = 50,
+	BC4RSnorm = 50,
 	/// <unmanaged>WGPUTextureFormat_BC5RGUnorm</unmanaged>
-	WGPUTextureFormat_BC5RGUnorm = 51,
+	BC5RGUnorm = 51,
 	/// <unmanaged>WGPUTextureFormat_BC5RGSnorm</unmanaged>
-	WGPUTextureFormat_BC5RGSnorm = 52,
+	BC5RGSnorm = 52,
 	/// <unmanaged>WGPUTextureFormat_BC6HRGBUfloat</unmanaged>
-	WGPUTextureFormat_BC6HRGBUfloat = 53,
+	BC6HRGBUfloat = 53,
 	/// <unmanaged>WGPUTextureFormat_BC6HRGBFloat</unmanaged>
-	WGPUTextureFormat_BC6HRGBFloat = 54,
+	BC6HRGBFloat = 54,
 	/// <unmanaged>WGPUTextureFormat_BC7RGBAUnorm</unmanaged>
-	WGPUTextureFormat_BC7RGBAUnorm = 55,
+	BC7RGBAUnorm = 55,
 	/// <unmanaged>WGPUTextureFormat_BC7RGBAUnormSrgb</unmanaged>
-	WGPUTextureFormat_BC7RGBAUnormSrgb = 56,
+	BC7RGBAUnormSrgb = 56,
 	/// <unmanaged>WGPUTextureFormat_ETC2RGB8Unorm</unmanaged>
-	WGPUTextureFormat_ETC2RGB8Unorm = 57,
+	ETC2RGB8Unorm = 57,
 	/// <unmanaged>WGPUTextureFormat_ETC2RGB8UnormSrgb</unmanaged>
-	WGPUTextureFormat_ETC2RGB8UnormSrgb = 58,
+	ETC2RGB8UnormSrgb = 58,
 	/// <unmanaged>WGPUTextureFormat_ETC2RGB8A1Unorm</unmanaged>
-	WGPUTextureFormat_ETC2RGB8A1Unorm = 59,
+	ETC2RGB8A1Unorm = 59,
 	/// <unmanaged>WGPUTextureFormat_ETC2RGB8A1UnormSrgb</unmanaged>
-	WGPUTextureFormat_ETC2RGB8A1UnormSrgb = 60,
+	ETC2RGB8A1UnormSrgb = 60,
 	/// <unmanaged>WGPUTextureFormat_ETC2RGBA8Unorm</unmanaged>
-	WGPUTextureFormat_ETC2RGBA8Unorm = 61,
+	ETC2RGBA8Unorm = 61,
 	/// <unmanaged>WGPUTextureFormat_ETC2RGBA8UnormSrgb</unmanaged>
-	WGPUTextureFormat_ETC2RGBA8UnormSrgb = 62,
+	ETC2RGBA8UnormSrgb = 62,
 	/// <unmanaged>WGPUTextureFormat_EACR11Unorm</unmanaged>
-	WGPUTextureFormat_EACR11Unorm = 63,
+	EACR11Unorm = 63,
 	/// <unmanaged>WGPUTextureFormat_EACR11Snorm</unmanaged>
-	WGPUTextureFormat_EACR11Snorm = 64,
+	EACR11Snorm = 64,
 	/// <unmanaged>WGPUTextureFormat_EACRG11Unorm</unmanaged>
-	WGPUTextureFormat_EACRG11Unorm = 65,
+	EACRG11Unorm = 65,
 	/// <unmanaged>WGPUTextureFormat_EACRG11Snorm</unmanaged>
-	WGPUTextureFormat_EACRG11Snorm = 66,
+	EACRG11Snorm = 66,
 	/// <unmanaged>WGPUTextureFormat_ASTC4x4Unorm</unmanaged>
-	WGPUTextureFormat_ASTC4x4Unorm = 67,
+	ASTC4x4Unorm = 67,
 	/// <unmanaged>WGPUTextureFormat_ASTC4x4UnormSrgb</unmanaged>
-	WGPUTextureFormat_ASTC4x4UnormSrgb = 68,
+	ASTC4x4UnormSrgb = 68,
 	/// <unmanaged>WGPUTextureFormat_ASTC5x4Unorm</unmanaged>
-	WGPUTextureFormat_ASTC5x4Unorm = 69,
+	ASTC5x4Unorm = 69,
 	/// <unmanaged>WGPUTextureFormat_ASTC5x4UnormSrgb</unmanaged>
-	WGPUTextureFormat_ASTC5x4UnormSrgb = 70,
+	ASTC5x4UnormSrgb = 70,
 	/// <unmanaged>WGPUTextureFormat_ASTC5x5Unorm</unmanaged>
-	WGPUTextureFormat_ASTC5x5Unorm = 71,
+	ASTC5x5Unorm = 71,
 	/// <unmanaged>WGPUTextureFormat_ASTC5x5UnormSrgb</unmanaged>
-	WGPUTextureFormat_ASTC5x5UnormSrgb = 72,
+	ASTC5x5UnormSrgb = 72,
 	/// <unmanaged>WGPUTextureFormat_ASTC6x5Unorm</unmanaged>
-	WGPUTextureFormat_ASTC6x5Unorm = 73,
+	ASTC6x5Unorm = 73,
 	/// <unmanaged>WGPUTextureFormat_ASTC6x5UnormSrgb</unmanaged>
-	WGPUTextureFormat_ASTC6x5UnormSrgb = 74,
+	ASTC6x5UnormSrgb = 74,
 	/// <unmanaged>WGPUTextureFormat_ASTC6x6Unorm</unmanaged>
-	WGPUTextureFormat_ASTC6x6Unorm = 75,
+	ASTC6x6Unorm = 75,
 	/// <unmanaged>WGPUTextureFormat_ASTC6x6UnormSrgb</unmanaged>
-	WGPUTextureFormat_ASTC6x6UnormSrgb = 76,
+	ASTC6x6UnormSrgb = 76,
 	/// <unmanaged>WGPUTextureFormat_ASTC8x5Unorm</unmanaged>
-	WGPUTextureFormat_ASTC8x5Unorm = 77,
+	ASTC8x5Unorm = 77,
 	/// <unmanaged>WGPUTextureFormat_ASTC8x5UnormSrgb</unmanaged>
-	WGPUTextureFormat_ASTC8x5UnormSrgb = 78,
+	ASTC8x5UnormSrgb = 78,
 	/// <unmanaged>WGPUTextureFormat_ASTC8x6Unorm</unmanaged>
-	WGPUTextureFormat_ASTC8x6Unorm = 79,
+	ASTC8x6Unorm = 79,
 	/// <unmanaged>WGPUTextureFormat_ASTC8x6UnormSrgb</unmanaged>
-	WGPUTextureFormat_ASTC8x6UnormSrgb = 80,
+	ASTC8x6UnormSrgb = 80,
 	/// <unmanaged>WGPUTextureFormat_ASTC8x8Unorm</unmanaged>
-	WGPUTextureFormat_ASTC8x8Unorm = 81,
+	ASTC8x8Unorm = 81,
 	/// <unmanaged>WGPUTextureFormat_ASTC8x8UnormSrgb</unmanaged>
-	WGPUTextureFormat_ASTC8x8UnormSrgb = 82,
+	ASTC8x8UnormSrgb = 82,
 	/// <unmanaged>WGPUTextureFormat_ASTC10x5Unorm</unmanaged>
-	WGPUTextureFormat_ASTC10x5Unorm = 83,
+	ASTC10x5Unorm = 83,
 	/// <unmanaged>WGPUTextureFormat_ASTC10x5UnormSrgb</unmanaged>
-	WGPUTextureFormat_ASTC10x5UnormSrgb = 84,
+	ASTC10x5UnormSrgb = 84,
 	/// <unmanaged>WGPUTextureFormat_ASTC10x6Unorm</unmanaged>
-	WGPUTextureFormat_ASTC10x6Unorm = 85,
+	ASTC10x6Unorm = 85,
 	/// <unmanaged>WGPUTextureFormat_ASTC10x6UnormSrgb</unmanaged>
-	WGPUTextureFormat_ASTC10x6UnormSrgb = 86,
+	ASTC10x6UnormSrgb = 86,
 	/// <unmanaged>WGPUTextureFormat_ASTC10x8Unorm</unmanaged>
-	WGPUTextureFormat_ASTC10x8Unorm = 87,
+	ASTC10x8Unorm = 87,
 	/// <unmanaged>WGPUTextureFormat_ASTC10x8UnormSrgb</unmanaged>
-	WGPUTextureFormat_ASTC10x8UnormSrgb = 88,
+	ASTC10x8UnormSrgb = 88,
 	/// <unmanaged>WGPUTextureFormat_ASTC10x10Unorm</unmanaged>
-	WGPUTextureFormat_ASTC10x10Unorm = 89,
+	ASTC10x10Unorm = 89,
 	/// <unmanaged>WGPUTextureFormat_ASTC10x10UnormSrgb</unmanaged>
-	WGPUTextureFormat_ASTC10x10UnormSrgb = 90,
+	ASTC10x10UnormSrgb = 90,
 	/// <unmanaged>WGPUTextureFormat_ASTC12x10Unorm</unmanaged>
-	WGPUTextureFormat_ASTC12x10Unorm = 91,
+	ASTC12x10Unorm = 91,
 	/// <unmanaged>WGPUTextureFormat_ASTC12x10UnormSrgb</unmanaged>
-	WGPUTextureFormat_ASTC12x10UnormSrgb = 92,
+	ASTC12x10UnormSrgb = 92,
 	/// <unmanaged>WGPUTextureFormat_ASTC12x12Unorm</unmanaged>
-	WGPUTextureFormat_ASTC12x12Unorm = 93,
+	ASTC12x12Unorm = 93,
 	/// <unmanaged>WGPUTextureFormat_ASTC12x12UnormSrgb</unmanaged>
-	WGPUTextureFormat_ASTC12x12UnormSrgb = 94,
-	/// <unmanaged>WGPUTextureFormat_Force32</unmanaged>
-	WGPUTextureFormat_Force32 = 2147483647,
+	ASTC12x12UnormSrgb = 94,
 }
 
 public enum WGPUTextureSampleType
 {
 	/// <unmanaged>WGPUTextureSampleType_Undefined</unmanaged>
-	WGPUTextureSampleType_Undefined = 0,
+	Undefined = 0,
 	/// <unmanaged>WGPUTextureSampleType_Float</unmanaged>
-	WGPUTextureSampleType_Float = 1,
+	Float = 1,
 	/// <unmanaged>WGPUTextureSampleType_UnfilterableFloat</unmanaged>
-	WGPUTextureSampleType_UnfilterableFloat = 2,
+	UnfilterableFloat = 2,
 	/// <unmanaged>WGPUTextureSampleType_Depth</unmanaged>
-	WGPUTextureSampleType_Depth = 3,
+	Depth = 3,
 	/// <unmanaged>WGPUTextureSampleType_Sint</unmanaged>
-	WGPUTextureSampleType_Sint = 4,
+	Sint = 4,
 	/// <unmanaged>WGPUTextureSampleType_Uint</unmanaged>
-	WGPUTextureSampleType_Uint = 5,
-	/// <unmanaged>WGPUTextureSampleType_Force32</unmanaged>
-	WGPUTextureSampleType_Force32 = 2147483647,
+	Uint = 5,
 }
 
 public enum WGPUTextureViewDimension
 {
 	/// <unmanaged>WGPUTextureViewDimension_Undefined</unmanaged>
-	WGPUTextureViewDimension_Undefined = 0,
-	/// <unmanaged>WGPUTextureViewDimension_1D</unmanaged>
-	WGPUTextureViewDimension_1D = 1,
+	Undefined = 0,
+    /// <unmanaged>WGPUTextureViewDimension_1D</unmanaged>
+    _1D = 0x00000001,
 	/// <unmanaged>WGPUTextureViewDimension_2D</unmanaged>
-	WGPUTextureViewDimension_2D = 2,
+	_2D = 2,
 	/// <unmanaged>WGPUTextureViewDimension_2DArray</unmanaged>
-	WGPUTextureViewDimension_2DArray = 3,
+	_2DArray = 3,
 	/// <unmanaged>WGPUTextureViewDimension_Cube</unmanaged>
-	WGPUTextureViewDimension_Cube = 4,
+	Cube = 4,
 	/// <unmanaged>WGPUTextureViewDimension_CubeArray</unmanaged>
-	WGPUTextureViewDimension_CubeArray = 5,
+	CubeArray = 5,
 	/// <unmanaged>WGPUTextureViewDimension_3D</unmanaged>
-	WGPUTextureViewDimension_3D = 6,
-	/// <unmanaged>WGPUTextureViewDimension_Force32</unmanaged>
-	WGPUTextureViewDimension_Force32 = 2147483647,
+	_3D = 6,
 }
 
 public enum WGPUVertexFormat
 {
 	/// <unmanaged>WGPUVertexFormat_Undefined</unmanaged>
-	WGPUVertexFormat_Undefined = 0,
+	Undefined = 0,
 	/// <unmanaged>WGPUVertexFormat_Uint8x2</unmanaged>
-	WGPUVertexFormat_Uint8x2 = 1,
+	Uint8x2 = 1,
 	/// <unmanaged>WGPUVertexFormat_Uint8x4</unmanaged>
-	WGPUVertexFormat_Uint8x4 = 2,
+	Uint8x4 = 2,
 	/// <unmanaged>WGPUVertexFormat_Sint8x2</unmanaged>
-	WGPUVertexFormat_Sint8x2 = 3,
+	Sint8x2 = 3,
 	/// <unmanaged>WGPUVertexFormat_Sint8x4</unmanaged>
-	WGPUVertexFormat_Sint8x4 = 4,
+	Sint8x4 = 4,
 	/// <unmanaged>WGPUVertexFormat_Unorm8x2</unmanaged>
-	WGPUVertexFormat_Unorm8x2 = 5,
+	Unorm8x2 = 5,
 	/// <unmanaged>WGPUVertexFormat_Unorm8x4</unmanaged>
-	WGPUVertexFormat_Unorm8x4 = 6,
+	Unorm8x4 = 6,
 	/// <unmanaged>WGPUVertexFormat_Snorm8x2</unmanaged>
-	WGPUVertexFormat_Snorm8x2 = 7,
+	Snorm8x2 = 7,
 	/// <unmanaged>WGPUVertexFormat_Snorm8x4</unmanaged>
-	WGPUVertexFormat_Snorm8x4 = 8,
+	Snorm8x4 = 8,
 	/// <unmanaged>WGPUVertexFormat_Uint16x2</unmanaged>
-	WGPUVertexFormat_Uint16x2 = 9,
+	Uint16x2 = 9,
 	/// <unmanaged>WGPUVertexFormat_Uint16x4</unmanaged>
-	WGPUVertexFormat_Uint16x4 = 10,
+	Uint16x4 = 10,
 	/// <unmanaged>WGPUVertexFormat_Sint16x2</unmanaged>
-	WGPUVertexFormat_Sint16x2 = 11,
+	Sint16x2 = 11,
 	/// <unmanaged>WGPUVertexFormat_Sint16x4</unmanaged>
-	WGPUVertexFormat_Sint16x4 = 12,
+	Sint16x4 = 12,
 	/// <unmanaged>WGPUVertexFormat_Unorm16x2</unmanaged>
-	WGPUVertexFormat_Unorm16x2 = 13,
+	Unorm16x2 = 13,
 	/// <unmanaged>WGPUVertexFormat_Unorm16x4</unmanaged>
-	WGPUVertexFormat_Unorm16x4 = 14,
+	Unorm16x4 = 14,
 	/// <unmanaged>WGPUVertexFormat_Snorm16x2</unmanaged>
-	WGPUVertexFormat_Snorm16x2 = 15,
+	Snorm16x2 = 15,
 	/// <unmanaged>WGPUVertexFormat_Snorm16x4</unmanaged>
-	WGPUVertexFormat_Snorm16x4 = 16,
+	Snorm16x4 = 16,
 	/// <unmanaged>WGPUVertexFormat_Float16x2</unmanaged>
-	WGPUVertexFormat_Float16x2 = 17,
+	Float16x2 = 17,
 	/// <unmanaged>WGPUVertexFormat_Float16x4</unmanaged>
-	WGPUVertexFormat_Float16x4 = 18,
+	Float16x4 = 18,
 	/// <unmanaged>WGPUVertexFormat_Float32</unmanaged>
-	WGPUVertexFormat_Float32 = 19,
+	Float32 = 19,
 	/// <unmanaged>WGPUVertexFormat_Float32x2</unmanaged>
-	WGPUVertexFormat_Float32x2 = 20,
+	Float32x2 = 20,
 	/// <unmanaged>WGPUVertexFormat_Float32x3</unmanaged>
-	WGPUVertexFormat_Float32x3 = 21,
+	Float32x3 = 21,
 	/// <unmanaged>WGPUVertexFormat_Float32x4</unmanaged>
-	WGPUVertexFormat_Float32x4 = 22,
+	Float32x4 = 22,
 	/// <unmanaged>WGPUVertexFormat_Uint32</unmanaged>
-	WGPUVertexFormat_Uint32 = 23,
+	Uint32 = 23,
 	/// <unmanaged>WGPUVertexFormat_Uint32x2</unmanaged>
-	WGPUVertexFormat_Uint32x2 = 24,
+	Uint32x2 = 24,
 	/// <unmanaged>WGPUVertexFormat_Uint32x3</unmanaged>
-	WGPUVertexFormat_Uint32x3 = 25,
+	Uint32x3 = 25,
 	/// <unmanaged>WGPUVertexFormat_Uint32x4</unmanaged>
-	WGPUVertexFormat_Uint32x4 = 26,
+	Uint32x4 = 26,
 	/// <unmanaged>WGPUVertexFormat_Sint32</unmanaged>
-	WGPUVertexFormat_Sint32 = 27,
+	Sint32 = 27,
 	/// <unmanaged>WGPUVertexFormat_Sint32x2</unmanaged>
-	WGPUVertexFormat_Sint32x2 = 28,
+	Sint32x2 = 28,
 	/// <unmanaged>WGPUVertexFormat_Sint32x3</unmanaged>
-	WGPUVertexFormat_Sint32x3 = 29,
+	Sint32x3 = 29,
 	/// <unmanaged>WGPUVertexFormat_Sint32x4</unmanaged>
-	WGPUVertexFormat_Sint32x4 = 30,
-	/// <unmanaged>WGPUVertexFormat_Force32</unmanaged>
-	WGPUVertexFormat_Force32 = 2147483647,
+	Sint32x4 = 30,
 }
 
 public enum WGPUVertexStepMode
 {
 	/// <unmanaged>WGPUVertexStepMode_Vertex</unmanaged>
-	WGPUVertexStepMode_Vertex = 0,
+	Vertex = 0,
 	/// <unmanaged>WGPUVertexStepMode_Instance</unmanaged>
-	WGPUVertexStepMode_Instance = 1,
+	Instance = 1,
 	/// <unmanaged>WGPUVertexStepMode_VertexBufferNotUsed</unmanaged>
-	WGPUVertexStepMode_VertexBufferNotUsed = 2,
-	/// <unmanaged>WGPUVertexStepMode_Force32</unmanaged>
-	WGPUVertexStepMode_Force32 = 2147483647,
+	VertexBufferNotUsed = 2,
 }
 
 public enum WGPUBufferUsage
 {
 	/// <unmanaged>WGPUBufferUsage_None</unmanaged>
-	WGPUBufferUsage_None = 0,
+	None = 0,
 	/// <unmanaged>WGPUBufferUsage_MapRead</unmanaged>
-	WGPUBufferUsage_MapRead = 1,
+	MapRead = 1,
 	/// <unmanaged>WGPUBufferUsage_MapWrite</unmanaged>
-	WGPUBufferUsage_MapWrite = 2,
+	MapWrite = 2,
 	/// <unmanaged>WGPUBufferUsage_CopySrc</unmanaged>
-	WGPUBufferUsage_CopySrc = 4,
+	CopySrc = 4,
 	/// <unmanaged>WGPUBufferUsage_CopyDst</unmanaged>
-	WGPUBufferUsage_CopyDst = 8,
+	CopyDst = 8,
 	/// <unmanaged>WGPUBufferUsage_Index</unmanaged>
-	WGPUBufferUsage_Index = 16,
+	Index = 16,
 	/// <unmanaged>WGPUBufferUsage_Vertex</unmanaged>
-	WGPUBufferUsage_Vertex = 32,
+	Vertex = 32,
 	/// <unmanaged>WGPUBufferUsage_Uniform</unmanaged>
-	WGPUBufferUsage_Uniform = 64,
+	Uniform = 64,
 	/// <unmanaged>WGPUBufferUsage_Storage</unmanaged>
-	WGPUBufferUsage_Storage = 128,
+	Storage = 128,
 	/// <unmanaged>WGPUBufferUsage_Indirect</unmanaged>
-	WGPUBufferUsage_Indirect = 256,
+	Indirect = 256,
 	/// <unmanaged>WGPUBufferUsage_QueryResolve</unmanaged>
-	WGPUBufferUsage_QueryResolve = 512,
-	/// <unmanaged>WGPUBufferUsage_Force32</unmanaged>
-	WGPUBufferUsage_Force32 = 2147483647,
+	QueryResolve = 512,
 }
 
+[Flags]
 public enum WGPUColorWriteMask
 {
-	/// <unmanaged>WGPUColorWriteMask_None</unmanaged>
-	WGPUColorWriteMask_None = 0,
+	None = 0,
 	/// <unmanaged>WGPUColorWriteMask_Red</unmanaged>
-	WGPUColorWriteMask_Red = 1,
+	Red = 1,
 	/// <unmanaged>WGPUColorWriteMask_Green</unmanaged>
-	WGPUColorWriteMask_Green = 2,
+	Green = 2,
 	/// <unmanaged>WGPUColorWriteMask_Blue</unmanaged>
-	WGPUColorWriteMask_Blue = 4,
+	Blue = 4,
 	/// <unmanaged>WGPUColorWriteMask_Alpha</unmanaged>
-	WGPUColorWriteMask_Alpha = 8,
+	Alpha = 8,
 	/// <unmanaged>WGPUColorWriteMask_All</unmanaged>
-	WGPUColorWriteMask_All = 15,
-	/// <unmanaged>WGPUColorWriteMask_Force32</unmanaged>
-	WGPUColorWriteMask_Force32 = 2147483647,
+	All = 15,
 }
 
 public enum WGPUMapMode
 {
 	/// <unmanaged>WGPUMapMode_None</unmanaged>
-	WGPUMapMode_None = 0,
+	None = 0,
 	/// <unmanaged>WGPUMapMode_Read</unmanaged>
-	WGPUMapMode_Read = 1,
+	Read = 1,
 	/// <unmanaged>WGPUMapMode_Write</unmanaged>
-	WGPUMapMode_Write = 2,
-	/// <unmanaged>WGPUMapMode_Force32</unmanaged>
-	WGPUMapMode_Force32 = 2147483647,
+	Write = 2,
 }
 
+[Flags]
 public enum WGPUShaderStage
 {
-	/// <unmanaged>WGPUShaderStage_None</unmanaged>
-	WGPUShaderStage_None = 0,
+	None = 0,
 	/// <unmanaged>WGPUShaderStage_Vertex</unmanaged>
-	WGPUShaderStage_Vertex = 1,
+	Vertex = 1,
 	/// <unmanaged>WGPUShaderStage_Fragment</unmanaged>
-	WGPUShaderStage_Fragment = 2,
+	Fragment = 2,
 	/// <unmanaged>WGPUShaderStage_Compute</unmanaged>
-	WGPUShaderStage_Compute = 4,
-	/// <unmanaged>WGPUShaderStage_Force32</unmanaged>
-	WGPUShaderStage_Force32 = 2147483647,
+	Compute = 4,
 }
 
+[Flags]
 public enum WGPUTextureUsage
 {
-	/// <unmanaged>WGPUTextureUsage_None</unmanaged>
-	WGPUTextureUsage_None = 0,
+	None = 0,
 	/// <unmanaged>WGPUTextureUsage_CopySrc</unmanaged>
-	WGPUTextureUsage_CopySrc = 1,
+	CopySrc = 1,
 	/// <unmanaged>WGPUTextureUsage_CopyDst</unmanaged>
-	WGPUTextureUsage_CopyDst = 2,
+	CopyDst = 2,
 	/// <unmanaged>WGPUTextureUsage_TextureBinding</unmanaged>
-	WGPUTextureUsage_TextureBinding = 4,
+	TextureBinding = 4,
 	/// <unmanaged>WGPUTextureUsage_StorageBinding</unmanaged>
-	WGPUTextureUsage_StorageBinding = 8,
+	StorageBinding = 8,
 	/// <unmanaged>WGPUTextureUsage_RenderAttachment</unmanaged>
-	WGPUTextureUsage_RenderAttachment = 16,
-	/// <unmanaged>WGPUTextureUsage_Force32</unmanaged>
-	WGPUTextureUsage_Force32 = 2147483647,
+	RenderAttachment = 16,
 }
 
 [Flags]

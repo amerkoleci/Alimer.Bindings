@@ -849,6 +849,7 @@ unsafe partial class WebGPU
 
 	private static void GenLoadCommands()
 	{
+		wgpuCreateInstance_ptr = (delegate* unmanaged<WGPUInstanceDescriptor*, WGPUInstance>) LoadFunctionPointer(nameof(wgpuCreateInstance));
 		wgpuGetProcAddress_ptr = (delegate* unmanaged<WGPUDevice, sbyte*, WGPUProc>) LoadFunctionPointer(nameof(wgpuGetProcAddress));
 		wgpuAdapterEnumerateFeatures_ptr = (delegate* unmanaged<WGPUAdapter, WGPUFeatureName*, nuint>) LoadFunctionPointer(nameof(wgpuAdapterEnumerateFeatures));
 		wgpuAdapterGetLimits_ptr = (delegate* unmanaged<WGPUAdapter, WGPUSupportedLimits*, bool>) LoadFunctionPointer(nameof(wgpuAdapterGetLimits));

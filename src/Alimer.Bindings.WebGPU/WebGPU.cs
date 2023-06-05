@@ -1,49 +1,123 @@
 // Copyright © Amer Koleci and Contributors.
 // Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace Alimer.Bindings.WebGPU;
 
 public static unsafe partial class WebGPU
 {
+    private const string LibName = "wgpu_native";
     private static readonly ILibraryLoader _loader = GetPlatformLoader();
-    private delegate delegate* unmanaged<void> LoadFunction(nint context, string name);
 
-    private static nint s_wgpuModule = 0;
+    private static IntPtr s_wgpuModule;
 
-    public static bool Initialize()
+    static WebGPU()
     {
+#if NET6_0_OR_GREATER && USE_PINVOKE
+        NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly(), OnDllImport);
+#else
         if (OperatingSystem.IsWindows())
         {
             s_wgpuModule = _loader.LoadNativeLibrary("wgpu_native.dll");
-            if (s_wgpuModule == 0)
-            {
-                return false;
-            }
+            
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
             s_wgpuModule = _loader.LoadNativeLibrary("libwgpu_native.dylib");
-
-            if (s_wgpuModule == 0)
-            {
-                return false;
-            }
         }
         else
         {
             s_wgpuModule = _loader.LoadNativeLibrary("libwgpu_native.so");
+        }
 
-            if (s_wgpuModule == 0)
-            {
-                return false;
-            }
+        if (s_wgpuModule == IntPtr.Zero)
+        {
+            throw new NotSupportedException("WebGPU is not supported");
         }
 
         GenLoadCommands();
-        return true;
+#endif
     }
+
+#if NET6_0_OR_GREATER && USE_PINVOKE
+    public static event DllImportResolver? ResolveLibrary;
+
+    private static nint OnDllImport(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+    {
+        if (TryResolveLibrary(libraryName, assembly, searchPath, out nint nativeLibrary))
+        {
+            return nativeLibrary;
+        }
+
+        if (libraryName.Equals(LibName) && TryResolveWGPU(assembly, searchPath, out nativeLibrary))
+        {
+            return nativeLibrary;
+        }
+
+        return IntPtr.Zero;
+    }
+
+    private static bool TryResolveWGPU(Assembly assembly, DllImportSearchPath? searchPath, out IntPtr nativeLibrary)
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            if (NativeLibrary.TryLoad("wgpu_native.dll", assembly, searchPath, out nativeLibrary))
+            {
+                return true;
+            }
+        }
+        else
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                if (NativeLibrary.TryLoad("libwgpu_native.so", assembly, searchPath, out nativeLibrary))
+                {
+                    return true;
+                }
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                if (NativeLibrary.TryLoad("libwgpu_native.dylib", assembly, searchPath, out nativeLibrary))
+                {
+                    return true;
+                }
+            }
+
+            if (NativeLibrary.TryLoad("libwgpu_native", assembly, searchPath, out nativeLibrary))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool TryResolveLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath, out nint nativeLibrary)
+    {
+        var resolveLibrary = ResolveLibrary;
+
+        if (resolveLibrary != null)
+        {
+            var resolvers = resolveLibrary.GetInvocationList();
+
+            foreach (DllImportResolver resolver in resolvers)
+            {
+                nativeLibrary = resolver(libraryName, assembly, searchPath);
+
+                if (nativeLibrary != 0)
+                {
+                    return true;
+                }
+            }
+        }
+
+        nativeLibrary = 0;
+        return false;
+    }
+
+#endif
 
     private static IntPtr LoadFunctionPointer(string name) 
     {
@@ -74,32 +148,32 @@ public static unsafe partial class WebGPU
 
     interface ILibraryLoader
     {
-        nint LoadNativeLibrary(string name);
-        void FreeNativeLibrary(nint handle);
+        IntPtr LoadNativeLibrary(string name);
+        void FreeNativeLibrary(IntPtr handle);
 
-        IntPtr LoadFunctionPointer(nint handle, string name);
+        IntPtr LoadFunctionPointer(IntPtr handle, string name);
     }
 
     private class SystemNativeLibraryLoader : ILibraryLoader
     {
-        public nint LoadNativeLibrary(string name)
+        public IntPtr LoadNativeLibrary(string name)
         {
-            if (NativeLibrary.TryLoad(name, out nint lib))
+            if (NativeLibrary.TryLoad(name, out IntPtr lib))
             {
                 return lib;
             }
 
-            return 0;
+            return IntPtr.Zero;
         }
 
-        public void FreeNativeLibrary(nint handle)
+        public void FreeNativeLibrary(IntPtr handle)
         {
             NativeLibrary.Free(handle);
         }
 
-        public nint LoadFunctionPointer(nint handle, string name)
+        public nint LoadFunctionPointer(IntPtr handle, string name)
         {
-            if (NativeLibrary.TryGetExport(handle, name, out nint ptr))
+            if (NativeLibrary.TryGetExport(handle, name, out IntPtr ptr))
             {
                 return ptr;
             }
