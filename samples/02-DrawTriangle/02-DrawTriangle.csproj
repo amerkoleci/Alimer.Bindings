@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>DrawTriangle</RootNamespace>
+    <PlatformTarget>x64</PlatformTarget>
+    <PublishAot>true</PublishAot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Assets\*.spv" CopyToOutputDirectory="Always" />
+    
+    <ProjectReference Include="..\Alimer.WebGPU.SampleFramework\Alimer.WebGPU.SampleFramework.csproj" />
+  </ItemGroup>
+</Project>
