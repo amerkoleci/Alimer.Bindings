@@ -19,6 +19,35 @@ public unsafe sealed class GraphicsDevice : IDisposable
         Instance = wgpuCreateInstance(&instanceDescriptor);
 
         Surface = window.CreateSurface(Instance);
+
+        WGPURequestAdapterOptions options = new()
+        {
+            nextInChain = null,
+            compatibleSurface = Surface,
+            powerPreference = WGPUPowerPreference.HighPerformance
+        };
+
+        // Call to the WebGPU request adapter procedure
+        wgpuInstanceRequestAdapter(
+            Instance /* equivalent of navigator.gpu */,
+            &options,
+            OnAdapterRequestEnded,
+            IntPtr.Zero
+        );
+    }
+
+    private void OnAdapterRequestEnded(WGPURequestAdapterStatus status, WGPUAdapter candidateAdapter, sbyte* message, nint pUserData)
+    {
+        if (status == WGPURequestAdapterStatus.Success)
+        {
+            WGPUAdapterProperties properties;
+            wgpuAdapterGetProperties(candidateAdapter, &properties);
+        }
+        else
+        {
+            //Log.Error("Could not get WebGPU adapter: " << message);
+            //std::cout << "Could not get WebGPU adapter: " << message << std::endl;
+        }
     }
 
     public void Dispose()

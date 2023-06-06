@@ -29,6 +29,7 @@ public static partial class CsCodeGenerator
         { "size_t", "nuint" },
 
         { "WGPUSubmissionIndex", "ulong" },
+        { "WGPUProc", "nint" },
     };
 
     public static void Generate(CppCompilation compilation, string outputPath)

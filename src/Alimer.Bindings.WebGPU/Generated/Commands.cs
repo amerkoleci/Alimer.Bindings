@@ -7,7 +7,46 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 
+#nullable enable
+
 using System;
+using System.Runtime.InteropServices;
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+public unsafe delegate void WGPUBufferMapCallback(WGPUBufferMapAsyncStatus status, nint userdata);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+public unsafe delegate void WGPUCompilationInfoCallback(WGPUCompilationInfoRequestStatus status, WGPUCompilationInfo* compilationInfo, nint userdata);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+public unsafe delegate void WGPUCreateComputePipelineAsyncCallback(WGPUCreatePipelineAsyncStatus status, WGPUComputePipeline pipeline, sbyte* message, nint userdata);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+public unsafe delegate void WGPUCreateRenderPipelineAsyncCallback(WGPUCreatePipelineAsyncStatus status, WGPURenderPipeline pipeline, sbyte* message, nint userdata);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+public unsafe delegate void WGPUDeviceLostCallback(WGPUDeviceLostReason reason, sbyte* message, nint userdata);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+public unsafe delegate void WGPUErrorCallback(WGPUErrorType type, sbyte* message, nint userdata);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+public unsafe delegate void WGPUQueueWorkDoneCallback(WGPUQueueWorkDoneStatus status, nint userdata);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+public unsafe delegate void WGPURequestAdapterCallback(WGPURequestAdapterStatus status, WGPUAdapter adapter, sbyte* message, nint userdata);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+public unsafe delegate void WGPURequestDeviceCallback(WGPURequestDeviceStatus status, WGPUDevice device, sbyte* message, nint userdata);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+public unsafe delegate void WGPUProcDeviceSetDeviceLostCallback(WGPUDevice device, WGPUDeviceLostCallback callback, nint userdata);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+public unsafe delegate void WGPUProcDeviceSetUncapturedErrorCallback(WGPUDevice device, WGPUErrorCallback callback, nint userdata);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+public unsafe delegate void WGPULogCallback(WGPULogLevel level, sbyte* message, nint userdata);
 
 unsafe partial class WebGPU
 {
@@ -17,8 +56,8 @@ unsafe partial class WebGPU
 		return wgpuCreateInstance_ptr(descriptor);
 	}
 
-	private static delegate* unmanaged<WGPUDevice, sbyte*, WGPUProc> wgpuGetProcAddress_ptr;
-	public static WGPUProc wgpuGetProcAddress(WGPUDevice device, sbyte* procName)
+	private static delegate* unmanaged<WGPUDevice, sbyte*, nint> wgpuGetProcAddress_ptr;
+	public static nint wgpuGetProcAddress(WGPUDevice device, sbyte* procName)
 	{
 		return wgpuGetProcAddress_ptr(device, procName);
 	}
@@ -59,10 +98,36 @@ unsafe partial class WebGPU
 		wgpuBindGroupSetLabel_ptr(bindGroup, label);
 	}
 
+	public static void wgpuBindGroupSetLabel(WGPUBindGroup bindGroup, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuBindGroupSetLabel_ptr(bindGroup, pLabel);
+		}
+	}
+
+	public static void wgpuBindGroupSetLabel(WGPUBindGroup bindGroup, string? label = default)
+	{
+		wgpuBindGroupSetLabel(bindGroup, label.GetUtf8Span());
+	}
+
 	private static delegate* unmanaged<WGPUBindGroupLayout, sbyte*, void> wgpuBindGroupLayoutSetLabel_ptr;
 	public static void wgpuBindGroupLayoutSetLabel(WGPUBindGroupLayout bindGroupLayout, sbyte* label)
 	{
 		wgpuBindGroupLayoutSetLabel_ptr(bindGroupLayout, label);
+	}
+
+	public static void wgpuBindGroupLayoutSetLabel(WGPUBindGroupLayout bindGroupLayout, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuBindGroupLayoutSetLabel_ptr(bindGroupLayout, pLabel);
+		}
+	}
+
+	public static void wgpuBindGroupLayoutSetLabel(WGPUBindGroupLayout bindGroupLayout, string? label = default)
+	{
+		wgpuBindGroupLayoutSetLabel(bindGroupLayout, label.GetUtf8Span());
 	}
 
 	private static delegate* unmanaged<WGPUBuffer, void> wgpuBufferDestroy_ptr;
@@ -113,6 +178,19 @@ unsafe partial class WebGPU
 		wgpuBufferSetLabel_ptr(buffer, label);
 	}
 
+	public static void wgpuBufferSetLabel(WGPUBuffer buffer, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuBufferSetLabel_ptr(buffer, pLabel);
+		}
+	}
+
+	public static void wgpuBufferSetLabel(WGPUBuffer buffer, string? label = default)
+	{
+		wgpuBufferSetLabel(buffer, label.GetUtf8Span());
+	}
+
 	private static delegate* unmanaged<WGPUBuffer, void> wgpuBufferUnmap_ptr;
 	public static void wgpuBufferUnmap(WGPUBuffer buffer)
 	{
@@ -123,6 +201,19 @@ unsafe partial class WebGPU
 	public static void wgpuCommandBufferSetLabel(WGPUCommandBuffer commandBuffer, sbyte* label)
 	{
 		wgpuCommandBufferSetLabel_ptr(commandBuffer, label);
+	}
+
+	public static void wgpuCommandBufferSetLabel(WGPUCommandBuffer commandBuffer, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuCommandBufferSetLabel_ptr(commandBuffer, pLabel);
+		}
+	}
+
+	public static void wgpuCommandBufferSetLabel(WGPUCommandBuffer commandBuffer, string? label = default)
+	{
+		wgpuCommandBufferSetLabel(commandBuffer, label.GetUtf8Span());
 	}
 
 	private static delegate* unmanaged<WGPUCommandEncoder, WGPUComputePassDescriptor*, WGPUComputePassEncoder> wgpuCommandEncoderBeginComputePass_ptr;
@@ -179,6 +270,19 @@ unsafe partial class WebGPU
 		wgpuCommandEncoderInsertDebugMarker_ptr(commandEncoder, markerLabel);
 	}
 
+	public static void wgpuCommandEncoderInsertDebugMarker(WGPUCommandEncoder commandEncoder, ReadOnlySpan<sbyte> markerLabel)
+	{
+		fixed (sbyte* pMarkerLabel = markerLabel)
+		{
+			wgpuCommandEncoderInsertDebugMarker_ptr(commandEncoder, pMarkerLabel);
+		}
+	}
+
+	public static void wgpuCommandEncoderInsertDebugMarker(WGPUCommandEncoder commandEncoder, string? markerLabel = default)
+	{
+		wgpuCommandEncoderInsertDebugMarker(commandEncoder, markerLabel.GetUtf8Span());
+	}
+
 	private static delegate* unmanaged<WGPUCommandEncoder, void> wgpuCommandEncoderPopDebugGroup_ptr;
 	public static void wgpuCommandEncoderPopDebugGroup(WGPUCommandEncoder commandEncoder)
 	{
@@ -191,6 +295,19 @@ unsafe partial class WebGPU
 		wgpuCommandEncoderPushDebugGroup_ptr(commandEncoder, groupLabel);
 	}
 
+	public static void wgpuCommandEncoderPushDebugGroup(WGPUCommandEncoder commandEncoder, ReadOnlySpan<sbyte> groupLabel)
+	{
+		fixed (sbyte* pGroupLabel = groupLabel)
+		{
+			wgpuCommandEncoderPushDebugGroup_ptr(commandEncoder, pGroupLabel);
+		}
+	}
+
+	public static void wgpuCommandEncoderPushDebugGroup(WGPUCommandEncoder commandEncoder, string? groupLabel = default)
+	{
+		wgpuCommandEncoderPushDebugGroup(commandEncoder, groupLabel.GetUtf8Span());
+	}
+
 	private static delegate* unmanaged<WGPUCommandEncoder, WGPUQuerySet, uint, uint, WGPUBuffer, ulong, void> wgpuCommandEncoderResolveQuerySet_ptr;
 	public static void wgpuCommandEncoderResolveQuerySet(WGPUCommandEncoder commandEncoder, WGPUQuerySet querySet, uint firstQuery, uint queryCount, WGPUBuffer destination, ulong destinationOffset)
 	{
@@ -201,6 +318,19 @@ unsafe partial class WebGPU
 	public static void wgpuCommandEncoderSetLabel(WGPUCommandEncoder commandEncoder, sbyte* label)
 	{
 		wgpuCommandEncoderSetLabel_ptr(commandEncoder, label);
+	}
+
+	public static void wgpuCommandEncoderSetLabel(WGPUCommandEncoder commandEncoder, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuCommandEncoderSetLabel_ptr(commandEncoder, pLabel);
+		}
+	}
+
+	public static void wgpuCommandEncoderSetLabel(WGPUCommandEncoder commandEncoder, string? label = default)
+	{
+		wgpuCommandEncoderSetLabel(commandEncoder, label.GetUtf8Span());
 	}
 
 	private static delegate* unmanaged<WGPUCommandEncoder, WGPUQuerySet, uint, void> wgpuCommandEncoderWriteTimestamp_ptr;
@@ -245,6 +375,19 @@ unsafe partial class WebGPU
 		wgpuComputePassEncoderInsertDebugMarker_ptr(computePassEncoder, markerLabel);
 	}
 
+	public static void wgpuComputePassEncoderInsertDebugMarker(WGPUComputePassEncoder computePassEncoder, ReadOnlySpan<sbyte> markerLabel)
+	{
+		fixed (sbyte* pMarkerLabel = markerLabel)
+		{
+			wgpuComputePassEncoderInsertDebugMarker_ptr(computePassEncoder, pMarkerLabel);
+		}
+	}
+
+	public static void wgpuComputePassEncoderInsertDebugMarker(WGPUComputePassEncoder computePassEncoder, string? markerLabel = default)
+	{
+		wgpuComputePassEncoderInsertDebugMarker(computePassEncoder, markerLabel.GetUtf8Span());
+	}
+
 	private static delegate* unmanaged<WGPUComputePassEncoder, void> wgpuComputePassEncoderPopDebugGroup_ptr;
 	public static void wgpuComputePassEncoderPopDebugGroup(WGPUComputePassEncoder computePassEncoder)
 	{
@@ -257,6 +400,19 @@ unsafe partial class WebGPU
 		wgpuComputePassEncoderPushDebugGroup_ptr(computePassEncoder, groupLabel);
 	}
 
+	public static void wgpuComputePassEncoderPushDebugGroup(WGPUComputePassEncoder computePassEncoder, ReadOnlySpan<sbyte> groupLabel)
+	{
+		fixed (sbyte* pGroupLabel = groupLabel)
+		{
+			wgpuComputePassEncoderPushDebugGroup_ptr(computePassEncoder, pGroupLabel);
+		}
+	}
+
+	public static void wgpuComputePassEncoderPushDebugGroup(WGPUComputePassEncoder computePassEncoder, string? groupLabel = default)
+	{
+		wgpuComputePassEncoderPushDebugGroup(computePassEncoder, groupLabel.GetUtf8Span());
+	}
+
 	private static delegate* unmanaged<WGPUComputePassEncoder, uint, WGPUBindGroup, uint, uint*, void> wgpuComputePassEncoderSetBindGroup_ptr;
 	public static void wgpuComputePassEncoderSetBindGroup(WGPUComputePassEncoder computePassEncoder, uint groupIndex, WGPUBindGroup group, uint dynamicOffsetCount, uint* dynamicOffsets)
 	{
@@ -267,6 +423,19 @@ unsafe partial class WebGPU
 	public static void wgpuComputePassEncoderSetLabel(WGPUComputePassEncoder computePassEncoder, sbyte* label)
 	{
 		wgpuComputePassEncoderSetLabel_ptr(computePassEncoder, label);
+	}
+
+	public static void wgpuComputePassEncoderSetLabel(WGPUComputePassEncoder computePassEncoder, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuComputePassEncoderSetLabel_ptr(computePassEncoder, pLabel);
+		}
+	}
+
+	public static void wgpuComputePassEncoderSetLabel(WGPUComputePassEncoder computePassEncoder, string? label = default)
+	{
+		wgpuComputePassEncoderSetLabel(computePassEncoder, label.GetUtf8Span());
 	}
 
 	private static delegate* unmanaged<WGPUComputePassEncoder, WGPUComputePipeline, void> wgpuComputePassEncoderSetPipeline_ptr;
@@ -285,6 +454,19 @@ unsafe partial class WebGPU
 	public static void wgpuComputePipelineSetLabel(WGPUComputePipeline computePipeline, sbyte* label)
 	{
 		wgpuComputePipelineSetLabel_ptr(computePipeline, label);
+	}
+
+	public static void wgpuComputePipelineSetLabel(WGPUComputePipeline computePipeline, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuComputePipelineSetLabel_ptr(computePipeline, pLabel);
+		}
+	}
+
+	public static void wgpuComputePipelineSetLabel(WGPUComputePipeline computePipeline, string? label = default)
+	{
+		wgpuComputePipelineSetLabel(computePipeline, label.GetUtf8Span());
 	}
 
 	private static delegate* unmanaged<WGPUDevice, WGPUBindGroupDescriptor*, WGPUBindGroup> wgpuDeviceCreateBindGroup_ptr;
@@ -431,6 +613,19 @@ unsafe partial class WebGPU
 		wgpuDeviceSetLabel_ptr(device, label);
 	}
 
+	public static void wgpuDeviceSetLabel(WGPUDevice device, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuDeviceSetLabel_ptr(device, pLabel);
+		}
+	}
+
+	public static void wgpuDeviceSetLabel(WGPUDevice device, string? label = default)
+	{
+		wgpuDeviceSetLabel(device, label.GetUtf8Span());
+	}
+
 	private static delegate* unmanaged<WGPUDevice, WGPUErrorCallback, nint, void> wgpuDeviceSetUncapturedErrorCallback_ptr;
 	public static void wgpuDeviceSetUncapturedErrorCallback(WGPUDevice device, WGPUErrorCallback callback, nint userdata)
 	{
@@ -461,6 +656,19 @@ unsafe partial class WebGPU
 		wgpuPipelineLayoutSetLabel_ptr(pipelineLayout, label);
 	}
 
+	public static void wgpuPipelineLayoutSetLabel(WGPUPipelineLayout pipelineLayout, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuPipelineLayoutSetLabel_ptr(pipelineLayout, pLabel);
+		}
+	}
+
+	public static void wgpuPipelineLayoutSetLabel(WGPUPipelineLayout pipelineLayout, string? label = default)
+	{
+		wgpuPipelineLayoutSetLabel(pipelineLayout, label.GetUtf8Span());
+	}
+
 	private static delegate* unmanaged<WGPUQuerySet, void> wgpuQuerySetDestroy_ptr;
 	public static void wgpuQuerySetDestroy(WGPUQuerySet querySet)
 	{
@@ -485,6 +693,19 @@ unsafe partial class WebGPU
 		wgpuQuerySetSetLabel_ptr(querySet, label);
 	}
 
+	public static void wgpuQuerySetSetLabel(WGPUQuerySet querySet, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuQuerySetSetLabel_ptr(querySet, pLabel);
+		}
+	}
+
+	public static void wgpuQuerySetSetLabel(WGPUQuerySet querySet, string? label = default)
+	{
+		wgpuQuerySetSetLabel(querySet, label.GetUtf8Span());
+	}
+
 	private static delegate* unmanaged<WGPUQueue, WGPUQueueWorkDoneCallback, nint, void> wgpuQueueOnSubmittedWorkDone_ptr;
 	public static void wgpuQueueOnSubmittedWorkDone(WGPUQueue queue, WGPUQueueWorkDoneCallback callback, nint userdata)
 	{
@@ -495,6 +716,19 @@ unsafe partial class WebGPU
 	public static void wgpuQueueSetLabel(WGPUQueue queue, sbyte* label)
 	{
 		wgpuQueueSetLabel_ptr(queue, label);
+	}
+
+	public static void wgpuQueueSetLabel(WGPUQueue queue, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuQueueSetLabel_ptr(queue, pLabel);
+		}
+	}
+
+	public static void wgpuQueueSetLabel(WGPUQueue queue, string? label = default)
+	{
+		wgpuQueueSetLabel(queue, label.GetUtf8Span());
 	}
 
 	private static delegate* unmanaged<WGPUQueue, uint, WGPUCommandBuffer*, void> wgpuQueueSubmit_ptr;
@@ -551,6 +785,19 @@ unsafe partial class WebGPU
 		wgpuRenderBundleEncoderInsertDebugMarker_ptr(renderBundleEncoder, markerLabel);
 	}
 
+	public static void wgpuRenderBundleEncoderInsertDebugMarker(WGPURenderBundleEncoder renderBundleEncoder, ReadOnlySpan<sbyte> markerLabel)
+	{
+		fixed (sbyte* pMarkerLabel = markerLabel)
+		{
+			wgpuRenderBundleEncoderInsertDebugMarker_ptr(renderBundleEncoder, pMarkerLabel);
+		}
+	}
+
+	public static void wgpuRenderBundleEncoderInsertDebugMarker(WGPURenderBundleEncoder renderBundleEncoder, string? markerLabel = default)
+	{
+		wgpuRenderBundleEncoderInsertDebugMarker(renderBundleEncoder, markerLabel.GetUtf8Span());
+	}
+
 	private static delegate* unmanaged<WGPURenderBundleEncoder, void> wgpuRenderBundleEncoderPopDebugGroup_ptr;
 	public static void wgpuRenderBundleEncoderPopDebugGroup(WGPURenderBundleEncoder renderBundleEncoder)
 	{
@@ -561,6 +808,19 @@ unsafe partial class WebGPU
 	public static void wgpuRenderBundleEncoderPushDebugGroup(WGPURenderBundleEncoder renderBundleEncoder, sbyte* groupLabel)
 	{
 		wgpuRenderBundleEncoderPushDebugGroup_ptr(renderBundleEncoder, groupLabel);
+	}
+
+	public static void wgpuRenderBundleEncoderPushDebugGroup(WGPURenderBundleEncoder renderBundleEncoder, ReadOnlySpan<sbyte> groupLabel)
+	{
+		fixed (sbyte* pGroupLabel = groupLabel)
+		{
+			wgpuRenderBundleEncoderPushDebugGroup_ptr(renderBundleEncoder, pGroupLabel);
+		}
+	}
+
+	public static void wgpuRenderBundleEncoderPushDebugGroup(WGPURenderBundleEncoder renderBundleEncoder, string? groupLabel = default)
+	{
+		wgpuRenderBundleEncoderPushDebugGroup(renderBundleEncoder, groupLabel.GetUtf8Span());
 	}
 
 	private static delegate* unmanaged<WGPURenderBundleEncoder, uint, WGPUBindGroup, uint, uint*, void> wgpuRenderBundleEncoderSetBindGroup_ptr;
@@ -579,6 +839,19 @@ unsafe partial class WebGPU
 	public static void wgpuRenderBundleEncoderSetLabel(WGPURenderBundleEncoder renderBundleEncoder, sbyte* label)
 	{
 		wgpuRenderBundleEncoderSetLabel_ptr(renderBundleEncoder, label);
+	}
+
+	public static void wgpuRenderBundleEncoderSetLabel(WGPURenderBundleEncoder renderBundleEncoder, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuRenderBundleEncoderSetLabel_ptr(renderBundleEncoder, pLabel);
+		}
+	}
+
+	public static void wgpuRenderBundleEncoderSetLabel(WGPURenderBundleEncoder renderBundleEncoder, string? label = default)
+	{
+		wgpuRenderBundleEncoderSetLabel(renderBundleEncoder, label.GetUtf8Span());
 	}
 
 	private static delegate* unmanaged<WGPURenderBundleEncoder, WGPURenderPipeline, void> wgpuRenderBundleEncoderSetPipeline_ptr;
@@ -659,6 +932,19 @@ unsafe partial class WebGPU
 		wgpuRenderPassEncoderInsertDebugMarker_ptr(renderPassEncoder, markerLabel);
 	}
 
+	public static void wgpuRenderPassEncoderInsertDebugMarker(WGPURenderPassEncoder renderPassEncoder, ReadOnlySpan<sbyte> markerLabel)
+	{
+		fixed (sbyte* pMarkerLabel = markerLabel)
+		{
+			wgpuRenderPassEncoderInsertDebugMarker_ptr(renderPassEncoder, pMarkerLabel);
+		}
+	}
+
+	public static void wgpuRenderPassEncoderInsertDebugMarker(WGPURenderPassEncoder renderPassEncoder, string? markerLabel = default)
+	{
+		wgpuRenderPassEncoderInsertDebugMarker(renderPassEncoder, markerLabel.GetUtf8Span());
+	}
+
 	private static delegate* unmanaged<WGPURenderPassEncoder, void> wgpuRenderPassEncoderPopDebugGroup_ptr;
 	public static void wgpuRenderPassEncoderPopDebugGroup(WGPURenderPassEncoder renderPassEncoder)
 	{
@@ -669,6 +955,19 @@ unsafe partial class WebGPU
 	public static void wgpuRenderPassEncoderPushDebugGroup(WGPURenderPassEncoder renderPassEncoder, sbyte* groupLabel)
 	{
 		wgpuRenderPassEncoderPushDebugGroup_ptr(renderPassEncoder, groupLabel);
+	}
+
+	public static void wgpuRenderPassEncoderPushDebugGroup(WGPURenderPassEncoder renderPassEncoder, ReadOnlySpan<sbyte> groupLabel)
+	{
+		fixed (sbyte* pGroupLabel = groupLabel)
+		{
+			wgpuRenderPassEncoderPushDebugGroup_ptr(renderPassEncoder, pGroupLabel);
+		}
+	}
+
+	public static void wgpuRenderPassEncoderPushDebugGroup(WGPURenderPassEncoder renderPassEncoder, string? groupLabel = default)
+	{
+		wgpuRenderPassEncoderPushDebugGroup(renderPassEncoder, groupLabel.GetUtf8Span());
 	}
 
 	private static delegate* unmanaged<WGPURenderPassEncoder, uint, WGPUBindGroup, uint, uint*, void> wgpuRenderPassEncoderSetBindGroup_ptr;
@@ -693,6 +992,19 @@ unsafe partial class WebGPU
 	public static void wgpuRenderPassEncoderSetLabel(WGPURenderPassEncoder renderPassEncoder, sbyte* label)
 	{
 		wgpuRenderPassEncoderSetLabel_ptr(renderPassEncoder, label);
+	}
+
+	public static void wgpuRenderPassEncoderSetLabel(WGPURenderPassEncoder renderPassEncoder, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuRenderPassEncoderSetLabel_ptr(renderPassEncoder, pLabel);
+		}
+	}
+
+	public static void wgpuRenderPassEncoderSetLabel(WGPURenderPassEncoder renderPassEncoder, string? label = default)
+	{
+		wgpuRenderPassEncoderSetLabel(renderPassEncoder, label.GetUtf8Span());
 	}
 
 	private static delegate* unmanaged<WGPURenderPassEncoder, WGPURenderPipeline, void> wgpuRenderPassEncoderSetPipeline_ptr;
@@ -737,10 +1049,36 @@ unsafe partial class WebGPU
 		wgpuRenderPipelineSetLabel_ptr(renderPipeline, label);
 	}
 
+	public static void wgpuRenderPipelineSetLabel(WGPURenderPipeline renderPipeline, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuRenderPipelineSetLabel_ptr(renderPipeline, pLabel);
+		}
+	}
+
+	public static void wgpuRenderPipelineSetLabel(WGPURenderPipeline renderPipeline, string? label = default)
+	{
+		wgpuRenderPipelineSetLabel(renderPipeline, label.GetUtf8Span());
+	}
+
 	private static delegate* unmanaged<WGPUSampler, sbyte*, void> wgpuSamplerSetLabel_ptr;
 	public static void wgpuSamplerSetLabel(WGPUSampler sampler, sbyte* label)
 	{
 		wgpuSamplerSetLabel_ptr(sampler, label);
+	}
+
+	public static void wgpuSamplerSetLabel(WGPUSampler sampler, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuSamplerSetLabel_ptr(sampler, pLabel);
+		}
+	}
+
+	public static void wgpuSamplerSetLabel(WGPUSampler sampler, string? label = default)
+	{
+		wgpuSamplerSetLabel(sampler, label.GetUtf8Span());
 	}
 
 	private static delegate* unmanaged<WGPUShaderModule, WGPUCompilationInfoCallback, nint, void> wgpuShaderModuleGetCompilationInfo_ptr;
@@ -753,6 +1091,19 @@ unsafe partial class WebGPU
 	public static void wgpuShaderModuleSetLabel(WGPUShaderModule shaderModule, sbyte* label)
 	{
 		wgpuShaderModuleSetLabel_ptr(shaderModule, label);
+	}
+
+	public static void wgpuShaderModuleSetLabel(WGPUShaderModule shaderModule, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuShaderModuleSetLabel_ptr(shaderModule, pLabel);
+		}
+	}
+
+	public static void wgpuShaderModuleSetLabel(WGPUShaderModule shaderModule, string? label = default)
+	{
+		wgpuShaderModuleSetLabel(shaderModule, label.GetUtf8Span());
 	}
 
 	private static delegate* unmanaged<WGPUSurface, WGPUAdapter, WGPUTextureFormat> wgpuSurfaceGetPreferredFormat_ptr;
@@ -839,10 +1190,36 @@ unsafe partial class WebGPU
 		wgpuTextureSetLabel_ptr(texture, label);
 	}
 
+	public static void wgpuTextureSetLabel(WGPUTexture texture, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuTextureSetLabel_ptr(texture, pLabel);
+		}
+	}
+
+	public static void wgpuTextureSetLabel(WGPUTexture texture, string? label = default)
+	{
+		wgpuTextureSetLabel(texture, label.GetUtf8Span());
+	}
+
 	private static delegate* unmanaged<WGPUTextureView, sbyte*, void> wgpuTextureViewSetLabel_ptr;
 	public static void wgpuTextureViewSetLabel(WGPUTextureView textureView, sbyte* label)
 	{
 		wgpuTextureViewSetLabel_ptr(textureView, label);
+	}
+
+	public static void wgpuTextureViewSetLabel(WGPUTextureView textureView, ReadOnlySpan<sbyte> label)
+	{
+		fixed (sbyte* pLabel = label)
+		{
+			wgpuTextureViewSetLabel_ptr(textureView, pLabel);
+		}
+	}
+
+	public static void wgpuTextureViewSetLabel(WGPUTextureView textureView, string? label = default)
+	{
+		wgpuTextureViewSetLabel(textureView, label.GetUtf8Span());
 	}
 
 	private static delegate* unmanaged<WGPUInstance, WGPUGlobalReport*, void> wgpuGenerateReport_ptr;
@@ -1052,7 +1429,7 @@ unsafe partial class WebGPU
 	private static void GenLoadCommands()
 	{
 		wgpuCreateInstance_ptr = (delegate* unmanaged<WGPUInstanceDescriptor*, WGPUInstance>) LoadFunctionPointer(nameof(wgpuCreateInstance));
-		wgpuGetProcAddress_ptr = (delegate* unmanaged<WGPUDevice, sbyte*, WGPUProc>) LoadFunctionPointer(nameof(wgpuGetProcAddress));
+		wgpuGetProcAddress_ptr = (delegate* unmanaged<WGPUDevice, sbyte*, nint>) LoadFunctionPointer(nameof(wgpuGetProcAddress));
 		wgpuAdapterEnumerateFeatures_ptr = (delegate* unmanaged<WGPUAdapter, WGPUFeatureName*, nuint>) LoadFunctionPointer(nameof(wgpuAdapterEnumerateFeatures));
 		wgpuAdapterGetLimits_ptr = (delegate* unmanaged<WGPUAdapter, WGPUSupportedLimits*, bool>) LoadFunctionPointer(nameof(wgpuAdapterGetLimits));
 		wgpuAdapterGetProperties_ptr = (delegate* unmanaged<WGPUAdapter, WGPUAdapterProperties*, void>) LoadFunctionPointer(nameof(wgpuAdapterGetProperties));

@@ -10,8 +10,13 @@ public static partial class CsCodeGenerator
 {
     private static string GetFunctionPointerSignature(CppFunction function)
     {
+        return GetFunctionPointerSignature(function.ReturnType, function.Parameters);
+    }
+
+    private static string GetFunctionPointerSignature(CppType returnType, CppContainerList<CppParameter> parameters)
+    {
         StringBuilder builder = new();
-        foreach (CppParameter parameter in function.Parameters)
+        foreach (CppParameter parameter in parameters)
         {
             string paramCsType = GetCsTypeName(parameter.Type, false);
 
@@ -24,19 +29,48 @@ public static partial class CsCodeGenerator
             builder.Append(paramCsType).Append(", ");
         }
 
-        string returnCsName = GetCsTypeName(function.ReturnType, false);
+        string returnCsName = GetCsTypeName(returnType, false);
         builder.Append(returnCsName);
 
         return $"delegate* unmanaged<{builder}>";
     }
 
+
     private static void GenerateCommands(CppCompilation compilation, string outputPath)
     {
         // Generate Functions
-        using var writer = new CodeWriter(Path.Combine(outputPath, "Commands.cs"),
-            false,
-            "System"
+        using CodeWriter writer = new(Path.Combine(outputPath, "Commands.cs"),
+            true,
+            "System",
+            "System.Runtime.InteropServices"
             );
+
+        // Generate callback
+        foreach (CppTypedef typedef in compilation.Typedefs)
+        {
+            if (typedef.Name == "WGPUProc" ||
+                !typedef.Name.EndsWith("Callback"))
+            {
+                continue;
+            }
+
+            if (typedef.ElementType is not CppPointerType pointerType)
+            {
+                continue;
+            }
+
+            CppFunctionType functionType = (CppFunctionType)pointerType.ElementType;
+
+            //string functionPointerSignature = GetFunctionPointerSignature(functionType);
+            //AddCsMapping(typedef.Name, functionPointerSignature);
+
+            string returnCsName = GetCsTypeName(functionType.ReturnType, false);
+            string argumentsString = GetParameterSignature(functionType);
+
+            writer.WriteLine($"[UnmanagedFunctionPointer(CallingConvention.Cdecl)]");
+            writer.WriteLine($"public unsafe delegate {returnCsName} {typedef.Name}({argumentsString});");
+            writer.WriteLine();
+        }
 
         Dictionary<string, CppFunction> commands = new();
         foreach (CppFunction? cppFunction in compilation.Functions)
@@ -114,45 +148,66 @@ public static partial class CsCodeGenerator
         }
 
         writer.WriteLine();
-    }
 
-
-    private static void EmitInvoke(CodeWriter writer, CppFunction function, List<string> parameters, bool handleCheckResult = true)
-    {
-        var postCall = string.Empty;
-        if (handleCheckResult)
+        if (returnCsName == "void" &&
+            (cppFunction.Name.EndsWith("SetLabel") ||
+            cppFunction.Name.EndsWith("InsertDebugMarker") ||
+            cppFunction.Name.EndsWith("PushDebugGroup")
+            ))
         {
-            var hasResultReturn = GetCsTypeName(function.ReturnType) == "VkResult";
-            if (hasResultReturn)
+            IEnumerable<CppParameter> parameters = cppFunction.Parameters.Take(cppFunction.Parameters.Count - 1);
+            string paramCsName = GetParameterName(cppFunction.Parameters.Last().Name);
+            argumentsString = GetParameterSignature(parameters);
+
+            using (writer.PushBlock($"public static void {cppFunction.Name}({argumentsString}, ReadOnlySpan<sbyte> {paramCsName})"))
             {
-                postCall = ".CheckResult()";
+                string pointerName = "p" + char.ToUpperInvariant(paramCsName[0]) + paramCsName.Substring(1);
+                using (writer.PushBlock($"fixed (sbyte* {pointerName} = {paramCsName})"))
+                {
+                    writer.Write($"{cppFunction.Name}_ptr(");
+
+                    int index = 0;
+                    foreach (CppParameter cppParameter in parameters)
+                    {
+                        string localParamCsName = GetParameterName(cppParameter.Name);
+
+                        writer.Write($"{localParamCsName}");
+
+                        if (index < cppFunction.Parameters.Count - 1)
+                        {
+                            writer.Write(", ");
+                        }
+
+                        index++;
+                    }
+
+                    writer.Write(pointerName);
+                    writer.WriteLine(");");
+                }
             }
-        }
 
-        int index = 0;
-        var callArgumentStringBuilder = new StringBuilder();
-        foreach (string? parameterName in parameters)
-        {
-            callArgumentStringBuilder.Append(parameterName);
+            writer.WriteLine();
 
-            if (index < parameters.Count - 1)
+            using (writer.PushBlock($"public static void {cppFunction.Name}({argumentsString}, string? {paramCsName} = default)"))
             {
-                callArgumentStringBuilder.Append(", ");
+                string instanceParamName = GetParameterName(cppFunction.Parameters[0].Name);
+                writer.WriteLine($"{cppFunction.Name}({instanceParamName}, {paramCsName}.GetUtf8Span());");
             }
-
-            index++;
+            writer.WriteLine();
         }
-
-        string callArgumentString = callArgumentStringBuilder.ToString();
-        writer.WriteLine($"{function.Name}_ptr({callArgumentString}){postCall};");
     }
 
-    public static string GetParameterSignature(CppFunction cppFunction)
+    public static string GetParameterSignature(CppFunction cppFunction, bool unsafeStrings = true)
     {
-        return GetParameterSignature(cppFunction.Parameters, cppFunction.Name);
+        return GetParameterSignature(cppFunction.Parameters, unsafeStrings);
     }
 
-    private static string GetParameterSignature(IList<CppParameter> parameters, string functionName)
+    public static string GetParameterSignature(CppFunctionType cppFunctionType, bool unsafeStrings = true)
+    {
+        return GetParameterSignature(cppFunctionType.Parameters, unsafeStrings);
+    }
+
+    private static string GetParameterSignature(IEnumerable<CppParameter> parameters, bool unsafeStrings = true)
     {
         var argumentBuilder = new StringBuilder();
         int index = 0;
@@ -176,23 +231,15 @@ public static partial class CsCodeGenerator
             //    }
             //}
 
-            //if (CanBeUsedAsOutput(cppParameter.Type, out CppTypeDeclaration? cppTypeDeclaration))
-            //{
-            //    argumentBuilder.Append("out ");
-            //    paramCsTypeName = GetCsTypeName(cppTypeDeclaration, false);
-            //}
+            if (paramCsName == "sbyte*" && unsafeStrings == false)
+            {
+                paramCsName = "ReadOnlySpan<sbyte>";
+            }
 
             argumentBuilder.Append(paramCsTypeName).Append(' ').Append(paramCsName);
-            if (index < parameters.Count - 1)
+            if (index < parameters.Count() - 1)
             {
                 argumentBuilder.Append(", ");
-            }
-            else
-            {
-                if (paramCsTypeName == "VkAllocationCallbacks*")
-                {
-                    argumentBuilder.Append(" = default");
-                }
             }
 
             index++;

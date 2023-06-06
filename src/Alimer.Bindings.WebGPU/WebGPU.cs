@@ -18,7 +18,7 @@ public static unsafe partial class WebGPU
         if (OperatingSystem.IsWindows())
         {
             s_wgpuModule = _loader.LoadNativeLibrary("wgpu_native.dll");
-            
+
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
@@ -116,7 +116,7 @@ public static unsafe partial class WebGPU
 
 #endif
 
-    private static IntPtr LoadFunctionPointer(string name) 
+    private static IntPtr LoadFunctionPointer(string name)
     {
         IntPtr addr = _loader.LoadFunctionPointer(s_wgpuModule, name);
         if (addr == IntPtr.Zero)

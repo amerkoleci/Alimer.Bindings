@@ -17,7 +17,8 @@ public static partial class CsCodeGenerator
 
         foreach (CppTypedef typedef in compilation.Typedefs)
         {
-            if (typedef.Name.StartsWith("PFN_"))
+            if (typedef.Name == "WGPUProc" ||
+                typedef.Name.EndsWith("Callback"))
             {
                 continue;
             }
@@ -26,7 +27,6 @@ public static partial class CsCodeGenerator
             {
                 continue;
             }
-
             bool isDispatchable = true;
 
             string csName = typedef.Name;
