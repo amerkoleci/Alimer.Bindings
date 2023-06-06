@@ -83,7 +83,10 @@ public sealed unsafe class Window
         }
 
         _window = glfwCreateWindow(width, height, title, monitor, GLFWwindow.Null);
-        //Handle = hwnd;
+        if (OperatingSystem.IsWindows())
+        {
+            Handle = glfwGetWin32Window(_window);
+        }
 
         glfwGetWindowSize(_window, out width, out height);
         Extent = new WGPUExtent3D(width, height);
@@ -91,7 +94,7 @@ public sealed unsafe class Window
 
     public string Title { get; }
     public WGPUExtent3D Extent { get; }
-    //public IntPtr Handle { get; }
+    public nint Handle { get; }
 
     public bool ShoudClose => glfwWindowShouldClose(_window);
 
@@ -101,7 +104,7 @@ public sealed unsafe class Window
         {
             WGPUSurfaceDescriptorFromWindowsHWND chain = new()
             {
-                hwnd = glfwGetWin32Window(_window),
+                hwnd = Handle,
                 hinstance = GetModuleHandleW(null),
                 chain = new WGPUChainedStruct()
                 {

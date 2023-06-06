@@ -116,6 +116,32 @@ public static unsafe partial class WebGPU
 
 #endif
 
+    public static WGPUShaderModule wgpuDeviceCreateShaderModule(WGPUDevice device, ReadOnlySpan<sbyte> wgslShaderSource)
+    {
+        fixed (sbyte* pShaderSource = wgslShaderSource)
+        {
+            // Use the extension mechanism to load a WGSL shader source code
+            WGPUShaderModuleWGSLDescriptor shaderCodeDesc = new();
+            shaderCodeDesc.chain.next = null;
+            shaderCodeDesc.chain.sType = WGPUSType.ShaderModuleWGSLDescriptor;
+            shaderCodeDesc.code = pShaderSource;
+
+            WGPUShaderModuleDescriptor shaderDesc = new()
+            {
+                nextInChain = &shaderCodeDesc.chain,
+                hintCount = 0,
+                hints = null
+            };
+
+            return wgpuDeviceCreateShaderModule(device, &shaderDesc);
+        }
+    }
+
+    public static WGPUShaderModule wgpuDeviceCreateShaderModule(WGPUDevice device, string wgslShaderSource)
+    {
+        return wgpuDeviceCreateShaderModule(device, wgslShaderSource.GetUtf8Span());
+    }
+
     private static IntPtr LoadFunctionPointer(string name)
     {
         IntPtr addr = _loader.LoadFunctionPointer(s_wgpuModule, name);

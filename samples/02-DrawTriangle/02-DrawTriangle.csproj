@@ -9,7 +9,7 @@
     <PublishAot>true</PublishAot>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Assets\*.spv" CopyToOutputDirectory="Always" />
+    <Content Include="Assets\*.*" CopyToOutputDirectory="Always" />
     
     <ProjectReference Include="..\Alimer.WebGPU.SampleFramework\Alimer.WebGPU.SampleFramework.csproj" />
   </ItemGroup>

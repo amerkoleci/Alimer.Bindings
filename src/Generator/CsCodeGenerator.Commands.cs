@@ -77,7 +77,6 @@ public static partial class CsCodeGenerator
         {
             string? returnType = GetCsTypeName(cppFunction.ReturnType, false);
             string? csName = cppFunction.Name;
-            string argumentsString = GetParameterSignature(cppFunction);
 
             commands.Add(csName, cppFunction);
         }
@@ -105,7 +104,16 @@ public static partial class CsCodeGenerator
             {
                 string commandName = instanceCommand.Key;
                 string functionPointerSignature = GetFunctionPointerSignature(instanceCommand.Value);
-                writer.WriteLine($"{commandName}_ptr = ({functionPointerSignature}) LoadFunctionPointer(nameof({commandName}));");
+
+                if (commandName.EndsWith("Drop"))
+                {
+                    //commandName = commandName.Replace("Drop", "Release");
+                    writer.WriteLine($"{commandName}_ptr = ({functionPointerSignature}) LoadFunctionPointer(\"{commandName}\");");
+                }
+                else
+                {
+                    writer.WriteLine($"{commandName}_ptr = ({functionPointerSignature}) LoadFunctionPointer(nameof({commandName}));");
+                }
             }
         }
     }
@@ -114,8 +122,13 @@ public static partial class CsCodeGenerator
     {
         string returnCsName = GetCsTypeName(cppFunction.ReturnType, false);
         string argumentsString = GetParameterSignature(cppFunction);
+        string functionName = cppFunction.Name;
+        if (cppFunction.Name.EndsWith("Drop"))
+        {
+            functionName = cppFunction.Name.Replace("Drop", "Release");
+        }
 
-        using (writer.PushBlock($"public static {returnCsName} {cppFunction.Name}({argumentsString})"))
+        using (writer.PushBlock($"public static {returnCsName} {functionName}({argumentsString})"))
         {
             if (returnCsName != "void")
             {
@@ -237,6 +250,12 @@ public static partial class CsCodeGenerator
             }
 
             argumentBuilder.Append(paramCsTypeName).Append(' ').Append(paramCsName);
+
+            if (paramCsTypeName == "nint" && paramCsName == "userdata")
+            {
+                argumentBuilder.Append(" = 0");
+            }
+
             if (index < parameters.Count() - 1)
             {
                 argumentBuilder.Append(", ");

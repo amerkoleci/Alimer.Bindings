@@ -13,40 +13,40 @@ using System;
 using System.Runtime.InteropServices;
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUBufferMapCallback(WGPUBufferMapAsyncStatus status, nint userdata);
+public unsafe delegate void WGPUBufferMapCallback(WGPUBufferMapAsyncStatus status, nint userdata = 0);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUCompilationInfoCallback(WGPUCompilationInfoRequestStatus status, WGPUCompilationInfo* compilationInfo, nint userdata);
+public unsafe delegate void WGPUCompilationInfoCallback(WGPUCompilationInfoRequestStatus status, WGPUCompilationInfo* compilationInfo, nint userdata = 0);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUCreateComputePipelineAsyncCallback(WGPUCreatePipelineAsyncStatus status, WGPUComputePipeline pipeline, sbyte* message, nint userdata);
+public unsafe delegate void WGPUCreateComputePipelineAsyncCallback(WGPUCreatePipelineAsyncStatus status, WGPUComputePipeline pipeline, sbyte* message, nint userdata = 0);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUCreateRenderPipelineAsyncCallback(WGPUCreatePipelineAsyncStatus status, WGPURenderPipeline pipeline, sbyte* message, nint userdata);
+public unsafe delegate void WGPUCreateRenderPipelineAsyncCallback(WGPUCreatePipelineAsyncStatus status, WGPURenderPipeline pipeline, sbyte* message, nint userdata = 0);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUDeviceLostCallback(WGPUDeviceLostReason reason, sbyte* message, nint userdata);
+public unsafe delegate void WGPUDeviceLostCallback(WGPUDeviceLostReason reason, sbyte* message, nint userdata = 0);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUErrorCallback(WGPUErrorType type, sbyte* message, nint userdata);
+public unsafe delegate void WGPUErrorCallback(WGPUErrorType type, sbyte* message, nint userdata = 0);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUQueueWorkDoneCallback(WGPUQueueWorkDoneStatus status, nint userdata);
+public unsafe delegate void WGPUQueueWorkDoneCallback(WGPUQueueWorkDoneStatus status, nint userdata = 0);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPURequestAdapterCallback(WGPURequestAdapterStatus status, WGPUAdapter adapter, sbyte* message, nint userdata);
+public unsafe delegate void WGPURequestAdapterCallback(WGPURequestAdapterStatus status, WGPUAdapter adapter, sbyte* message, nint userdata = 0);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPURequestDeviceCallback(WGPURequestDeviceStatus status, WGPUDevice device, sbyte* message, nint userdata);
+public unsafe delegate void WGPURequestDeviceCallback(WGPURequestDeviceStatus status, WGPUDevice device, sbyte* message, nint userdata = 0);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUProcDeviceSetDeviceLostCallback(WGPUDevice device, WGPUDeviceLostCallback callback, nint userdata);
+public unsafe delegate void WGPUProcDeviceSetDeviceLostCallback(WGPUDevice device, WGPUDeviceLostCallback callback, nint userdata = 0);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUProcDeviceSetUncapturedErrorCallback(WGPUDevice device, WGPUErrorCallback callback, nint userdata);
+public unsafe delegate void WGPUProcDeviceSetUncapturedErrorCallback(WGPUDevice device, WGPUErrorCallback callback, nint userdata = 0);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPULogCallback(WGPULogLevel level, sbyte* message, nint userdata);
+public unsafe delegate void WGPULogCallback(WGPULogLevel level, sbyte* message, nint userdata = 0);
 
 unsafe partial class WebGPU
 {
@@ -87,7 +87,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPUAdapter, WGPUDeviceDescriptor*, WGPURequestDeviceCallback, nint, void> wgpuAdapterRequestDevice_ptr;
-	public static void wgpuAdapterRequestDevice(WGPUAdapter adapter, WGPUDeviceDescriptor* descriptor, WGPURequestDeviceCallback callback, nint userdata)
+	public static void wgpuAdapterRequestDevice(WGPUAdapter adapter, WGPUDeviceDescriptor* descriptor, WGPURequestDeviceCallback callback, nint userdata = 0)
 	{
 		wgpuAdapterRequestDevice_ptr(adapter, descriptor, callback, userdata);
 	}
@@ -167,7 +167,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPUBuffer, WGPUMapMode, nuint, nuint, WGPUBufferMapCallback, nint, void> wgpuBufferMapAsync_ptr;
-	public static void wgpuBufferMapAsync(WGPUBuffer buffer, WGPUMapMode mode, nuint offset, nuint size, WGPUBufferMapCallback callback, nint userdata)
+	public static void wgpuBufferMapAsync(WGPUBuffer buffer, WGPUMapMode mode, nuint offset, nuint size, WGPUBufferMapCallback callback, nint userdata = 0)
 	{
 		wgpuBufferMapAsync_ptr(buffer, mode, offset, size, callback, userdata);
 	}
@@ -500,7 +500,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPUDevice, WGPUComputePipelineDescriptor*, WGPUCreateComputePipelineAsyncCallback, nint, void> wgpuDeviceCreateComputePipelineAsync_ptr;
-	public static void wgpuDeviceCreateComputePipelineAsync(WGPUDevice device, WGPUComputePipelineDescriptor* descriptor, WGPUCreateComputePipelineAsyncCallback callback, nint userdata)
+	public static void wgpuDeviceCreateComputePipelineAsync(WGPUDevice device, WGPUComputePipelineDescriptor* descriptor, WGPUCreateComputePipelineAsyncCallback callback, nint userdata = 0)
 	{
 		wgpuDeviceCreateComputePipelineAsync_ptr(device, descriptor, callback, userdata);
 	}
@@ -530,7 +530,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPUDevice, WGPURenderPipelineDescriptor*, WGPUCreateRenderPipelineAsyncCallback, nint, void> wgpuDeviceCreateRenderPipelineAsync_ptr;
-	public static void wgpuDeviceCreateRenderPipelineAsync(WGPUDevice device, WGPURenderPipelineDescriptor* descriptor, WGPUCreateRenderPipelineAsyncCallback callback, nint userdata)
+	public static void wgpuDeviceCreateRenderPipelineAsync(WGPUDevice device, WGPURenderPipelineDescriptor* descriptor, WGPUCreateRenderPipelineAsyncCallback callback, nint userdata = 0)
 	{
 		wgpuDeviceCreateRenderPipelineAsync_ptr(device, descriptor, callback, userdata);
 	}
@@ -590,7 +590,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPUDevice, WGPUErrorCallback, nint, bool> wgpuDevicePopErrorScope_ptr;
-	public static bool wgpuDevicePopErrorScope(WGPUDevice device, WGPUErrorCallback callback, nint userdata)
+	public static bool wgpuDevicePopErrorScope(WGPUDevice device, WGPUErrorCallback callback, nint userdata = 0)
 	{
 		return wgpuDevicePopErrorScope_ptr(device, callback, userdata);
 	}
@@ -602,7 +602,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPUDevice, WGPUDeviceLostCallback, nint, void> wgpuDeviceSetDeviceLostCallback_ptr;
-	public static void wgpuDeviceSetDeviceLostCallback(WGPUDevice device, WGPUDeviceLostCallback callback, nint userdata)
+	public static void wgpuDeviceSetDeviceLostCallback(WGPUDevice device, WGPUDeviceLostCallback callback, nint userdata = 0)
 	{
 		wgpuDeviceSetDeviceLostCallback_ptr(device, callback, userdata);
 	}
@@ -627,7 +627,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPUDevice, WGPUErrorCallback, nint, void> wgpuDeviceSetUncapturedErrorCallback_ptr;
-	public static void wgpuDeviceSetUncapturedErrorCallback(WGPUDevice device, WGPUErrorCallback callback, nint userdata)
+	public static void wgpuDeviceSetUncapturedErrorCallback(WGPUDevice device, WGPUErrorCallback callback, nint userdata = 0)
 	{
 		wgpuDeviceSetUncapturedErrorCallback_ptr(device, callback, userdata);
 	}
@@ -645,7 +645,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPUInstance, WGPURequestAdapterOptions*, WGPURequestAdapterCallback, nint, void> wgpuInstanceRequestAdapter_ptr;
-	public static void wgpuInstanceRequestAdapter(WGPUInstance instance, WGPURequestAdapterOptions* options, WGPURequestAdapterCallback callback, nint userdata)
+	public static void wgpuInstanceRequestAdapter(WGPUInstance instance, WGPURequestAdapterOptions* options, WGPURequestAdapterCallback callback, nint userdata = 0)
 	{
 		wgpuInstanceRequestAdapter_ptr(instance, options, callback, userdata);
 	}
@@ -707,7 +707,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPUQueue, WGPUQueueWorkDoneCallback, nint, void> wgpuQueueOnSubmittedWorkDone_ptr;
-	public static void wgpuQueueOnSubmittedWorkDone(WGPUQueue queue, WGPUQueueWorkDoneCallback callback, nint userdata)
+	public static void wgpuQueueOnSubmittedWorkDone(WGPUQueue queue, WGPUQueueWorkDoneCallback callback, nint userdata = 0)
 	{
 		wgpuQueueOnSubmittedWorkDone_ptr(queue, callback, userdata);
 	}
@@ -1082,7 +1082,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPUShaderModule, WGPUCompilationInfoCallback, nint, void> wgpuShaderModuleGetCompilationInfo_ptr;
-	public static void wgpuShaderModuleGetCompilationInfo(WGPUShaderModule shaderModule, WGPUCompilationInfoCallback callback, nint userdata)
+	public static void wgpuShaderModuleGetCompilationInfo(WGPUShaderModule shaderModule, WGPUCompilationInfoCallback callback, nint userdata = 0)
 	{
 		wgpuShaderModuleGetCompilationInfo_ptr(shaderModule, callback, userdata);
 	}
@@ -1241,7 +1241,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPULogCallback, nint, void> wgpuSetLogCallback_ptr;
-	public static void wgpuSetLogCallback(WGPULogCallback callback, nint userdata)
+	public static void wgpuSetLogCallback(WGPULogCallback callback, nint userdata = 0)
 	{
 		wgpuSetLogCallback_ptr(callback, userdata);
 	}
@@ -1295,133 +1295,133 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPUInstance, void> wgpuInstanceDrop_ptr;
-	public static void wgpuInstanceDrop(WGPUInstance instance)
+	public static void wgpuInstanceRelease(WGPUInstance instance)
 	{
 		wgpuInstanceDrop_ptr(instance);
 	}
 
 	private static delegate* unmanaged<WGPUAdapter, void> wgpuAdapterDrop_ptr;
-	public static void wgpuAdapterDrop(WGPUAdapter adapter)
+	public static void wgpuAdapterRelease(WGPUAdapter adapter)
 	{
 		wgpuAdapterDrop_ptr(adapter);
 	}
 
 	private static delegate* unmanaged<WGPUBindGroup, void> wgpuBindGroupDrop_ptr;
-	public static void wgpuBindGroupDrop(WGPUBindGroup bindGroup)
+	public static void wgpuBindGroupRelease(WGPUBindGroup bindGroup)
 	{
 		wgpuBindGroupDrop_ptr(bindGroup);
 	}
 
 	private static delegate* unmanaged<WGPUBindGroupLayout, void> wgpuBindGroupLayoutDrop_ptr;
-	public static void wgpuBindGroupLayoutDrop(WGPUBindGroupLayout bindGroupLayout)
+	public static void wgpuBindGroupLayoutRelease(WGPUBindGroupLayout bindGroupLayout)
 	{
 		wgpuBindGroupLayoutDrop_ptr(bindGroupLayout);
 	}
 
 	private static delegate* unmanaged<WGPUBuffer, void> wgpuBufferDrop_ptr;
-	public static void wgpuBufferDrop(WGPUBuffer buffer)
+	public static void wgpuBufferRelease(WGPUBuffer buffer)
 	{
 		wgpuBufferDrop_ptr(buffer);
 	}
 
 	private static delegate* unmanaged<WGPUCommandBuffer, void> wgpuCommandBufferDrop_ptr;
-	public static void wgpuCommandBufferDrop(WGPUCommandBuffer commandBuffer)
+	public static void wgpuCommandBufferRelease(WGPUCommandBuffer commandBuffer)
 	{
 		wgpuCommandBufferDrop_ptr(commandBuffer);
 	}
 
 	private static delegate* unmanaged<WGPUCommandEncoder, void> wgpuCommandEncoderDrop_ptr;
-	public static void wgpuCommandEncoderDrop(WGPUCommandEncoder commandEncoder)
+	public static void wgpuCommandEncoderRelease(WGPUCommandEncoder commandEncoder)
 	{
 		wgpuCommandEncoderDrop_ptr(commandEncoder);
 	}
 
 	private static delegate* unmanaged<WGPURenderPassEncoder, void> wgpuRenderPassEncoderDrop_ptr;
-	public static void wgpuRenderPassEncoderDrop(WGPURenderPassEncoder renderPassEncoder)
+	public static void wgpuRenderPassEncoderRelease(WGPURenderPassEncoder renderPassEncoder)
 	{
 		wgpuRenderPassEncoderDrop_ptr(renderPassEncoder);
 	}
 
 	private static delegate* unmanaged<WGPUComputePassEncoder, void> wgpuComputePassEncoderDrop_ptr;
-	public static void wgpuComputePassEncoderDrop(WGPUComputePassEncoder computePassEncoder)
+	public static void wgpuComputePassEncoderRelease(WGPUComputePassEncoder computePassEncoder)
 	{
 		wgpuComputePassEncoderDrop_ptr(computePassEncoder);
 	}
 
 	private static delegate* unmanaged<WGPURenderBundleEncoder, void> wgpuRenderBundleEncoderDrop_ptr;
-	public static void wgpuRenderBundleEncoderDrop(WGPURenderBundleEncoder renderBundleEncoder)
+	public static void wgpuRenderBundleEncoderRelease(WGPURenderBundleEncoder renderBundleEncoder)
 	{
 		wgpuRenderBundleEncoderDrop_ptr(renderBundleEncoder);
 	}
 
 	private static delegate* unmanaged<WGPUComputePipeline, void> wgpuComputePipelineDrop_ptr;
-	public static void wgpuComputePipelineDrop(WGPUComputePipeline computePipeline)
+	public static void wgpuComputePipelineRelease(WGPUComputePipeline computePipeline)
 	{
 		wgpuComputePipelineDrop_ptr(computePipeline);
 	}
 
 	private static delegate* unmanaged<WGPUDevice, void> wgpuDeviceDrop_ptr;
-	public static void wgpuDeviceDrop(WGPUDevice device)
+	public static void wgpuDeviceRelease(WGPUDevice device)
 	{
 		wgpuDeviceDrop_ptr(device);
 	}
 
 	private static delegate* unmanaged<WGPUPipelineLayout, void> wgpuPipelineLayoutDrop_ptr;
-	public static void wgpuPipelineLayoutDrop(WGPUPipelineLayout pipelineLayout)
+	public static void wgpuPipelineLayoutRelease(WGPUPipelineLayout pipelineLayout)
 	{
 		wgpuPipelineLayoutDrop_ptr(pipelineLayout);
 	}
 
 	private static delegate* unmanaged<WGPUQuerySet, void> wgpuQuerySetDrop_ptr;
-	public static void wgpuQuerySetDrop(WGPUQuerySet querySet)
+	public static void wgpuQuerySetRelease(WGPUQuerySet querySet)
 	{
 		wgpuQuerySetDrop_ptr(querySet);
 	}
 
 	private static delegate* unmanaged<WGPURenderBundle, void> wgpuRenderBundleDrop_ptr;
-	public static void wgpuRenderBundleDrop(WGPURenderBundle renderBundle)
+	public static void wgpuRenderBundleRelease(WGPURenderBundle renderBundle)
 	{
 		wgpuRenderBundleDrop_ptr(renderBundle);
 	}
 
 	private static delegate* unmanaged<WGPURenderPipeline, void> wgpuRenderPipelineDrop_ptr;
-	public static void wgpuRenderPipelineDrop(WGPURenderPipeline renderPipeline)
+	public static void wgpuRenderPipelineRelease(WGPURenderPipeline renderPipeline)
 	{
 		wgpuRenderPipelineDrop_ptr(renderPipeline);
 	}
 
 	private static delegate* unmanaged<WGPUSampler, void> wgpuSamplerDrop_ptr;
-	public static void wgpuSamplerDrop(WGPUSampler sampler)
+	public static void wgpuSamplerRelease(WGPUSampler sampler)
 	{
 		wgpuSamplerDrop_ptr(sampler);
 	}
 
 	private static delegate* unmanaged<WGPUShaderModule, void> wgpuShaderModuleDrop_ptr;
-	public static void wgpuShaderModuleDrop(WGPUShaderModule shaderModule)
+	public static void wgpuShaderModuleRelease(WGPUShaderModule shaderModule)
 	{
 		wgpuShaderModuleDrop_ptr(shaderModule);
 	}
 
 	private static delegate* unmanaged<WGPUSurface, void> wgpuSurfaceDrop_ptr;
-	public static void wgpuSurfaceDrop(WGPUSurface surface)
+	public static void wgpuSurfaceRelease(WGPUSurface surface)
 	{
 		wgpuSurfaceDrop_ptr(surface);
 	}
 
 	private static delegate* unmanaged<WGPUSwapChain, void> wgpuSwapChainDrop_ptr;
-	public static void wgpuSwapChainDrop(WGPUSwapChain swapChain)
+	public static void wgpuSwapChainRelease(WGPUSwapChain swapChain)
 	{
 		wgpuSwapChainDrop_ptr(swapChain);
 	}
 
 	private static delegate* unmanaged<WGPUTexture, void> wgpuTextureDrop_ptr;
-	public static void wgpuTextureDrop(WGPUTexture texture)
+	public static void wgpuTextureRelease(WGPUTexture texture)
 	{
 		wgpuTextureDrop_ptr(texture);
 	}
 
 	private static delegate* unmanaged<WGPUTextureView, void> wgpuTextureViewDrop_ptr;
-	public static void wgpuTextureViewDrop(WGPUTextureView textureView)
+	public static void wgpuTextureViewRelease(WGPUTextureView textureView)
 	{
 		wgpuTextureViewDrop_ptr(textureView);
 	}
@@ -1579,27 +1579,27 @@ unsafe partial class WebGPU
 		wgpuRenderPassEncoderMultiDrawIndexedIndirect_ptr = (delegate* unmanaged<WGPURenderPassEncoder, WGPUBuffer, ulong, uint, void>) LoadFunctionPointer(nameof(wgpuRenderPassEncoderMultiDrawIndexedIndirect));
 		wgpuRenderPassEncoderMultiDrawIndirectCount_ptr = (delegate* unmanaged<WGPURenderPassEncoder, WGPUBuffer, ulong, WGPUBuffer, ulong, uint, void>) LoadFunctionPointer(nameof(wgpuRenderPassEncoderMultiDrawIndirectCount));
 		wgpuRenderPassEncoderMultiDrawIndexedIndirectCount_ptr = (delegate* unmanaged<WGPURenderPassEncoder, WGPUBuffer, ulong, WGPUBuffer, ulong, uint, void>) LoadFunctionPointer(nameof(wgpuRenderPassEncoderMultiDrawIndexedIndirectCount));
-		wgpuInstanceDrop_ptr = (delegate* unmanaged<WGPUInstance, void>) LoadFunctionPointer(nameof(wgpuInstanceDrop));
-		wgpuAdapterDrop_ptr = (delegate* unmanaged<WGPUAdapter, void>) LoadFunctionPointer(nameof(wgpuAdapterDrop));
-		wgpuBindGroupDrop_ptr = (delegate* unmanaged<WGPUBindGroup, void>) LoadFunctionPointer(nameof(wgpuBindGroupDrop));
-		wgpuBindGroupLayoutDrop_ptr = (delegate* unmanaged<WGPUBindGroupLayout, void>) LoadFunctionPointer(nameof(wgpuBindGroupLayoutDrop));
-		wgpuBufferDrop_ptr = (delegate* unmanaged<WGPUBuffer, void>) LoadFunctionPointer(nameof(wgpuBufferDrop));
-		wgpuCommandBufferDrop_ptr = (delegate* unmanaged<WGPUCommandBuffer, void>) LoadFunctionPointer(nameof(wgpuCommandBufferDrop));
-		wgpuCommandEncoderDrop_ptr = (delegate* unmanaged<WGPUCommandEncoder, void>) LoadFunctionPointer(nameof(wgpuCommandEncoderDrop));
-		wgpuRenderPassEncoderDrop_ptr = (delegate* unmanaged<WGPURenderPassEncoder, void>) LoadFunctionPointer(nameof(wgpuRenderPassEncoderDrop));
-		wgpuComputePassEncoderDrop_ptr = (delegate* unmanaged<WGPUComputePassEncoder, void>) LoadFunctionPointer(nameof(wgpuComputePassEncoderDrop));
-		wgpuRenderBundleEncoderDrop_ptr = (delegate* unmanaged<WGPURenderBundleEncoder, void>) LoadFunctionPointer(nameof(wgpuRenderBundleEncoderDrop));
-		wgpuComputePipelineDrop_ptr = (delegate* unmanaged<WGPUComputePipeline, void>) LoadFunctionPointer(nameof(wgpuComputePipelineDrop));
-		wgpuDeviceDrop_ptr = (delegate* unmanaged<WGPUDevice, void>) LoadFunctionPointer(nameof(wgpuDeviceDrop));
-		wgpuPipelineLayoutDrop_ptr = (delegate* unmanaged<WGPUPipelineLayout, void>) LoadFunctionPointer(nameof(wgpuPipelineLayoutDrop));
-		wgpuQuerySetDrop_ptr = (delegate* unmanaged<WGPUQuerySet, void>) LoadFunctionPointer(nameof(wgpuQuerySetDrop));
-		wgpuRenderBundleDrop_ptr = (delegate* unmanaged<WGPURenderBundle, void>) LoadFunctionPointer(nameof(wgpuRenderBundleDrop));
-		wgpuRenderPipelineDrop_ptr = (delegate* unmanaged<WGPURenderPipeline, void>) LoadFunctionPointer(nameof(wgpuRenderPipelineDrop));
-		wgpuSamplerDrop_ptr = (delegate* unmanaged<WGPUSampler, void>) LoadFunctionPointer(nameof(wgpuSamplerDrop));
-		wgpuShaderModuleDrop_ptr = (delegate* unmanaged<WGPUShaderModule, void>) LoadFunctionPointer(nameof(wgpuShaderModuleDrop));
-		wgpuSurfaceDrop_ptr = (delegate* unmanaged<WGPUSurface, void>) LoadFunctionPointer(nameof(wgpuSurfaceDrop));
-		wgpuSwapChainDrop_ptr = (delegate* unmanaged<WGPUSwapChain, void>) LoadFunctionPointer(nameof(wgpuSwapChainDrop));
-		wgpuTextureDrop_ptr = (delegate* unmanaged<WGPUTexture, void>) LoadFunctionPointer(nameof(wgpuTextureDrop));
-		wgpuTextureViewDrop_ptr = (delegate* unmanaged<WGPUTextureView, void>) LoadFunctionPointer(nameof(wgpuTextureViewDrop));
+		wgpuInstanceDrop_ptr = (delegate* unmanaged<WGPUInstance, void>) LoadFunctionPointer("wgpuInstanceDrop");
+		wgpuAdapterDrop_ptr = (delegate* unmanaged<WGPUAdapter, void>) LoadFunctionPointer("wgpuAdapterDrop");
+		wgpuBindGroupDrop_ptr = (delegate* unmanaged<WGPUBindGroup, void>) LoadFunctionPointer("wgpuBindGroupDrop");
+		wgpuBindGroupLayoutDrop_ptr = (delegate* unmanaged<WGPUBindGroupLayout, void>) LoadFunctionPointer("wgpuBindGroupLayoutDrop");
+		wgpuBufferDrop_ptr = (delegate* unmanaged<WGPUBuffer, void>) LoadFunctionPointer("wgpuBufferDrop");
+		wgpuCommandBufferDrop_ptr = (delegate* unmanaged<WGPUCommandBuffer, void>) LoadFunctionPointer("wgpuCommandBufferDrop");
+		wgpuCommandEncoderDrop_ptr = (delegate* unmanaged<WGPUCommandEncoder, void>) LoadFunctionPointer("wgpuCommandEncoderDrop");
+		wgpuRenderPassEncoderDrop_ptr = (delegate* unmanaged<WGPURenderPassEncoder, void>) LoadFunctionPointer("wgpuRenderPassEncoderDrop");
+		wgpuComputePassEncoderDrop_ptr = (delegate* unmanaged<WGPUComputePassEncoder, void>) LoadFunctionPointer("wgpuComputePassEncoderDrop");
+		wgpuRenderBundleEncoderDrop_ptr = (delegate* unmanaged<WGPURenderBundleEncoder, void>) LoadFunctionPointer("wgpuRenderBundleEncoderDrop");
+		wgpuComputePipelineDrop_ptr = (delegate* unmanaged<WGPUComputePipeline, void>) LoadFunctionPointer("wgpuComputePipelineDrop");
+		wgpuDeviceDrop_ptr = (delegate* unmanaged<WGPUDevice, void>) LoadFunctionPointer("wgpuDeviceDrop");
+		wgpuPipelineLayoutDrop_ptr = (delegate* unmanaged<WGPUPipelineLayout, void>) LoadFunctionPointer("wgpuPipelineLayoutDrop");
+		wgpuQuerySetDrop_ptr = (delegate* unmanaged<WGPUQuerySet, void>) LoadFunctionPointer("wgpuQuerySetDrop");
+		wgpuRenderBundleDrop_ptr = (delegate* unmanaged<WGPURenderBundle, void>) LoadFunctionPointer("wgpuRenderBundleDrop");
+		wgpuRenderPipelineDrop_ptr = (delegate* unmanaged<WGPURenderPipeline, void>) LoadFunctionPointer("wgpuRenderPipelineDrop");
+		wgpuSamplerDrop_ptr = (delegate* unmanaged<WGPUSampler, void>) LoadFunctionPointer("wgpuSamplerDrop");
+		wgpuShaderModuleDrop_ptr = (delegate* unmanaged<WGPUShaderModule, void>) LoadFunctionPointer("wgpuShaderModuleDrop");
+		wgpuSurfaceDrop_ptr = (delegate* unmanaged<WGPUSurface, void>) LoadFunctionPointer("wgpuSurfaceDrop");
+		wgpuSwapChainDrop_ptr = (delegate* unmanaged<WGPUSwapChain, void>) LoadFunctionPointer("wgpuSwapChainDrop");
+		wgpuTextureDrop_ptr = (delegate* unmanaged<WGPUTexture, void>) LoadFunctionPointer("wgpuTextureDrop");
+		wgpuTextureViewDrop_ptr = (delegate* unmanaged<WGPUTextureView, void>) LoadFunctionPointer("wgpuTextureViewDrop");
 	}
 }
