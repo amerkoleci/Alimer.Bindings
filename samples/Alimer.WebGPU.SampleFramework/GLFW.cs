@@ -186,19 +186,19 @@ public static unsafe class GLFW
     public unsafe delegate void glfwErrorCallback(int code, sbyte* message);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate GLFWwindow* glfwCreateWindow_t(int width, int height, byte* title, GLFWmonitor* monitor, GLFWwindow* share);
+    public delegate GLFWwindow glfwCreateWindow_t(int width, int height, byte* title, GLFWmonitor monitor, GLFWwindow share);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate GLFWmonitor* glfwGetPrimaryMonitor_t();
+    public delegate GLFWmonitor glfwGetPrimaryMonitor_t();
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate int glfwWindowShouldClose_t(GLFWwindow* window);
+    public delegate int glfwWindowShouldClose_t(GLFWwindow window);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void glfwGetWindowSize_t(GLFWwindow* window, out int width, out int height);
+    public delegate void glfwGetWindowSize_t(GLFWwindow window, out int width, out int height);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void glfwShowWindow_t(GLFWwindow* window);
+    public delegate void glfwShowWindow_t(GLFWwindow window);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     private delegate void glfwPollEvents_t();
@@ -220,8 +220,8 @@ public static unsafe class GLFW
     private static readonly glfwShowWindow_t s_glfwShowWindow;
     private static readonly glfwGetPrimaryMonitor_t s_glfwGetPrimaryMonitor;
     private static readonly glfwPollEvents_t s_glfwPollEvents;
-    private static readonly glfwGetRequiredInstanceExtensions_t s_glfwGetRequiredInstanceExtensions;
-    //private static readonly delegate* unmanaged[Cdecl]<VkInstance, GLFWwindow*, void*, VkSurfaceKHR*, int> s_glfwCreateWindowSurface;
+    private static readonly delegate* unmanaged[Cdecl]<GLFWwindow, nint> s_glfwGetWin32Window;
+    private static readonly delegate* unmanaged[Cdecl]<GLFWwindow, nint> s_glfwGetCocoaWindow;
 
     public static bool glfwInit() => s_glfwInit() == GLFW_TRUE;
     public static void glfwTerminate() => s_glfwTerminate();
@@ -236,7 +236,7 @@ public static unsafe class GLFW
     public static void glfwWindowHint(WindowHintBool hint, bool value) => s_glfwWindowHint((int)hint, value ? GLFW_TRUE : GLFW_FALSE);
 
 
-    public static GLFWwindow* glfwCreateWindow(int width, int height, string title, GLFWmonitor* monitor, GLFWwindow* share)
+    public static GLFWwindow glfwCreateWindow(int width, int height, string title, GLFWmonitor monitor, GLFWwindow share)
     {
         var ptr = Marshal.StringToHGlobalAnsi(title);
 
@@ -249,46 +249,37 @@ public static unsafe class GLFW
             Marshal.FreeHGlobal(ptr);
         }
     }
-    public static bool glfwWindowShouldClose(GLFWwindow* window) => s_glfwWindowShouldClose(window) == GLFW_TRUE;
+    public static bool glfwWindowShouldClose(GLFWwindow window) => s_glfwWindowShouldClose(window) == GLFW_TRUE;
 
-    public static void glfwGetWindowSize(GLFWwindow* window, out int width, out int height) => s_glfwGetWindowSize(window, out width, out height);
-    public static void glfwShowWindow(GLFWwindow* window) => glfwShowWindow(window);
+    public static void glfwGetWindowSize(GLFWwindow window, out int width, out int height) => s_glfwGetWindowSize(window, out width, out height);
+    public static void glfwShowWindow(GLFWwindow window) => s_glfwShowWindow(window);
 
-    public static GLFWmonitor* glfwGetPrimaryMonitor() => s_glfwGetPrimaryMonitor();
+    public static GLFWmonitor glfwGetPrimaryMonitor() => s_glfwGetPrimaryMonitor();
 
 
     public static void glfwPollEvents() => s_glfwPollEvents();
 
-    public static nint glfwGetRequiredInstanceExtensions(out int count) => s_glfwGetRequiredInstanceExtensions(out count);
-
-    public static string[] glfwGetRequiredInstanceExtensions()
+    public static nint glfwGetWin32Window(GLFWwindow window)
     {
-        nint ptr = s_glfwGetRequiredInstanceExtensions(out int count);
+        if (s_glfwGetWin32Window == null)
+            return 0;
 
-        string[] array = new string[count];
-        if (count > 0 && ptr != 0)
-        {
-            var offset = 0;
-            for (int i = 0; i < count; i++, offset += IntPtr.Size)
-            {
-                IntPtr p = Marshal.ReadIntPtr(ptr, offset);
-                array[i] = Marshal.PtrToStringAnsi(p)!;
-            }
-        }
-
-        return array;
+        return s_glfwGetWin32Window(window);
     }
 
-    //public static VkResult glfwCreateWindowSurface(VkInstance instance, GLFWwindow* window, void* allocator, VkSurfaceKHR* pSurface)
-    //{
-    //    return (VkResult)s_glfwCreateWindowSurface(instance, window, allocator, pSurface);
-    //}
+    public static nint glfwGetCocoaWindow(GLFWwindow window)
+    {
+        if (s_glfwGetCocoaWindow == null)
+            return 0;
+
+        return s_glfwGetCocoaWindow(window);
+    }
 
     static GLFW()
     {
         s_library = LoadGLFWLibrary();
 
-        s_glfwInit = (delegate* unmanaged[Cdecl]<int>)GetSymbol(nameof(glfwInit));
+        s_glfwInit = (delegate* unmanaged[Cdecl]<int>)LoadSymbol(nameof(glfwInit));
         s_glfwTerminate = LoadFunction<glfwTerminate_t>(nameof(glfwTerminate));
         s_glfwInitHint = LoadFunction<glfwInitHint_t>(nameof(glfwInitHint));
         s_glfwGetVersion = LoadFunction<glfwGetVersion_t>(nameof(glfwGetVersion));
@@ -303,9 +294,8 @@ public static unsafe class GLFW
 
         s_glfwPollEvents = LoadFunction<glfwPollEvents_t>(nameof(glfwPollEvents));
 
-        // Vulkan
-        s_glfwGetRequiredInstanceExtensions = LoadFunction<glfwGetRequiredInstanceExtensions_t>(nameof(glfwGetRequiredInstanceExtensions));
-        //s_glfwCreateWindowSurface = (delegate* unmanaged[Cdecl]<VkInstance, GLFWwindow*, void*, VkSurfaceKHR*, int>)GetSymbol(nameof(glfwCreateWindowSurface));
+        s_glfwGetWin32Window = (delegate* unmanaged[Cdecl]<GLFWwindow, nint>)TryLoadSymbol(nameof(glfwGetWin32Window));
+        s_glfwGetCocoaWindow = (delegate* unmanaged[Cdecl]<GLFWwindow, nint>)TryLoadSymbol(nameof(glfwGetCocoaWindow));
     }
 
     private static IntPtr LoadGLFWLibrary()
@@ -326,8 +316,11 @@ public static unsafe class GLFW
         throw new PlatformNotSupportedException("GLFW platform not supported");
     }
 
+    public static nint LoadSymbol(string name) => LibraryLoader.LoadSymbol(s_library, name);
+    public static nint TryLoadSymbol(string name) => LibraryLoader.TryLoadSymbol(s_library, name);
+
     public static T LoadFunction<T>(string name) => LibraryLoader.LoadFunction<T>(s_library, name);
-    private static IntPtr GetSymbol(string name) => LibraryLoader.GetSymbol(s_library, name);
+    public static TDelegate? TryLoadFunction<TDelegate>(string name) => LibraryLoader.TryLoadFunction<TDelegate>(s_library, name);
 }
 
 [DebuggerDisplay("{DebuggerDisplay,nq}")]

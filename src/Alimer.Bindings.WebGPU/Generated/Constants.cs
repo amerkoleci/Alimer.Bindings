@@ -7,8 +7,6 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 
-namespace Alimer.Bindings.WebGPU;
-
 public static partial class WebGPU
 {
 	/// <unmanaged>WGPU_ARRAY_LAYER_COUNT_UNDEFINED</unmanaged>

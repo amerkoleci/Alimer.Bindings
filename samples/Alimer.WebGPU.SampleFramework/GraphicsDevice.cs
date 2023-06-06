@@ -1,24 +1,24 @@
 ﻿// Copyright © Amer Koleci and Contributors.
 // Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using Alimer.Bindings.WebGPU;
-using static Alimer.Bindings.WebGPU.WebGPU;
-using static Alimer.WebGPU.SampleFramework.GLFW;
+using static WebGPU;
 
 namespace Alimer.WebGPU.SampleFramework;
 
 public unsafe sealed class GraphicsDevice : IDisposable
 {
     public readonly WGPUInstance Instance;
+    public readonly WGPUSurface Surface;
 
-    public GraphicsDevice(string applicationName, bool enableValidation, Window window)
+    public GraphicsDevice(bool enableValidation, Window window)
     {
-        WGPUInstanceDescriptor instanceDescriptor = new();
-        instanceDescriptor.nextInChain = null;
+        WGPUInstanceDescriptor instanceDescriptor = new()
+        {
+            nextInChain = null
+        };
         Instance = wgpuCreateInstance(&instanceDescriptor);
+
+        Surface = window.CreateSurface(Instance);
     }
 
     public void Dispose()

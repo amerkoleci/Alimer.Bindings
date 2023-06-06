@@ -11,8 +11,6 @@
 
 using System.Diagnostics;
 
-namespace Alimer.Bindings.WebGPU;
-
 /// <summary>
 /// A dispatchable handle.
 /// </summary>
@@ -4139,5 +4137,29 @@ public readonly partial struct WGPUProcTextureViewSetLabel : IEquatable<WGPUProc
 	/// <inheritdoc/>
 	public override int GetHashCode() => Handle.GetHashCode();
 	private string DebuggerDisplay => $"{nameof(WGPUProcTextureViewSetLabel)} [0x{Handle.ToString("X")}]";
+}
+
+/// <summary>
+/// A dispatchable handle.
+/// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+public readonly partial struct WGPULogCallback : IEquatable<WGPULogCallback>
+{
+	public WGPULogCallback(nint handle) { Handle = handle; }
+	public nint Handle { get; }
+	public bool IsNull => Handle == 0;
+	public bool IsNotNull => Handle != 0;
+	public static WGPULogCallback Null => new(0);
+	public static implicit operator WGPULogCallback(nint handle) => new(handle);
+	public static bool operator ==(WGPULogCallback left, WGPULogCallback right) => left.Handle == right.Handle;
+	public static bool operator !=(WGPULogCallback left, WGPULogCallback right) => left.Handle != right.Handle;
+	public static bool operator ==(WGPULogCallback left, nint right) => left.Handle == right;
+	public static bool operator !=(WGPULogCallback left, nint right) => left.Handle != right;
+	public bool Equals(WGPULogCallback other) => Handle == other.Handle;
+	/// <inheritdoc/>
+	public override bool Equals(object? obj) => obj is WGPULogCallback handle && Equals(handle);
+	/// <inheritdoc/>
+	public override int GetHashCode() => Handle.GetHashCode();
+	private string DebuggerDisplay => $"{nameof(WGPULogCallback)} [0x{Handle.ToString("X")}]";
 }
 

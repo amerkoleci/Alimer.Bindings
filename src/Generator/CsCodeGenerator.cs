@@ -27,61 +27,8 @@ public static partial class CsCodeGenerator
         { "int64_t*", "long*" },
         { "char", "byte" },
         { "size_t", "nuint" },
-        { "DWORD", "uint" },
 
-
-        //{ "VkBool32", "uint" },
-        { "VkDeviceAddress", "ulong" },
-        { "VkDeviceSize", "ulong" },
-        { "VkFlags", "uint" },
-        { "VkSampleMask", "uint" },
-        { "VkFlags64", "ulong" },
-
-        { "buffer_handle_t", "IntPtr" },
-        { "AHardwareBuffer", "IntPtr" },
-        { "ANativeWindow", "IntPtr" },
-
-        { "MirConnection", "IntPtr" },
-        { "MirSurface", "IntPtr" },
-
-        { "wl_display", "IntPtr" },
-        { "wl_surface", "IntPtr" },
-
-        { "Display", "IntPtr" },
-        { "Window", "IntPtr" },
-        { "VisualID", "IntPtr" },
-        { "RROutput", "IntPtr" },
-
-        { "HINSTANCE", "IntPtr" },
-        { "HWND", "IntPtr" },
-        { "HANDLE", "IntPtr" },
-        { "SECURITY_ATTRIBUTES", "IntPtr" },
-        { "LPCWSTR", "IntPtr" },
-        { "HMONITOR", "IntPtr" },
-
-        { "xcb_connection_t", "IntPtr" },
-        { "xcb_window_t", "IntPtr" },
-        { "xcb_visualid_t", "IntPtr" },
-
-        { "CAMetalLayer", "IntPtr" },
-        { "GgpFrameToken", "IntPtr" },
-        { "GgpStreamDescriptor", "IntPtr" },
-
-        // Vortice.Mathematics types.
-        //{ "VkOffset2D", "Point" },
-        //{ "VkOffset3D", "Point3" },
-        //{ "VkExtent2D", "Size" },
-        //{ "VkExtent3D", "Size3" },
-        //{ "VkRect2D", "Rectangle" },
-        //{ "VkViewport", "Viewport" },
-
-        { "VkAccelerationStructureTypeNV", "VkAccelerationStructureTypeKHR" },
-        { "VkAccelerationStructureMemoryRequirementsTypeNV", "VkAccelerationStructureMemoryRequirementsTypeKHR" },
-        { "VkAccelerationStructureNV", "VkAccelerationStructureKHR" },
-
-        { "VkPipelineStageFlagBits2KHR", "VkPipelineStageFlags2KHR" },
-        { "VkAccessFlagBits2KHR", "VkAccessFlags2KHR" },
-        { "VkFormatFeatureFlagBits2KHR", "VkFormatFeatureFlags2KHR" },
+        { "WGPUSubmissionIndex", "ulong" },
     };
 
     public static void Generate(CppCompilation compilation, string outputPath)
@@ -241,7 +188,7 @@ public static partial class CsCodeGenerator
         switch (primitiveType.Kind)
         {
             case CppPrimitiveKind.Void:
-                return isPointer ? "void*" : "void";
+                return isPointer ? "nint" : "void";
 
             case CppPrimitiveKind.Char:
                 return isPointer ? "sbyte*" : "sbyte";

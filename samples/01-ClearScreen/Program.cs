@@ -26,7 +26,7 @@ public static unsafe class Program
 
         protected override void Initialize()
         {
-            _graphicsDevice = new GraphicsDevice(Name, EnableValidationLayers, MainWindow);
+            _graphicsDevice = new GraphicsDevice(EnableValidationLayers, MainWindow);
         }
 
         public override void Dispose()

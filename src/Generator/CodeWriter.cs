@@ -47,8 +47,8 @@ public sealed class CodeWriter : IDisposable
             _writer.WriteLine();
         }
 
-        _writer.WriteLine("namespace Alimer.Bindings.WebGPU;");
-        _writer.WriteLine();
+        //_writer.WriteLine("namespace Alimer.Bindings.WebGPU;");
+        //_writer.WriteLine();
     }
 
     public void Dispose()

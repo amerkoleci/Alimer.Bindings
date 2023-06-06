@@ -1,7 +1,6 @@
 // Copyright © Amer Koleci and Contributors.
 // Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
-using Alimer.Bindings.WebGPU;
 using Alimer.WebGPU.SampleFramework;
 
 namespace DrawTriangle;
@@ -31,7 +30,7 @@ public static unsafe class Program
 
         protected override void Initialize()
         {
-            _graphicsDevice = new GraphicsDevice(Name, EnableValidationLayers, MainWindow);
+            _graphicsDevice = new GraphicsDevice(EnableValidationLayers, MainWindow);
 
         }
 

@@ -1,7 +1,9 @@
 ﻿// Copyright © Amer Koleci and Contributors.
 // Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
+using static WebGPU;
 using static Alimer.WebGPU.SampleFramework.GLFW;
+using System.Runtime.InteropServices;
 
 namespace Alimer.WebGPU.SampleFramework;
 
@@ -20,14 +22,14 @@ public enum WindowFlags
 
 public sealed unsafe class Window
 {
-    private readonly GLFWwindow* _window;
+    private readonly GLFWwindow _window;
 
     public unsafe Window(string title, int width, int height, WindowFlags flags = WindowFlags.None)
     {
         Title = title;
 
         bool fullscreen = false;
-        GLFWmonitor* monitor = null;
+        GLFWmonitor monitor = GLFWmonitor.Null;
         if ((flags & WindowFlags.Fullscreen) != WindowFlags.None)
         {
             monitor = glfwGetPrimaryMonitor();
@@ -80,18 +82,42 @@ public sealed unsafe class Window
             }
         }
 
-        _window = glfwCreateWindow(width, height, title, monitor, null);
+        _window = glfwCreateWindow(width, height, title, monitor, GLFWwindow.Null);
         //Handle = hwnd;
 
         glfwGetWindowSize(_window, out width, out height);
-        //Extent = new VkExtent2D(width, height);
+        Extent = new WGPUExtent3D(width, height);
     }
 
     public string Title { get; }
-    //public VkExtent2D Extent { get; }
+    public WGPUExtent3D Extent { get; }
     //public IntPtr Handle { get; }
 
     public bool ShoudClose => glfwWindowShouldClose(_window);
 
-    //public VkResult CreateSurface(VkInstance instance, VkSurfaceKHR* surface) => glfwCreateWindowSurface(instance, _window, null, surface);
+    public WGPUSurface CreateSurface(WGPUInstance instance)
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            WGPUSurfaceDescriptorFromWindowsHWND chain = new()
+            {
+                hwnd = glfwGetWin32Window(_window),
+                hinstance = GetModuleHandleW(null),
+                chain = new WGPUChainedStruct()
+                {
+                    sType = WGPUSType.SurfaceDescriptorFromWindowsHWND
+                }
+            };
+            WGPUSurfaceDescriptor descriptor = new()
+            {
+                nextInChain = (WGPUChainedStruct*)&chain
+            };
+            return wgpuInstanceCreateSurface(instance, &descriptor);
+        }
+
+        return WGPUSurface.Null;
+    }
+
+    [DllImport("kernel32", ExactSpelling = true)]
+    private static extern nint GetModuleHandleW(ushort* lpModuleName);
 }

@@ -13,7 +13,7 @@ public static partial class CsCodeGenerator
     private static void GenerateStructAndUnions(CppCompilation compilation, string outputPath)
     {
         // Generate Structures
-        using var writer = new CodeWriter(Path.Combine(outputPath, "Structures.cs"),
+        using var writer = new CodeWriter(Path.Combine(outputPath, "Structs.cs"),
             false,
             "System.Runtime.InteropServices",
             "System.Runtime.CompilerServices",
@@ -52,10 +52,6 @@ public static partial class CsCodeGenerator
             if (isUnion)
             {
                 writer.WriteLine("[StructLayout(LayoutKind.Explicit)]");
-            }
-            else
-            {
-                writer.WriteLine("[StructLayout(LayoutKind.Sequential)]");
             }
 
             bool isReadOnly = false;
@@ -102,7 +98,7 @@ public static partial class CsCodeGenerator
                         structureTypeValue = structureTypeValue.Replace("ANDROID", "Android");
                     }
 
-                    writer.WriteLine();
+                    //writer.WriteLine();
                     //using (writer.PushBlock($"public {csName}()"))
                     //{
                     //    writer.WriteLine($"Unsafe.SkipInit(out this);");
@@ -246,10 +242,6 @@ public static partial class CsCodeGenerator
                 || field.Type.ToString() == "const CAMetalLayer*")
             {
                 csFieldType = "IntPtr";
-            }
-            else if (csFieldType == "VkDirectDriverLoadingFlagsLUNARG")
-            {
-                csFieldType = "VkDirectDriverLoadingModeLUNARG";
             }
 
             string fieldPrefix = isReadOnly ? "readonly " : string.Empty;

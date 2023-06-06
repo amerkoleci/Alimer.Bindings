@@ -1,8 +1,6 @@
 ﻿// Copyright © Amer Koleci and Contributors.
 // Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
-namespace Alimer.Bindings.WebGPU;
-
 /// <summary>
 /// Structure specifying a three-dimensional extent.
 /// </summary>
@@ -11,7 +9,7 @@ public partial struct WGPUExtent3D : IEquatable<WGPUExtent3D>
     /// <summary>
     /// An <see cref="WGPUExtent3D"/> with all of its components set to zero.
     /// </summary>
-    public static readonly WGPUExtent3D Zero = default;
+    public static WGPUExtent3D Zero => new(0, 0, 0);
 
     /// <summary>
     /// Initializes a new instance of <see cref="WGPUExtent3D"/> structure.

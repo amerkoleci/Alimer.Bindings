@@ -30,7 +30,7 @@ public static class Program
             Directory.CreateDirectory(outputPath);
         }
 
-        string? headerFile = Path.Combine(AppContext.BaseDirectory, "webgpu", "webgpu.h");
+        string? headerFile = Path.Combine(AppContext.BaseDirectory, "webgpu", "wgpu.h");
         var options = new CppParserOptions
         {
             ParseMacros = true,
