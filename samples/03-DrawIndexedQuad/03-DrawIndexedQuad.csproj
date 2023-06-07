@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>DrawTriangle</RootNamespace>
+    <PlatformTarget>x64</PlatformTarget>
+    <PublishAot>true</PublishAot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Assets\*.*" CopyToOutputDirectory="Always" />
+    
+    <ProjectReference Include="..\Alimer.WebGPU.SampleFramework\Alimer.WebGPU.SampleFramework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(RepoRootPath)src\Alimer.Bindings.WebGPU\runtimes\win-x64\native\wgpu_native.dll" Link="wgpu_native.dll" Visible="False" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  
+</Project>

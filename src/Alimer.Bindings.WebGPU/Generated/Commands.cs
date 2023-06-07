@@ -136,8 +136,8 @@ unsafe partial class WebGPU
 		wgpuBufferDestroy_ptr(buffer);
 	}
 
-	private static delegate* unmanaged<WGPUBuffer, nuint, nuint, nint> wgpuBufferGetConstMappedRange_ptr;
-	public static nint wgpuBufferGetConstMappedRange(WGPUBuffer buffer, nuint offset, nuint size)
+	private static delegate* unmanaged<WGPUBuffer, nuint, nuint, void*> wgpuBufferGetConstMappedRange_ptr;
+	public static void* wgpuBufferGetConstMappedRange(WGPUBuffer buffer, nuint offset, nuint size)
 	{
 		return wgpuBufferGetConstMappedRange_ptr(buffer, offset, size);
 	}
@@ -737,26 +737,26 @@ unsafe partial class WebGPU
 		wgpuQueueSubmit_ptr(queue, commandCount, commands);
 	}
 
-	private static delegate* unmanaged<WGPUQueue, WGPUBuffer, ulong, nint, nuint, void> wgpuQueueWriteBuffer_ptr;
-	public static void wgpuQueueWriteBuffer(WGPUQueue queue, WGPUBuffer buffer, ulong bufferOffset, nint data, nuint size)
+	private static delegate* unmanaged<WGPUQueue, WGPUBuffer, ulong, void*, nuint, void> wgpuQueueWriteBuffer_ptr;
+	public static void wgpuQueueWriteBuffer(WGPUQueue queue, WGPUBuffer buffer, ulong bufferOffset, void* data, nuint size)
 	{
 		wgpuQueueWriteBuffer_ptr(queue, buffer, bufferOffset, data, size);
 	}
 
-	private static delegate* unmanaged<WGPUQueue, WGPUImageCopyTexture*, nint, nuint, WGPUTextureDataLayout*, WGPUExtent3D*, void> wgpuQueueWriteTexture_ptr;
-	public static void wgpuQueueWriteTexture(WGPUQueue queue, WGPUImageCopyTexture* destination, nint data, nuint dataSize, WGPUTextureDataLayout* dataLayout, WGPUExtent3D* writeSize)
+	private static delegate* unmanaged<WGPUQueue, WGPUImageCopyTexture*, void*, nuint, WGPUTextureDataLayout*, WGPUExtent3D*, void> wgpuQueueWriteTexture_ptr;
+	public static void wgpuQueueWriteTexture(WGPUQueue queue, WGPUImageCopyTexture* destination, void* data, nuint dataSize, WGPUTextureDataLayout* dataLayout, WGPUExtent3D* writeSize)
 	{
 		wgpuQueueWriteTexture_ptr(queue, destination, data, dataSize, dataLayout, writeSize);
 	}
 
 	private static delegate* unmanaged<WGPURenderBundleEncoder, uint, uint, uint, uint, void> wgpuRenderBundleEncoderDraw_ptr;
-	public static void wgpuRenderBundleEncoderDraw(WGPURenderBundleEncoder renderBundleEncoder, uint vertexCount, uint instanceCount, uint firstVertex, uint firstInstance)
+	public static void wgpuRenderBundleEncoderDraw(WGPURenderBundleEncoder renderBundleEncoder, uint vertexCount, uint instanceCount = 1, uint firstVertex = 0, uint firstInstance = 0)
 	{
 		wgpuRenderBundleEncoderDraw_ptr(renderBundleEncoder, vertexCount, instanceCount, firstVertex, firstInstance);
 	}
 
 	private static delegate* unmanaged<WGPURenderBundleEncoder, uint, uint, uint, int, uint, void> wgpuRenderBundleEncoderDrawIndexed_ptr;
-	public static void wgpuRenderBundleEncoderDrawIndexed(WGPURenderBundleEncoder renderBundleEncoder, uint indexCount, uint instanceCount, uint firstIndex, int baseVertex, uint firstInstance)
+	public static void wgpuRenderBundleEncoderDrawIndexed(WGPURenderBundleEncoder renderBundleEncoder, uint indexCount, uint instanceCount = 1, uint firstIndex = 0, int baseVertex = 0, uint firstInstance = 0)
 	{
 		wgpuRenderBundleEncoderDrawIndexed_ptr(renderBundleEncoder, indexCount, instanceCount, firstIndex, baseVertex, firstInstance);
 	}
@@ -830,7 +830,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPURenderBundleEncoder, WGPUBuffer, WGPUIndexFormat, ulong, ulong, void> wgpuRenderBundleEncoderSetIndexBuffer_ptr;
-	public static void wgpuRenderBundleEncoderSetIndexBuffer(WGPURenderBundleEncoder renderBundleEncoder, WGPUBuffer buffer, WGPUIndexFormat format, ulong offset, ulong size)
+	public static void wgpuRenderBundleEncoderSetIndexBuffer(WGPURenderBundleEncoder renderBundleEncoder, WGPUBuffer buffer, WGPUIndexFormat format, ulong offset = 0, ulong size = WGPU_WHOLE_SIZE)
 	{
 		wgpuRenderBundleEncoderSetIndexBuffer_ptr(renderBundleEncoder, buffer, format, offset, size);
 	}
@@ -861,7 +861,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPURenderBundleEncoder, uint, WGPUBuffer, ulong, ulong, void> wgpuRenderBundleEncoderSetVertexBuffer_ptr;
-	public static void wgpuRenderBundleEncoderSetVertexBuffer(WGPURenderBundleEncoder renderBundleEncoder, uint slot, WGPUBuffer buffer, ulong offset, ulong size)
+	public static void wgpuRenderBundleEncoderSetVertexBuffer(WGPURenderBundleEncoder renderBundleEncoder, uint slot, WGPUBuffer buffer, ulong offset = 0, ulong size = WGPU_WHOLE_SIZE)
 	{
 		wgpuRenderBundleEncoderSetVertexBuffer_ptr(renderBundleEncoder, slot, buffer, offset, size);
 	}
@@ -879,13 +879,13 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPURenderPassEncoder, uint, uint, uint, uint, void> wgpuRenderPassEncoderDraw_ptr;
-	public static void wgpuRenderPassEncoderDraw(WGPURenderPassEncoder renderPassEncoder, uint vertexCount, uint instanceCount, uint firstVertex, uint firstInstance)
+	public static void wgpuRenderPassEncoderDraw(WGPURenderPassEncoder renderPassEncoder, uint vertexCount, uint instanceCount = 1, uint firstVertex = 0, uint firstInstance = 0)
 	{
 		wgpuRenderPassEncoderDraw_ptr(renderPassEncoder, vertexCount, instanceCount, firstVertex, firstInstance);
 	}
 
 	private static delegate* unmanaged<WGPURenderPassEncoder, uint, uint, uint, int, uint, void> wgpuRenderPassEncoderDrawIndexed_ptr;
-	public static void wgpuRenderPassEncoderDrawIndexed(WGPURenderPassEncoder renderPassEncoder, uint indexCount, uint instanceCount, uint firstIndex, int baseVertex, uint firstInstance)
+	public static void wgpuRenderPassEncoderDrawIndexed(WGPURenderPassEncoder renderPassEncoder, uint indexCount, uint instanceCount = 1, uint firstIndex = 0, int baseVertex = 0, uint firstInstance = 0)
 	{
 		wgpuRenderPassEncoderDrawIndexed_ptr(renderPassEncoder, indexCount, instanceCount, firstIndex, baseVertex, firstInstance);
 	}
@@ -983,7 +983,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPURenderPassEncoder, WGPUBuffer, WGPUIndexFormat, ulong, ulong, void> wgpuRenderPassEncoderSetIndexBuffer_ptr;
-	public static void wgpuRenderPassEncoderSetIndexBuffer(WGPURenderPassEncoder renderPassEncoder, WGPUBuffer buffer, WGPUIndexFormat format, ulong offset, ulong size)
+	public static void wgpuRenderPassEncoderSetIndexBuffer(WGPURenderPassEncoder renderPassEncoder, WGPUBuffer buffer, WGPUIndexFormat format, ulong offset = 0, ulong size = WGPU_WHOLE_SIZE)
 	{
 		wgpuRenderPassEncoderSetIndexBuffer_ptr(renderPassEncoder, buffer, format, offset, size);
 	}
@@ -1026,7 +1026,7 @@ unsafe partial class WebGPU
 	}
 
 	private static delegate* unmanaged<WGPURenderPassEncoder, uint, WGPUBuffer, ulong, ulong, void> wgpuRenderPassEncoderSetVertexBuffer_ptr;
-	public static void wgpuRenderPassEncoderSetVertexBuffer(WGPURenderPassEncoder renderPassEncoder, uint slot, WGPUBuffer buffer, ulong offset, ulong size)
+	public static void wgpuRenderPassEncoderSetVertexBuffer(WGPURenderPassEncoder renderPassEncoder, uint slot, WGPUBuffer buffer, ulong offset = 0, ulong size = WGPU_WHOLE_SIZE)
 	{
 		wgpuRenderPassEncoderSetVertexBuffer_ptr(renderPassEncoder, slot, buffer, offset, size);
 	}
@@ -1438,7 +1438,7 @@ unsafe partial class WebGPU
 		wgpuBindGroupSetLabel_ptr = (delegate* unmanaged<WGPUBindGroup, sbyte*, void>) LoadFunctionPointer(nameof(wgpuBindGroupSetLabel));
 		wgpuBindGroupLayoutSetLabel_ptr = (delegate* unmanaged<WGPUBindGroupLayout, sbyte*, void>) LoadFunctionPointer(nameof(wgpuBindGroupLayoutSetLabel));
 		wgpuBufferDestroy_ptr = (delegate* unmanaged<WGPUBuffer, void>) LoadFunctionPointer(nameof(wgpuBufferDestroy));
-		wgpuBufferGetConstMappedRange_ptr = (delegate* unmanaged<WGPUBuffer, nuint, nuint, nint>) LoadFunctionPointer(nameof(wgpuBufferGetConstMappedRange));
+		wgpuBufferGetConstMappedRange_ptr = (delegate* unmanaged<WGPUBuffer, nuint, nuint, void*>) LoadFunctionPointer(nameof(wgpuBufferGetConstMappedRange));
 		wgpuBufferGetMapState_ptr = (delegate* unmanaged<WGPUBuffer, WGPUBufferMapState>) LoadFunctionPointer(nameof(wgpuBufferGetMapState));
 		wgpuBufferGetMappedRange_ptr = (delegate* unmanaged<WGPUBuffer, nuint, nuint, nint>) LoadFunctionPointer(nameof(wgpuBufferGetMappedRange));
 		wgpuBufferGetSize_ptr = (delegate* unmanaged<WGPUBuffer, ulong>) LoadFunctionPointer(nameof(wgpuBufferGetSize));
@@ -1510,8 +1510,8 @@ unsafe partial class WebGPU
 		wgpuQueueOnSubmittedWorkDone_ptr = (delegate* unmanaged<WGPUQueue, WGPUQueueWorkDoneCallback, nint, void>) LoadFunctionPointer(nameof(wgpuQueueOnSubmittedWorkDone));
 		wgpuQueueSetLabel_ptr = (delegate* unmanaged<WGPUQueue, sbyte*, void>) LoadFunctionPointer(nameof(wgpuQueueSetLabel));
 		wgpuQueueSubmit_ptr = (delegate* unmanaged<WGPUQueue, uint, WGPUCommandBuffer*, void>) LoadFunctionPointer(nameof(wgpuQueueSubmit));
-		wgpuQueueWriteBuffer_ptr = (delegate* unmanaged<WGPUQueue, WGPUBuffer, ulong, nint, nuint, void>) LoadFunctionPointer(nameof(wgpuQueueWriteBuffer));
-		wgpuQueueWriteTexture_ptr = (delegate* unmanaged<WGPUQueue, WGPUImageCopyTexture*, nint, nuint, WGPUTextureDataLayout*, WGPUExtent3D*, void>) LoadFunctionPointer(nameof(wgpuQueueWriteTexture));
+		wgpuQueueWriteBuffer_ptr = (delegate* unmanaged<WGPUQueue, WGPUBuffer, ulong, void*, nuint, void>) LoadFunctionPointer(nameof(wgpuQueueWriteBuffer));
+		wgpuQueueWriteTexture_ptr = (delegate* unmanaged<WGPUQueue, WGPUImageCopyTexture*, void*, nuint, WGPUTextureDataLayout*, WGPUExtent3D*, void>) LoadFunctionPointer(nameof(wgpuQueueWriteTexture));
 		wgpuRenderBundleEncoderDraw_ptr = (delegate* unmanaged<WGPURenderBundleEncoder, uint, uint, uint, uint, void>) LoadFunctionPointer(nameof(wgpuRenderBundleEncoderDraw));
 		wgpuRenderBundleEncoderDrawIndexed_ptr = (delegate* unmanaged<WGPURenderBundleEncoder, uint, uint, uint, int, uint, void>) LoadFunctionPointer(nameof(wgpuRenderBundleEncoderDrawIndexed));
 		wgpuRenderBundleEncoderDrawIndexedIndirect_ptr = (delegate* unmanaged<WGPURenderBundleEncoder, WGPUBuffer, ulong, void>) LoadFunctionPointer(nameof(wgpuRenderBundleEncoderDrawIndexedIndirect));

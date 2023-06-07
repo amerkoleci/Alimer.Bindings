@@ -18,11 +18,12 @@ public static unsafe class Program
     class TestApp : Application
     {
         private GraphicsDevice _graphicsDevice;
-        public override string Name => "02-DrawTriangle";
+        public override string Name => "03-DrawIndexedQuad";
 
         private WGPUPipelineLayout _pipelineLayout;
         private WGPURenderPipeline _pipeline;
         private WGPUBuffer _vertexBuffer;
+        private WGPUBuffer _indexBuffer;
 
         protected override void Initialize()
         {
@@ -36,7 +37,7 @@ public static unsafe class Program
             };
             _pipelineLayout = wgpuDeviceCreatePipelineLayout(_graphicsDevice.Device, &layoutDesc);
 
-            string shaderSource = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Assets", $"triangle.wgsl"));
+            string shaderSource = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Assets", $"quad.wgsl"));
             WGPUShaderModule shaderModule = wgpuDeviceCreateShaderModule(_graphicsDevice.Device, shaderSource);
 
             // Vertex fetch
@@ -135,12 +136,25 @@ public static unsafe class Program
             wgpuShaderModuleRelease(shaderModule);
 
             ReadOnlySpan<VertexPositionColor> vertexData = stackalloc VertexPositionColor[] {
-                new(new Vector3(0.0f, 0.5f, 0.5f), new Vector4(1.0f, 0.0f, 0.0f, 1.0f)),
-                new(new Vector3(0.5f, -0.5f, 0.5f), new Vector4(0.0f, 1.0f, 0.0f, 1.0f)),
-                new(new Vector3(-0.5f, -0.5f, 0.5f), new Vector4(0.0f, 0.0f, 1.0f, 1.0f)),
+                new(new Vector3(-0.5f, 0.5f, 0.5f), new Vector4(1.0f, 0.0f, 0.0f, 1.0f)),
+                new(new Vector3(0.5f, 0.5f, 0.5f), new Vector4(0.0f, 1.0f, 0.0f, 1.0f)),
+                new(new Vector3(0.5f, -0.5f, 0.5f), new Vector4(0.0f, 0.0f, 1.0f, 1.0f)),
+                new(new Vector3(-0.5f, -0.5f, 0.5f), new Vector4(1.0f, 1.0f, 0.0f, 1.0f))
             };
             _vertexBuffer = wgpuDeviceCreateBuffer(_graphicsDevice.Device, WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst, vertexData.Length * VertexPositionColor.SizeInBytes);
             wgpuQueueWriteBuffer(_graphicsDevice.Queue, _vertexBuffer, vertexData);
+
+            // Index buffer
+            ReadOnlySpan<ushort> indices = stackalloc ushort[] {
+                0,
+                1,
+                2,    // first triangle
+                0,
+                2,
+                3,    // second triangle
+            };
+            _indexBuffer = wgpuDeviceCreateBuffer(_graphicsDevice.Device, WGPUBufferUsage.Index | WGPUBufferUsage.CopyDst, indices.Length * sizeof(ushort));
+            wgpuQueueWriteBuffer(_graphicsDevice.Queue, _indexBuffer, indices);
         }
 
         public override void Dispose()
@@ -149,6 +163,8 @@ public static unsafe class Program
             wgpuRenderPipelineRelease(_pipeline);
             wgpuBufferDestroy(_vertexBuffer);
             wgpuBufferRelease(_vertexBuffer);
+            wgpuBufferDestroy(_indexBuffer);
+            wgpuBufferRelease(_indexBuffer);
 
             _graphicsDevice.Dispose();
 
@@ -192,8 +208,9 @@ public static unsafe class Program
 
             wgpuRenderPassEncoderSetPipeline(renderPass, _pipeline);
             wgpuRenderPassEncoderSetVertexBuffer(renderPass, 0, _vertexBuffer);
+            wgpuRenderPassEncoderSetIndexBuffer(renderPass, _indexBuffer, WGPUIndexFormat.Uint16);
 
-            wgpuRenderPassEncoderDraw(renderPass, 3);
+            wgpuRenderPassEncoderDrawIndexed(renderPass, 6);
 
             wgpuRenderPassEncoderEnd(renderPass);
         }

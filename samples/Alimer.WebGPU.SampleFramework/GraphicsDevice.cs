@@ -12,6 +12,8 @@ public unsafe sealed class GraphicsDevice : IDisposable
     public readonly WGPUInstance Instance;
     public readonly WGPUSurface Surface;
     public WGPUAdapter Adapter;
+    public WGPUAdapterProperties AdapterProperties;
+    public WGPUSupportedLimits AdapterLimits;
     public WGPUDevice Device;
     public readonly WGPUQueue Queue;
     public readonly WGPUTextureFormat SwapChainFormat;
@@ -91,6 +93,12 @@ public unsafe sealed class GraphicsDevice : IDisposable
             Adapter = candidateAdapter;
             WGPUAdapterProperties properties;
             wgpuAdapterGetProperties(candidateAdapter, &properties);
+
+            WGPUSupportedLimits limits;
+            wgpuAdapterGetLimits(candidateAdapter, &limits);
+
+            AdapterProperties = properties;
+            AdapterLimits = limits;
         }
         else
         {
@@ -124,6 +132,7 @@ public unsafe sealed class GraphicsDevice : IDisposable
     public void Dispose()
     {
         wgpuSwapChainRelease(SwapChain);
+        wgpuDeviceDestroy(Device);
         wgpuDeviceRelease(Device);
         wgpuAdapterRelease(Adapter);
         wgpuInstanceRelease(Instance);

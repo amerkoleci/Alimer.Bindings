@@ -115,6 +115,65 @@ public static unsafe partial class WebGPU
     }
 
 #endif
+    public static void wgpuQueueWriteBuffer<T>(WGPUQueue queue, WGPUBuffer buffer, ref T data, ulong bufferOffset, nuint size)
+        where T : unmanaged
+    {
+        fixed (void* dataPointer = &data)
+        {
+            wgpuQueueWriteBuffer_ptr(queue, buffer, bufferOffset, dataPointer, size);
+        }
+    }
+
+    public static void wgpuQueueWriteBuffer<T>(WGPUQueue queue, WGPUBuffer buffer, ReadOnlySpan<T> data, ulong bufferOffset = 0)
+        where T : unmanaged
+    {
+        fixed (void* dataPointer = data)
+        {
+            wgpuQueueWriteBuffer_ptr(queue, buffer, bufferOffset, dataPointer, (nuint)(data.Length * sizeof(T)));
+        }
+    }
+
+    public static void wgpuQueueWriteBuffer<T>(WGPUQueue queue, WGPUBuffer buffer, T[] data, ulong bufferOffset = 0)
+        where T : unmanaged
+    {
+        fixed (void* dataPointer = data)
+        {
+            wgpuQueueWriteBuffer_ptr(queue, buffer, bufferOffset, dataPointer, (nuint)(data.Length * sizeof(T)));
+        }
+    }
+
+    public static void wgpuQueueWriteTexture<T>(WGPUQueue queue, WGPUImageCopyTexture* destination, ref T data, nuint dataSize, WGPUTextureDataLayout* dataLayout, WGPUExtent3D* writeSize)
+        where T : unmanaged
+    {
+        fixed (void* dataPointer = &data)
+        {
+            wgpuQueueWriteTexture_ptr(queue, destination, dataPointer, dataSize, dataLayout, writeSize);
+        }
+    }
+
+    public static void wgpuQueueWriteTexture<T>(WGPUQueue queue, WGPUImageCopyTexture* destination, ReadOnlySpan<T> data, nuint dataSize, WGPUTextureDataLayout* dataLayout, WGPUExtent3D* writeSize)
+        where T : unmanaged
+    {
+        fixed (void* dataPointer = data)
+        {
+            wgpuQueueWriteTexture_ptr(queue, destination, dataPointer, dataSize, dataLayout, writeSize);
+        }
+    }
+
+    public static void wgpuQueueWriteTexture<T>(WGPUQueue queue, WGPUImageCopyTexture* destination, T[] data, nuint dataSize, WGPUTextureDataLayout* dataLayout, WGPUExtent3D* writeSize)
+        where T : unmanaged
+    {
+        fixed (void* dataPointer = data)
+        {
+            wgpuQueueWriteTexture_ptr(queue, destination, dataPointer, dataSize, dataLayout, writeSize);
+        }
+    }
+
+    //public static void wgpuAdapterGetProperties(WGPUAdapter adapter, out WGPUAdapterProperties properties)
+    //{
+    //    properties = default;
+    //    wgpuAdapterGetProperties_ptr(adapter, &properties);
+    //}
 
     public static WGPUShaderModule wgpuDeviceCreateShaderModule(WGPUDevice device, ReadOnlySpan<sbyte> wgslShaderSource)
     {
@@ -140,6 +199,30 @@ public static unsafe partial class WebGPU
     public static WGPUShaderModule wgpuDeviceCreateShaderModule(WGPUDevice device, string wgslShaderSource)
     {
         return wgpuDeviceCreateShaderModule(device, wgslShaderSource.GetUtf8Span());
+    }
+
+    public static WGPUBuffer wgpuDeviceCreateBuffer(WGPUDevice device, WGPUBufferUsage usage, ulong size, bool mappedAtCreation = false)
+    {
+        WGPUBufferDescriptor descriptor = new()
+        {
+            nextInChain = null,
+            usage = usage,
+            size = size,
+            mappedAtCreation = mappedAtCreation
+        };
+        return wgpuDeviceCreateBuffer_ptr(device, &descriptor);
+    }
+
+    public static WGPUBuffer wgpuDeviceCreateBuffer(WGPUDevice device, WGPUBufferUsage usage, int size, bool mappedAtCreation = false)
+    {
+        WGPUBufferDescriptor descriptor = new()
+        {
+            nextInChain = null,
+            usage = usage,
+            size = (ulong)size,
+            mappedAtCreation = mappedAtCreation
+        };
+        return wgpuDeviceCreateBuffer_ptr(device, &descriptor);
     }
 
     private static IntPtr LoadFunctionPointer(string name)

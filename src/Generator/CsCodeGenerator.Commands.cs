@@ -105,6 +105,11 @@ public static partial class CsCodeGenerator
                 string commandName = instanceCommand.Key;
                 string functionPointerSignature = GetFunctionPointerSignature(instanceCommand.Value);
 
+                if (commandName == "wgpuQueueWriteBuffer")
+                {
+
+                }
+
                 if (commandName.EndsWith("Drop"))
                 {
                     //commandName = commandName.Replace("Drop", "Release");
@@ -170,7 +175,7 @@ public static partial class CsCodeGenerator
         {
             IEnumerable<CppParameter> parameters = cppFunction.Parameters.Take(cppFunction.Parameters.Count - 1);
             string paramCsName = GetParameterName(cppFunction.Parameters.Last().Name);
-            argumentsString = GetParameterSignature(parameters);
+            argumentsString = GetParameterSignature(cppFunction.Name, parameters);
 
             using (writer.PushBlock($"public static void {cppFunction.Name}({argumentsString}, ReadOnlySpan<sbyte> {paramCsName})"))
             {
@@ -212,15 +217,15 @@ public static partial class CsCodeGenerator
 
     public static string GetParameterSignature(CppFunction cppFunction, bool unsafeStrings = true)
     {
-        return GetParameterSignature(cppFunction.Parameters, unsafeStrings);
+        return GetParameterSignature(cppFunction.Name, cppFunction.Parameters, unsafeStrings);
     }
 
     public static string GetParameterSignature(CppFunctionType cppFunctionType, bool unsafeStrings = true)
     {
-        return GetParameterSignature(cppFunctionType.Parameters, unsafeStrings);
+        return GetParameterSignature(cppFunctionType.FullName, cppFunctionType.Parameters, unsafeStrings);
     }
 
-    private static string GetParameterSignature(IEnumerable<CppParameter> parameters, bool unsafeStrings = true)
+    private static string GetParameterSignature(string functionName, IEnumerable<CppParameter> parameters, bool unsafeStrings = true)
     {
         var argumentBuilder = new StringBuilder();
         int index = 0;
@@ -254,6 +259,34 @@ public static partial class CsCodeGenerator
             if (paramCsTypeName == "nint" && paramCsName == "userdata")
             {
                 argumentBuilder.Append(" = 0");
+            }
+
+            if (functionName.EndsWith("SetVertexBuffer") || functionName.EndsWith("SetIndexBuffer"))
+            {
+                if (paramCsName == "offset")
+                {
+                    argumentBuilder.Append(" = 0");
+                }
+                else if (paramCsName == "size")
+                {
+                    argumentBuilder.Append(" = WGPU_WHOLE_SIZE");
+                }
+            }
+
+            if (functionName.EndsWith("Draw") ||
+                functionName.EndsWith("DrawIndexed"))
+            {
+                if (paramCsName == "instanceCount")
+                {
+                    argumentBuilder.Append(" = 1");
+                }
+                else if (paramCsName == "firstVertex" ||
+                    paramCsName == "firstIndex" ||
+                    paramCsName == "baseVertex" ||
+                    paramCsName == "firstInstance")
+                {
+                    argumentBuilder.Append(" = 0");
+                }
             }
 
             if (index < parameters.Count() - 1)

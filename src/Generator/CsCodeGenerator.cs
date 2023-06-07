@@ -237,6 +237,12 @@ public static partial class CsCodeGenerator
         {
             if (qualifiedType.ElementType is CppPrimitiveType primitiveType)
             {
+                if (primitiveType.Kind == CppPrimitiveKind.Void && qualifiedType.Qualifier == CppTypeQualifier.Const)
+                {
+                    // const void*
+                    return "void*";
+                }
+
                 return GetCsTypeName(primitiveType, true);
             }
             else if (qualifiedType.ElementType is CppClass @classType)
