@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <None Include="$(RepoRootPath)src\Alimer.Bindings.WebGPU\runtimes\win-x64\native\wgpu_native.dll" Link="wgpu_native.dll" Visible="False" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="$(RepoRootPath)src\Alimer.Bindings.WebGPU\runtimes\linux-x64\native\libwgpu_native.so" Link="libwgpu_native.so" Visible="False" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   
 </Project>
