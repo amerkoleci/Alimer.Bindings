@@ -83,10 +83,6 @@ public sealed unsafe class Window
         }
 
         _window = glfwCreateWindow(width, height, title, monitor, GLFWwindow.Null);
-        if (OperatingSystem.IsWindows())
-        {
-            Handle = glfwGetWin32Window(_window);
-        }
 
         glfwGetWindowSize(_window, out width, out height);
         Extent = new WGPUExtent3D(width, height);
@@ -94,17 +90,16 @@ public sealed unsafe class Window
 
     public string Title { get; }
     public WGPUExtent3D Extent { get; }
-    public nint Handle { get; }
 
     public bool ShoudClose => glfwWindowShouldClose(_window);
 
-    public WGPUSurface CreateSurface(WGPUInstance instance)
+    public WGPUSurface CreateSurface(WGPUInstance instance, bool useWayland = false)
     {
         if (OperatingSystem.IsWindows())
         {
             WGPUSurfaceDescriptorFromWindowsHWND chain = new()
             {
-                hwnd = Handle,
+                hwnd = glfwGetWin32Window(_window),
                 hinstance = GetModuleHandleW(null),
                 chain = new WGPUChainedStruct()
                 {
@@ -116,6 +111,64 @@ public sealed unsafe class Window
                 nextInChain = (WGPUChainedStruct*)&chain
             };
             return wgpuInstanceCreateSurface(instance, &descriptor);
+        }
+        else if (OperatingSystem.IsMacOS() || OperatingSystem.IsMacCatalyst())
+        {
+            NSWindow ns_window = new(glfwGetCocoaWindow(_window));
+            CAMetalLayer metal_layer = CAMetalLayer.New();
+            ns_window.contentView.wantsLayer = true;
+            ns_window.contentView.layer = metal_layer.Handle;
+
+            WGPUSurfaceDescriptorFromMetalLayer chain = new()
+            {
+                layer = metal_layer.Handle,
+                chain = new WGPUChainedStruct()
+                {
+                    sType = WGPUSType.SurfaceDescriptorFromMetalLayer
+                }
+            };
+            WGPUSurfaceDescriptor descriptor = new()
+            {
+                nextInChain = (WGPUChainedStruct*)&chain
+            };
+            return wgpuInstanceCreateSurface(instance, &descriptor);
+        }
+        else if (OperatingSystem.IsLinux())
+        {
+            if (useWayland)
+            {
+                WGPUSurfaceDescriptorFromWaylandSurface chain = new()
+                {
+                    display = glfwGetWaylandDisplay(),
+                    surface = glfwGetWaylandWindow(_window),
+                    chain = new WGPUChainedStruct()
+                    {
+                        sType = WGPUSType.SurfaceDescriptorFromWaylandSurface
+                    }
+                };
+                WGPUSurfaceDescriptor descriptor = new()
+                {
+                    nextInChain = (WGPUChainedStruct*)&chain
+                };
+                return wgpuInstanceCreateSurface(instance, &descriptor);
+            }
+            else
+            {
+                WGPUSurfaceDescriptorFromXlibWindow chain = new()
+                {
+                    display = glfwGetX11Display(),
+                    window = glfwGetX11Window(_window),
+                    chain = new WGPUChainedStruct()
+                    {
+                        sType = WGPUSType.SurfaceDescriptorFromXlibWindow
+                    }
+                };
+                WGPUSurfaceDescriptor descriptor = new()
+                {
+                    nextInChain = (WGPUChainedStruct*)&chain
+                };
+                return wgpuInstanceCreateSurface(instance, &descriptor);
+            }
         }
 
         return WGPUSurface.Null;

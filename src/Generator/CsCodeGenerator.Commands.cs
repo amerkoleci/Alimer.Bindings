@@ -36,7 +36,7 @@ public static partial class CsCodeGenerator
     }
 
 
-    private static void GenerateCommands(CppCompilation compilation, string outputPath)
+    private static void GenerateCommands(CppCompilation compilation, bool generateFunctionPointers, string outputPath)
     {
         // Generate Functions
         using CodeWriter writer = new(Path.Combine(outputPath, "Commands.cs"),
@@ -87,12 +87,19 @@ public static partial class CsCodeGenerator
             {
                 CppFunction cppFunction = command.Value;
 
-                string functionPointerSignature = GetFunctionPointerSignature(cppFunction);
-                writer.WriteLine($"private static {functionPointerSignature} {command.Key}_ptr;");
-                WriteFunctionInvocation(writer, cppFunction);
+                if (generateFunctionPointers)
+                {
+                    string functionPointerSignature = GetFunctionPointerSignature(cppFunction);
+                    writer.WriteLine($"private static {functionPointerSignature} {command.Key}_ptr;");
+                }
+
+                WriteFunctionInvocation(writer, cppFunction, generateFunctionPointers);
             }
 
-            WriteCommands(writer, "GenLoadCommands", commands);
+            if (generateFunctionPointers)
+            {
+                WriteCommands(writer, "GenLoadCommands", commands);
+            }
         }
     }
 
@@ -104,11 +111,6 @@ public static partial class CsCodeGenerator
             {
                 string commandName = instanceCommand.Key;
                 string functionPointerSignature = GetFunctionPointerSignature(instanceCommand.Value);
-
-                if (commandName == "wgpuQueueWriteBuffer")
-                {
-
-                }
 
                 if (commandName.EndsWith("Drop"))
                 {
@@ -123,7 +125,7 @@ public static partial class CsCodeGenerator
         }
     }
 
-    private static void WriteFunctionInvocation(CodeWriter writer, CppFunction cppFunction)
+    private static void WriteFunctionInvocation(CodeWriter writer, CppFunction cppFunction, bool useFunctionPointers)
     {
         string returnCsName = GetCsTypeName(cppFunction.ReturnType, false);
         string argumentsString = GetParameterSignature(cppFunction);
@@ -133,36 +135,50 @@ public static partial class CsCodeGenerator
             functionName = cppFunction.Name.Replace("Drop", "Release");
         }
 
-        using (writer.PushBlock($"public static {returnCsName} {functionName}({argumentsString})"))
+        string modifier = "public static";
+        if (!useFunctionPointers)
         {
-            if (returnCsName != "void")
+            modifier += " extern";
+            writer.WriteLine($"[DllImport(\"wgpu_native\", CallingConvention = CallingConvention.Cdecl, EntryPoint = \"{cppFunction.Name}\")]");
+        }
+
+        if (useFunctionPointers)
+        {
+            using (writer.PushBlock($"{modifier} {returnCsName} {functionName}({argumentsString})"))
             {
-                writer.Write("return ");
-            }
-
-            writer.Write($"{cppFunction.Name}_ptr(");
-
-            int index = 0;
-            foreach (CppParameter cppParameter in cppFunction.Parameters)
-            {
-                string paramCsName = GetParameterName(cppParameter.Name);
-
-                //if (CanBeUsedAsOutput(cppParameter.Type, out CppTypeDeclaration? cppTypeDeclaration))
-                //{
-                //    writer.Write("out ");
-                //}
-
-                writer.Write($"{paramCsName}");
-
-                if (index < cppFunction.Parameters.Count - 1)
+                if (returnCsName != "void")
                 {
-                    writer.Write(", ");
+                    writer.Write("return ");
                 }
 
-                index++;
-            }
+                writer.Write($"{cppFunction.Name}_ptr(");
 
-            writer.WriteLine(");");
+                int index = 0;
+                foreach (CppParameter cppParameter in cppFunction.Parameters)
+                {
+                    string paramCsName = GetParameterName(cppParameter.Name);
+
+                    //if (CanBeUsedAsOutput(cppParameter.Type, out CppTypeDeclaration? cppTypeDeclaration))
+                    //{
+                    //    writer.Write("out ");
+                    //}
+
+                    writer.Write($"{paramCsName}");
+
+                    if (index < cppFunction.Parameters.Count - 1)
+                    {
+                        writer.Write(", ");
+                    }
+
+                    index++;
+                }
+
+                writer.WriteLine(");");
+            }
+        }
+        else
+        {
+            writer.WriteLine($"{modifier} {returnCsName} {functionName}({argumentsString});");
         }
 
         writer.WriteLine();
@@ -182,7 +198,14 @@ public static partial class CsCodeGenerator
                 string pointerName = "p" + char.ToUpperInvariant(paramCsName[0]) + paramCsName.Substring(1);
                 using (writer.PushBlock($"fixed (sbyte* {pointerName} = {paramCsName})"))
                 {
-                    writer.Write($"{cppFunction.Name}_ptr(");
+                    if (useFunctionPointers)
+                    {
+                        writer.Write($"{cppFunction.Name}_ptr(");
+                    }
+                    else
+                    {
+                        writer.Write($"{cppFunction.Name}(");
+                    }
 
                     int index = 0;
                     foreach (CppParameter cppParameter in parameters)

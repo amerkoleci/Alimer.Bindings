@@ -222,6 +222,10 @@ public static unsafe class GLFW
     private static readonly glfwPollEvents_t s_glfwPollEvents;
     private static readonly delegate* unmanaged[Cdecl]<GLFWwindow, nint> s_glfwGetWin32Window;
     private static readonly delegate* unmanaged[Cdecl]<GLFWwindow, nint> s_glfwGetCocoaWindow;
+    private static readonly delegate* unmanaged[Cdecl]<nint> s_glfwGetX11Display;
+    private static readonly delegate* unmanaged[Cdecl]<GLFWwindow, uint> s_glfwGetX11Window;
+    private static readonly delegate* unmanaged[Cdecl]<nint> s_glfwGetWaylandDisplay;
+    private static readonly delegate* unmanaged[Cdecl]<GLFWwindow, nint> s_glfwGetWaylandWindow;
 
     public static bool glfwInit() => s_glfwInit() == GLFW_TRUE;
     public static void glfwTerminate() => s_glfwTerminate();
@@ -275,6 +279,38 @@ public static unsafe class GLFW
         return s_glfwGetCocoaWindow(window);
     }
 
+    public static nint glfwGetX11Display()
+    {
+        if (s_glfwGetX11Display == null)
+            return 0;
+
+        return s_glfwGetX11Display();
+    }
+
+    public static uint glfwGetX11Window(GLFWwindow window)
+    {
+        if (s_glfwGetX11Window == null)
+            return 0;
+
+        return s_glfwGetX11Window(window);
+    }
+
+    public static nint glfwGetWaylandDisplay()
+    {
+        if (s_glfwGetWaylandDisplay == null)
+            return 0;
+
+        return s_glfwGetWaylandDisplay();
+    }
+
+    public static nint glfwGetWaylandWindow(GLFWwindow window)
+    {
+        if (s_glfwGetWaylandWindow == null)
+            return 0;
+
+        return s_glfwGetWaylandWindow(window);
+    }
+
     static GLFW()
     {
         s_library = LoadGLFWLibrary();
@@ -296,6 +332,10 @@ public static unsafe class GLFW
 
         s_glfwGetWin32Window = (delegate* unmanaged[Cdecl]<GLFWwindow, nint>)TryLoadSymbol(nameof(glfwGetWin32Window));
         s_glfwGetCocoaWindow = (delegate* unmanaged[Cdecl]<GLFWwindow, nint>)TryLoadSymbol(nameof(glfwGetCocoaWindow));
+        s_glfwGetX11Display = (delegate* unmanaged[Cdecl]<nint>)TryLoadSymbol(nameof(glfwGetX11Display));
+        s_glfwGetX11Window = (delegate* unmanaged[Cdecl]<GLFWwindow, uint>)TryLoadSymbol(nameof(glfwGetX11Window));
+        s_glfwGetWaylandDisplay = (delegate* unmanaged[Cdecl]<nint>)TryLoadSymbol(nameof(glfwGetWaylandDisplay));
+        s_glfwGetWaylandWindow = (delegate* unmanaged[Cdecl]<GLFWwindow, nint>)TryLoadSymbol(nameof(glfwGetWaylandWindow));
     }
 
     private static IntPtr LoadGLFWLibrary()
