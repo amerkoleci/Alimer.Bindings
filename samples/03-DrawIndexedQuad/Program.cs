@@ -3,7 +3,8 @@
 
 using System.Numerics;
 using Alimer.WebGPU.SampleFramework;
-using static WebGPU;
+using WebGPU;
+using static WebGPU.WebGPU;
 
 namespace DrawTriangle;
 

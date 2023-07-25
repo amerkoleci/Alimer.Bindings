@@ -8,13 +8,20 @@ namespace Generator;
 
 public static partial class CsCodeGenerator
 {
-    public static void GenerateEnums(CppCompilation compilation, string outputPath)
+    public static void GenerateEnums(CppCompilation compilation)
     {
-        using CodeWriter writer = new(Path.Combine(outputPath, "Enums.cs"), false, "System");
+        string visibility = _options.PublicVisiblity ? "public" : "internal";
+        using CodeWriter writer = new(Path.Combine(_options.OutputPath, "Enums.cs"), false, _options.Namespace, new string[] { "System" });
         Dictionary<string, string> createdEnums = new();
 
         foreach (CppEnum cppEnum in compilation.Enums)
         {
+            if (string.IsNullOrEmpty(cppEnum.Name))
+            {
+                // VGPU constants -> VGPU_MAX_INFLIGHT_FRAMES
+                continue;
+            }
+
             bool isBitmask =
                 cppEnum.Name == "WGPUBufferUsage" ||
                 cppEnum.Name == "WGPUTextureUsage" ||
@@ -28,17 +35,12 @@ public static partial class CsCodeGenerator
                 writer.WriteLine("[Flags]");
             }
 
-            if (cppEnum.Name == "WGPUInstanceBackend")
-            {
-
-            }
-
             string csName = GetCsCleanName(cppEnum.Name);
 
             createdEnums.Add(csName, cppEnum.Name);
 
             bool noneAdded = false;
-            using (writer.PushBlock($"public enum {csName}"))
+            using (writer.PushBlock($"{visibility} enum {csName}"))
             {
                 if (isBitmask &&
                     !cppEnum.Items.Any(enumItem => GetEnumItemName(enumItem.Name) == "None"))
@@ -65,7 +67,16 @@ public static partial class CsCodeGenerator
                         continue;
                     }
 
-                    writer.WriteLine($"/// <unmanaged>{enumItem.Name}</unmanaged>");
+                    if (enumItemName == "Default")
+                    {
+                        continue;
+                    }
+
+                    if (enumItemName != "Count" && _options.EnumWriteUnmanagedTag)
+                    {
+                        writer.WriteLine($"/// <unmanaged>{enumItem.Name}</unmanaged>");
+                    }
+
                     if (enumItem.ValueExpression is CppRawExpression rawExpression)
                     {
                         string enumValueName = GetEnumItemName(rawExpression.Text);

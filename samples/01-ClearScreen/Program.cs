@@ -2,7 +2,8 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 using Alimer.WebGPU.SampleFramework;
-using static WebGPU;
+using WebGPU;
+using static WebGPU.WebGPU;
 
 namespace ClearScreen;
 

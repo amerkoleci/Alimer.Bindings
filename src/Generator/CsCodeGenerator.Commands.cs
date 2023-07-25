@@ -35,14 +35,15 @@ public static partial class CsCodeGenerator
         return $"delegate* unmanaged<{builder}>";
     }
 
-
-    private static void GenerateCommands(CppCompilation compilation, bool generateFunctionPointers, string outputPath)
+    private static void GenerateCommands(CppCompilation compilation)
     {
+        string visibility = _options.PublicVisiblity ? "public" : "internal";
+
         // Generate Functions
-        using CodeWriter writer = new(Path.Combine(outputPath, "Commands.cs"),
+        using CodeWriter writer = new(Path.Combine(_options.OutputPath, "Commands.cs"),
             true,
-            "System",
-            "System.Runtime.InteropServices"
+            _options.Namespace,
+            new string[] { "System", "System.Runtime.InteropServices" }
             );
 
         // Generate callback
@@ -68,7 +69,7 @@ public static partial class CsCodeGenerator
             string argumentsString = GetParameterSignature(functionType);
 
             writer.WriteLine($"[UnmanagedFunctionPointer(CallingConvention.Cdecl)]");
-            writer.WriteLine($"public unsafe delegate {returnCsName} {typedef.Name}({argumentsString});");
+            writer.WriteLine($"{visibility} unsafe delegate {returnCsName} {typedef.Name}({argumentsString});");
             writer.WriteLine();
         }
 
@@ -81,22 +82,22 @@ public static partial class CsCodeGenerator
             commands.Add(csName, cppFunction);
         }
 
-        using (writer.PushBlock($"unsafe partial class WebGPU"))
+        using (writer.PushBlock($"{visibility} unsafe partial class {_options.ClassName}"))
         {
             foreach (KeyValuePair<string, CppFunction> command in commands)
             {
                 CppFunction cppFunction = command.Value;
 
-                if (generateFunctionPointers)
+                if (_options.GenerateFunctionPointers)
                 {
                     string functionPointerSignature = GetFunctionPointerSignature(cppFunction);
                     writer.WriteLine($"private static {functionPointerSignature} {command.Key}_ptr;");
                 }
 
-                WriteFunctionInvocation(writer, cppFunction, generateFunctionPointers);
+                WriteFunctionInvocation(writer, cppFunction, _options.GenerateFunctionPointers, _options.ClassName);
             }
 
-            if (generateFunctionPointers)
+            if (_options.GenerateFunctionPointers)
             {
                 WriteCommands(writer, "GenLoadCommands", commands);
             }
@@ -125,7 +126,7 @@ public static partial class CsCodeGenerator
         }
     }
 
-    private static void WriteFunctionInvocation(CodeWriter writer, CppFunction cppFunction, bool useFunctionPointers)
+    private static void WriteFunctionInvocation(CodeWriter writer, CppFunction cppFunction, bool useFunctionPointers, string className)
     {
         string returnCsName = GetCsTypeName(cppFunction.ReturnType, false);
         string argumentsString = GetParameterSignature(cppFunction);
@@ -138,8 +139,13 @@ public static partial class CsCodeGenerator
         string modifier = "public static";
         if (!useFunctionPointers)
         {
+            string dllName = "wgpu_native";
+            if (className == "VGPU")
+            {
+                dllName = "vgpu";
+            }
             modifier += " extern";
-            writer.WriteLine($"[DllImport(\"wgpu_native\", CallingConvention = CallingConvention.Cdecl, EntryPoint = \"{cppFunction.Name}\")]");
+            writer.WriteLine($"[DllImport(\"{dllName}\", CallingConvention = CallingConvention.Cdecl, EntryPoint = \"{cppFunction.Name}\")]");
         }
 
         if (useFunctionPointers)

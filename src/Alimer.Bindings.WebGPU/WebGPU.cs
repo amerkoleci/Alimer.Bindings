@@ -5,6 +5,8 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
+namespace WebGPU;
+
 public static unsafe partial class WebGPU
 {
     private const string LibName = "wgpu_native";

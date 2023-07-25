@@ -27,18 +27,27 @@ public static partial class CsCodeGenerator
         { "int64_t*", "long*" },
         { "char", "byte" },
         { "size_t", "nuint" },
+        { "intptr_t", "nint" },
+        { "uintptr_t", "nuint" },
 
         { "WGPUSubmissionIndex", "ulong" },
         { "WGPUProc", "nint" },
+
+        { "VGPUDeviceAddress", "ulong" },
+        { "VGPUNativeObjectType", "uint" },
     };
 
-    public static void Generate(CppCompilation compilation, string outputPath)
+    private static CsCodeGeneratorOptions _options = new();
+
+    public static void Generate(CppCompilation compilation, CsCodeGeneratorOptions options)
     {
-        GenerateConstants(compilation, outputPath);
-        GenerateEnums(compilation, outputPath);
-        GenerateHandles(compilation, outputPath);
-        GenerateStructAndUnions(compilation, outputPath);
-        GenerateCommands(compilation, false, outputPath);
+        _options = options;
+
+        GenerateConstants(compilation);
+        GenerateEnums(compilation);
+        GenerateHandles(compilation);
+        GenerateStructAndUnions(compilation);
+        GenerateCommands(compilation);
     }
 
     public static void AddCsMapping(string typeName, string csTypeName)
@@ -46,10 +55,11 @@ public static partial class CsCodeGenerator
         s_csNameMappings[typeName] = csTypeName;
     }
 
-    private static void GenerateConstants(CppCompilation compilation, string outputPath)
+    private static void GenerateConstants(CppCompilation compilation)
     {
-        using var writer = new CodeWriter(Path.Combine(outputPath, "Constants.cs"), false);
-        using (writer.PushBlock("public static partial class WebGPU"))
+        string visibility = _options.PublicVisiblity ? "public" : "internal";
+        using var writer = new CodeWriter(Path.Combine(_options.OutputPath, "Constants.cs"), false, _options.Namespace, Array.Empty<string>());
+        using (writer.PushBlock($"{visibility} static partial class {_options.ClassName}"))
         {
             foreach (CppMacro cppMacro in compilation.Macros)
             {
@@ -58,6 +68,8 @@ public static partial class CsCodeGenerator
                     || cppMacro.Name.Equals("WGPU_EXPORT", StringComparison.OrdinalIgnoreCase)
                     || cppMacro.Name.Equals("WGPU_SHARED_LIBRARY", StringComparison.OrdinalIgnoreCase)
                     || cppMacro.Name.Equals("WGPU_IMPLEMENTATION", StringComparison.OrdinalIgnoreCase)
+                    || cppMacro.Name.Equals("_VGPU_EXTERN", StringComparison.OrdinalIgnoreCase)
+                    || cppMacro.Name.Equals("VGPU_API", StringComparison.OrdinalIgnoreCase)
                     )
                 {
                     continue;
@@ -80,7 +92,7 @@ public static partial class CsCodeGenerator
                 {
                     csDataType = "uint";
                 }
-                else if (uint.TryParse(macroValue, out _))
+                else if (uint.TryParse(macroValue, out _) || macroValue.StartsWith("0x"))
                 {
                     csDataType = "uint";
                 }

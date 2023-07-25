@@ -33,11 +33,7 @@ public static class Program
         string? headerFile = Path.Combine(AppContext.BaseDirectory, "webgpu", "wgpu.h");
         var options = new CppParserOptions
         {
-            ParseMacros = true,
-            //Defines =
-            //    {
-            //        "VK_ENABLE_BETA_EXTENSIONS"
-            //    }
+            ParseMacros = true
         };
 
         CppCompilation compilation = CppParser.ParseFile(headerFile, options);
@@ -59,7 +55,17 @@ public static class Program
             return 0;
         }
 
-        CsCodeGenerator.Generate(compilation, outputPath);
+
+        CsCodeGeneratorOptions generateOptions = new()
+        {
+            OutputPath = outputPath,
+            ClassName = "WebGPU",
+            Namespace = "WebGPU",
+            PublicVisiblity = true,
+            GenerateFunctionPointers = false,
+            EnumWriteUnmanagedTag = false
+        };
+        CsCodeGenerator.Generate(compilation, generateOptions);
         return 0;
     }
 }

@@ -6,6 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
+namespace WebGPU;
+
 public static unsafe class Interop
 {
 #pragma warning disable CS8500

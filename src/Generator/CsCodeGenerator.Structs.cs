@@ -10,14 +10,20 @@ public static partial class CsCodeGenerator
 {
     private static bool generateSizeOfStructs = false;
 
-    private static void GenerateStructAndUnions(CppCompilation compilation, string outputPath)
+    private static void GenerateStructAndUnions(CppCompilation compilation)
     {
+        string visibility = _options.PublicVisiblity ? "public" : "internal";
+
         // Generate Structures
-        using var writer = new CodeWriter(Path.Combine(outputPath, "Structs.cs"),
+        using var writer = new CodeWriter(Path.Combine(_options.OutputPath, "Structs.cs"),
             false,
-            "System.Runtime.InteropServices",
-            "System.Runtime.CompilerServices",
-            "System.Diagnostics.CodeAnalysis"
+            _options.Namespace,
+            new string[] {
+                "System.Runtime.InteropServices",
+                "System.Runtime.CompilerServices",
+                "System.Diagnostics.CodeAnalysis"
+            },
+            "#pragma warning disable CS0649"
             );
 
         // Print All classes, structs
@@ -62,6 +68,11 @@ public static partial class CsCodeGenerator
                 isReadOnly = true;
             }
 
+            if (csName == "VGPUPushConstantDesc")
+            {
+
+            }
+
             bool handleSType = false;
             if (hasSType &&
                 csName != "VkBaseInStructure" &&
@@ -70,7 +81,7 @@ public static partial class CsCodeGenerator
                 handleSType = true;
             }
 
-            using (writer.PushBlock($"public {modifier} struct {csName}"))
+            using (writer.PushBlock($"{visibility} {modifier} struct {csName}"))
             {
                 if (generateSizeOfStructs && cppClass.SizeOf > 0)
                 {
@@ -249,6 +260,11 @@ public static partial class CsCodeGenerator
             {
                 fieldPrefix += "unsafe ";
             }
+
+            //if (field.Comment is not null && string.IsNullOrEmpty(field.Comment.ToString()) == false)
+            //{
+            //    writer.WriteLine($"/// <summary>{field.Comment}</summary>");
+            //}
 
             writer.WriteLine($"public {fieldPrefix}{csFieldType} {csFieldName};");
         }

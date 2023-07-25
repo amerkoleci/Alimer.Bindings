@@ -3,7 +3,8 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using static WebGPU;
+using WebGPU;
+using static WebGPU.WebGPU;
 
 namespace Alimer.WebGPU.SampleFramework;
 
@@ -65,7 +66,6 @@ public unsafe sealed class GraphicsDevice : IDisposable
         }
 
         wgpuDeviceSetUncapturedErrorCallback(Device, HandleUncapturedErrorCallback);
-        wgpuDeviceSetDeviceLostCallback(Device, HandleDeviceLost);
 
         Queue = wgpuDeviceGetQueue(Device);
 
@@ -122,11 +122,6 @@ public unsafe sealed class GraphicsDevice : IDisposable
     {
         string message = Interop.GetString(pMessage);
         Log.Error($"Uncaptured device error: type: {type} ({message})");
-    }
-
-    private static void HandleDeviceLost(WGPUDeviceLostReason reason, sbyte* message, nint pUserData)
-    {
-        Log.Error($"Device Lost error: reason: {reason} ({Interop.GetString(message)})");
     }
 
     public void Dispose()

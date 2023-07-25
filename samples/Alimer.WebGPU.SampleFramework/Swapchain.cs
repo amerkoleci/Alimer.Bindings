@@ -1,7 +1,8 @@
 ﻿// Copyright © Amer Koleci and Contributors.
 // Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
-using static WebGPU;
+using WebGPU;
+using static WebGPU.WebGPU;
 
 namespace Alimer.WebGPU.SampleFramework;
 

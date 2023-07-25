@@ -11,17 +11,8 @@ using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using System.Diagnostics.CodeAnalysis;
 
-public partial struct WGPUChainedStruct
-{
-	public unsafe WGPUChainedStruct* next;
-	public WGPUSType sType;
-}
-
-public partial struct WGPUChainedStructOut
-{
-	public unsafe WGPUChainedStructOut* next;
-	public WGPUSType sType;
-}
+#pragma warning disable CS0649;
+namespace WebGPU;
 
 public partial struct WGPUAdapterProperties
 {
@@ -185,7 +176,7 @@ public partial struct WGPUPipelineLayoutDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
 	public unsafe sbyte* label;
-	public uint bindGroupLayoutCount;
+	public nuint bindGroupLayoutCount;
 	public unsafe WGPUBindGroupLayout* bindGroupLayouts;
 }
 
@@ -211,7 +202,7 @@ public partial struct WGPUQuerySetDescriptor
 	public WGPUQueryType type;
 	public uint count;
 	public unsafe WGPUPipelineStatisticName* pipelineStatistics;
-	public uint pipelineStatisticsCount;
+	public nuint pipelineStatisticsCount;
 }
 
 public partial struct WGPUQueueDescriptor
@@ -230,7 +221,7 @@ public partial struct WGPURenderBundleEncoderDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
 	public unsafe sbyte* label;
-	public uint colorFormatsCount;
+	public nuint colorFormatsCount;
 	public unsafe WGPUTextureFormat* colorFormats;
 	public WGPUTextureFormat depthStencilFormat;
 	public uint sampleCount;
@@ -269,6 +260,7 @@ public partial struct WGPURequestAdapterOptions
 	public unsafe WGPUChainedStruct* nextInChain;
 	public WGPUSurface compatibleSurface;
 	public WGPUPowerPreference powerPreference;
+	public WGPUBackendType backendType;
 	public bool forceFallbackAdapter;
 }
 
@@ -434,7 +426,7 @@ public partial struct WGPUBindGroupDescriptor
 	public unsafe WGPUChainedStruct* nextInChain;
 	public unsafe sbyte* label;
 	public WGPUBindGroupLayout layout;
-	public uint entryCount;
+	public nuint entryCount;
 	public unsafe WGPUBindGroupEntry* entries;
 }
 
@@ -458,7 +450,7 @@ public partial struct WGPUBlendState
 public partial struct WGPUCompilationInfo
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public uint messageCount;
+	public nuint messageCount;
 	public unsafe WGPUCompilationMessage* messages;
 }
 
@@ -466,7 +458,7 @@ public partial struct WGPUComputePassDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
 	public unsafe sbyte* label;
-	public uint timestampWriteCount;
+	public nuint timestampWriteCount;
 	public unsafe WGPUComputePassTimestampWrite* timestampWrites;
 }
 
@@ -506,7 +498,7 @@ public partial struct WGPUProgrammableStageDescriptor
 	public unsafe WGPUChainedStruct* nextInChain;
 	public WGPUShaderModule module;
 	public unsafe sbyte* entryPoint;
-	public uint constantCount;
+	public nuint constantCount;
 	public unsafe WGPUConstantEntry* constants;
 }
 
@@ -529,7 +521,7 @@ public partial struct WGPUShaderModuleDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
 	public unsafe sbyte* label;
-	public uint hintCount;
+	public nuint hintCount;
 	public unsafe WGPUShaderModuleCompilationHint* hints;
 }
 
@@ -549,7 +541,7 @@ public partial struct WGPUTextureDescriptor
 	public WGPUTextureFormat format;
 	public uint mipLevelCount;
 	public uint sampleCount;
-	public uint viewFormatCount;
+	public nuint viewFormatCount;
 	public unsafe WGPUTextureFormat* viewFormats;
 }
 
@@ -557,7 +549,7 @@ public partial struct WGPUVertexBufferLayout
 {
 	public ulong arrayStride;
 	public WGPUVertexStepMode stepMode;
-	public uint attributeCount;
+	public nuint attributeCount;
 	public unsafe WGPUVertexAttribute* attributes;
 }
 
@@ -565,7 +557,7 @@ public partial struct WGPUBindGroupLayoutDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
 	public unsafe sbyte* label;
-	public uint entryCount;
+	public nuint entryCount;
 	public unsafe WGPUBindGroupLayoutEntry* entries;
 }
 
@@ -589,21 +581,23 @@ public partial struct WGPUDeviceDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
 	public unsafe sbyte* label;
-	public uint requiredFeaturesCount;
+	public nuint requiredFeaturesCount;
 	public unsafe WGPUFeatureName* requiredFeatures;
 	public unsafe WGPURequiredLimits* requiredLimits;
 	public WGPUQueueDescriptor defaultQueue;
+	public unsafe delegate* unmanaged<WGPUDeviceLostReason, sbyte*, nint, void> deviceLostCallback;
+	public nint deviceLostUserdata;
 }
 
 public partial struct WGPURenderPassDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
 	public unsafe sbyte* label;
-	public uint colorAttachmentCount;
+	public nuint colorAttachmentCount;
 	public unsafe WGPURenderPassColorAttachment* colorAttachments;
 	public unsafe WGPURenderPassDepthStencilAttachment* depthStencilAttachment;
 	public WGPUQuerySet occlusionQuerySet;
-	public uint timestampWriteCount;
+	public nuint timestampWriteCount;
 	public unsafe WGPURenderPassTimestampWrite* timestampWrites;
 }
 
@@ -612,9 +606,9 @@ public partial struct WGPUVertexState
 	public unsafe WGPUChainedStruct* nextInChain;
 	public WGPUShaderModule module;
 	public unsafe sbyte* entryPoint;
-	public uint constantCount;
+	public nuint constantCount;
 	public unsafe WGPUConstantEntry* constants;
-	public uint bufferCount;
+	public nuint bufferCount;
 	public unsafe WGPUVertexBufferLayout* buffers;
 }
 
@@ -623,9 +617,9 @@ public partial struct WGPUFragmentState
 	public unsafe WGPUChainedStruct* nextInChain;
 	public WGPUShaderModule module;
 	public unsafe sbyte* entryPoint;
-	public uint constantCount;
+	public nuint constantCount;
 	public unsafe WGPUConstantEntry* constants;
-	public uint targetCount;
+	public nuint targetCount;
 	public unsafe WGPUColorTargetState* targets;
 }
 
@@ -641,6 +635,18 @@ public partial struct WGPURenderPipelineDescriptor
 	public unsafe WGPUFragmentState* fragment;
 }
 
+public partial struct WGPUChainedStruct
+{
+	public unsafe WGPUChainedStruct* next;
+	public WGPUSType sType;
+}
+
+public partial struct WGPUChainedStructOut
+{
+	public unsafe WGPUChainedStructOut* next;
+	public WGPUSType sType;
+}
+
 public partial struct WGPUInstanceExtras
 {
 	public WGPUChainedStruct chain;
@@ -648,12 +654,6 @@ public partial struct WGPUInstanceExtras
 	public WGPUDx12Compiler dx12ShaderCompiler;
 	public unsafe sbyte* dxilPath;
 	public unsafe sbyte* dxcPath;
-}
-
-public partial struct WGPUAdapterExtras
-{
-	public WGPUChainedStruct chain;
-	public WGPUBackendType backend;
 }
 
 public partial struct WGPUDeviceExtras
@@ -763,5 +763,11 @@ public partial struct WGPUSwapChainDescriptorExtras
 	public WGPUCompositeAlphaMode alphaMode;
 	public nuint viewFormatCount;
 	public unsafe WGPUTextureFormat* viewFormats;
+}
+
+public partial struct WGPUInstanceEnumerateAdapterOptions
+{
+	public unsafe WGPUChainedStruct* nextInChain;
+	public WGPUInstanceBackend backends;
 }
 
