@@ -1,18 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IsPackable>false</IsPackable>
     <RootNamespace>ClearScreen</RootNamespace>
-    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
+
+  <Import Project="$(RepoRootPath)Alimer.Bindings.WebGPU.Native.targets" />
+
+  <PropertyGroup>
+    <PublishAot>true</PublishAot>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <OptimizationPreference>Speed</OptimizationPreference>
+    <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
+    <IlcDisableReflection>false</IlcDisableReflection>
+  </PropertyGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\Alimer.WebGPU.SampleFramework\Alimer.WebGPU.SampleFramework.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="$(RepoRootPath)src\Alimer.Bindings.WebGPU\runtimes\win-x64\native\wgpu_native.dll" Link="wgpu_native.dll" Visible="False" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="$(RepoRootPath)src\Alimer.Bindings.WebGPU\runtimes\linux-x64\native\libwgpu_native.so" Link="libwgpu_native.so" Visible="False" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

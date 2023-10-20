@@ -1,19 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
     <Description>WebGPU low level bindings.</Description>
     <PackageTags>3D graphics vulkan standard game gamedev</PackageTags>
   </PropertyGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-    <Compile Remove="Shims/UnscopedRefAttribute.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Include="build\**" PackagePath="build" Pack="true" />
     <Content Include="runtimes\**" PackagePath="runtimes" Pack="true" />
   </ItemGroup>
-
 
 </Project>

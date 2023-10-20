@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <VersionPrefix>1.3.0</VersionPrefix>
+    <VersionPrefix>1.3.1</VersionPrefix>
     <VersionSuffix Condition="'$(VersionSuffix)' == ''"></VersionSuffix>
   </PropertyGroup>
 
@@ -33,7 +33,7 @@
 
   <PropertyGroup>
     <Authors>Amer Koleci and Contributors</Authors>
-    <Copyright>Copyright © Amer Koleci and Contributors</Copyright>
+    <Copyright>Copyright (c) Amer Koleci and Contributors</Copyright>
     <Product>Alimer.Bindings.WebGPU</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
