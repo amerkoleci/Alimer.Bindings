@@ -11,10 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="webgpu/*.*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="vgpu/*.*">
+    <Content Include="webgpu/**/*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

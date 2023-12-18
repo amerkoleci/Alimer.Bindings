@@ -3,11 +3,12 @@
     <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IsPackable>false</IsPackable>
-    <RootNamespace>Alimer.WebGPU.SampleFramework</RootNamespace>
+    <RootNamespace>Alimer.WebGPU.Samples</RootNamespace>
   </PropertyGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\src\Alimer.Bindings.WebGPU\Alimer.Bindings.WebGPU.csproj" />
-    <PackageReference Include="Ultz.Native.GLFW" />
+
+    <PackageReference Include="Alimer.Bindings.SDL" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿// Copyright © Amer Koleci and Contributors.
+﻿// Copyright (c) Amer Koleci and Contributors.
 // Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 using System.Diagnostics;
@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using WebGPU;
 using static WebGPU.WebGPU;
 
-namespace Alimer.WebGPU.SampleFramework;
+namespace Alimer.WebGPU.Samples;
 
 public unsafe sealed class GraphicsDevice : IDisposable
 {
@@ -18,7 +18,6 @@ public unsafe sealed class GraphicsDevice : IDisposable
     public WGPUDevice Device;
     public readonly WGPUQueue Queue;
     public readonly WGPUTextureFormat SwapChainFormat;
-    public readonly WGPUSwapChain SwapChain;
 
     public GraphicsDevice(Window window)
     {
@@ -51,7 +50,7 @@ public unsafe sealed class GraphicsDevice : IDisposable
             {
                 nextInChain = null,
                 label = pDeviceName,
-                requiredFeaturesCount = 0,
+                requiredFeatureCount = 0,
                 requiredLimits = null
             };
             deviceDesc.defaultQueue.nextInChain = null;
@@ -73,16 +72,21 @@ public unsafe sealed class GraphicsDevice : IDisposable
         SwapChainFormat = wgpuSurfaceGetPreferredFormat(Surface, Adapter);
         Debug.Assert(SwapChainFormat != WGPUTextureFormat.Undefined);
 
-        WGPUSwapChainDescriptor swapChainDesc = new()
+        WGPUTextureFormat viewFormat = SwapChainFormat;
+
+        WGPUSurfaceConfiguration surfaceConfiguration = new()
         {
             nextInChain = null,
-            usage = WGPUTextureUsage.RenderAttachment,
+            device = Device,
             format = SwapChainFormat,
-            width = window.Extent.width,
-            height = window.Extent.height,
+            usage = WGPUTextureUsage.RenderAttachment,
+            viewFormatCount = 1,
+            viewFormats = &viewFormat,
+            width = window.ClientSize.width,
+            height = window.ClientSize.height,
             presentMode = WGPUPresentMode.Fifo
         };
-        SwapChain = wgpuDeviceCreateSwapChain(Device, Surface, &swapChainDesc);
+        wgpuSurfaceConfigure(Surface, &surfaceConfiguration);
         Log.Info("SwapChain created");
     }
 
@@ -126,24 +130,26 @@ public unsafe sealed class GraphicsDevice : IDisposable
 
     public void Dispose()
     {
-        wgpuSwapChainRelease(SwapChain);
-        wgpuDeviceDestroy(Device);
         wgpuDeviceRelease(Device);
+        wgpuDeviceRelease(Device);
+        wgpuSurfaceRelease(Surface);
         wgpuAdapterRelease(Adapter);
         wgpuInstanceRelease(Instance);
     }
 
     public void RenderFrame(
-        Action<WGPUCommandEncoder, WGPUTextureView> draw,
+        Action<WGPUCommandEncoder, WGPUTexture> draw,
         [CallerMemberName] string? frameName = null)
     {
-        if (SwapChain.IsNull)
+        if (Surface.IsNull)
             return;
 
-        WGPUTextureView nextTexture = wgpuSwapChainGetCurrentTextureView(SwapChain);
+        WGPUSurfaceTexture surfaceTexture = default;
+        wgpuSurfaceGetCurrentTexture(Surface, &surfaceTexture);
+
         // Getting the texture may fail, in particular if the window has been resized
         // and thus the target surface changed.
-        if (nextTexture.IsNull)
+        if (surfaceTexture.status == WGPUSurfaceGetCurrentTextureStatus.Timeout)
         {
             Log.Error("Cannot acquire next swap chain texture");
             return;
@@ -158,9 +164,9 @@ public unsafe sealed class GraphicsDevice : IDisposable
             };
             WGPUCommandEncoder encoder = wgpuDeviceCreateCommandEncoder(Device, &commandEncoderDesc);
 
-            draw(encoder, nextTexture);
+            draw(encoder, surfaceTexture.texture);
 
-            wgpuTextureViewRelease(nextTexture);
+            //wgpuTextureViewRelease(nextTexture);
 
             fixed (sbyte* pBufferLabel = "Command Buffer".GetUtf8Span())
             {
@@ -177,7 +183,7 @@ public unsafe sealed class GraphicsDevice : IDisposable
             //wgpuCommandEncoderRelease(encoder);
         }
 
-        // We can tell the swap chain to present the next texture.
-        wgpuSwapChainPresent(SwapChain);
+        // We can tell the surface to present the next texture.
+        wgpuSurfacePresent(Surface);
     }
 }

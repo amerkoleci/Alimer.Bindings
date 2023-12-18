@@ -121,10 +121,13 @@ public enum WGPUCompilationMessageType
 	Info = 0x00000002,
 }
 
-public enum WGPUComputePassTimestampLocation
+public enum WGPUCompositeAlphaMode
 {
-	Beginning = 0x00000000,
-	End = 0x00000001,
+	Auto = 0x00000000,
+	Opaque = 0x00000001,
+	Premultiplied = 0x00000002,
+	Unpremultiplied = 0x00000003,
+	Inherit = 0x00000004,
 }
 
 public enum WGPUCreatePipelineAsyncStatus
@@ -173,15 +176,14 @@ public enum WGPUFeatureName
 	DepthClipControl = 0x00000001,
 	Depth32FloatStencil8 = 0x00000002,
 	TimestampQuery = 0x00000003,
-	PipelineStatisticsQuery = 0x00000004,
-	TextureCompressionBC = 0x00000005,
-	TextureCompressionETC2 = 0x00000006,
-	TextureCompressionASTC = 0x00000007,
-	IndirectFirstInstance = 0x00000008,
-	ShaderF16 = 0x00000009,
-	RG11B10UfloatRenderable = 0x0000000A,
-	BGRA8UnormStorage = 0x0000000B,
-	Float32Filterable = 0x0000000C,
+	TextureCompressionBC = 0x00000004,
+	TextureCompressionETC2 = 0x00000005,
+	TextureCompressionASTC = 0x00000006,
+	IndirectFirstInstance = 0x00000007,
+	ShaderF16 = 0x00000008,
+	RG11B10UfloatRenderable = 0x00000009,
+	BGRA8UnormStorage = 0x0000000A,
+	Float32Filterable = 0x0000000B,
 }
 
 public enum WGPUFilterMode
@@ -216,15 +218,6 @@ public enum WGPUMipmapFilterMode
 	Linear = 0x00000001,
 }
 
-public enum WGPUPipelineStatisticName
-{
-	VertexShaderInvocations = 0x00000000,
-	ClipperInvocations = 0x00000001,
-	ClipperPrimitivesOut = 0x00000002,
-	FragmentShaderInvocations = 0x00000003,
-	ComputeShaderInvocations = 0x00000004,
-}
-
 public enum WGPUPowerPreference
 {
 	Undefined = 0x00000000,
@@ -234,9 +227,10 @@ public enum WGPUPowerPreference
 
 public enum WGPUPresentMode
 {
-	Immediate = 0x00000000,
-	Mailbox = 0x00000001,
-	Fifo = 0x00000002,
+	Fifo = 0x00000000,
+	FifoRelaxed = 0x00000001,
+	Immediate = 0x00000002,
+	Mailbox = 0x00000003,
 }
 
 public enum WGPUPrimitiveTopology
@@ -251,8 +245,7 @@ public enum WGPUPrimitiveTopology
 public enum WGPUQueryType
 {
 	Occlusion = 0x00000000,
-	PipelineStatistics = 0x00000001,
-	Timestamp = 0x00000002,
+	Timestamp = 0x00000001,
 }
 
 public enum WGPUQueueWorkDoneStatus
@@ -261,12 +254,6 @@ public enum WGPUQueueWorkDoneStatus
 	Error = 0x00000001,
 	Unknown = 0x00000002,
 	DeviceLost = 0x00000003,
-}
-
-public enum WGPURenderPassTimestampLocation
-{
-	Beginning = 0x00000000,
-	End = 0x00000001,
 }
 
 public enum WGPURequestAdapterStatus
@@ -324,6 +311,8 @@ public enum WGPUStorageTextureAccess
 {
 	Undefined = 0x00000000,
 	WriteOnly = 0x00000001,
+	ReadOnly = 0x00000002,
+	ReadWrite = 0x00000003,
 }
 
 public enum WGPUStoreOp
@@ -331,6 +320,16 @@ public enum WGPUStoreOp
 	Undefined = 0x00000000,
 	Store = 0x00000001,
 	Discard = 0x00000002,
+}
+
+public enum WGPUSurfaceGetCurrentTextureStatus
+{
+	Success = 0x00000000,
+	Timeout = 0x00000001,
+	Outdated = 0x00000002,
+	Lost = 0x00000003,
+	OutOfMemory = 0x00000004,
+	DeviceLost = 0x00000005,
 }
 
 public enum WGPUTextureAspect
@@ -374,76 +373,77 @@ public enum WGPUTextureFormat
 	RGBA8Sint = 0x00000016,
 	BGRA8Unorm = 0x00000017,
 	BGRA8UnormSrgb = 0x00000018,
-	RGB10A2Unorm = 0x00000019,
-	RG11B10Ufloat = 0x0000001A,
-	RGB9E5Ufloat = 0x0000001B,
-	RG32Float = 0x0000001C,
-	RG32Uint = 0x0000001D,
-	RG32Sint = 0x0000001E,
-	RGBA16Uint = 0x0000001F,
-	RGBA16Sint = 0x00000020,
-	RGBA16Float = 0x00000021,
-	RGBA32Float = 0x00000022,
-	RGBA32Uint = 0x00000023,
-	RGBA32Sint = 0x00000024,
-	Stencil8 = 0x00000025,
-	Depth16Unorm = 0x00000026,
-	Depth24Plus = 0x00000027,
-	Depth24PlusStencil8 = 0x00000028,
-	Depth32Float = 0x00000029,
-	Depth32FloatStencil8 = 0x0000002A,
-	BC1RGBAUnorm = 0x0000002B,
-	BC1RGBAUnormSrgb = 0x0000002C,
-	BC2RGBAUnorm = 0x0000002D,
-	BC2RGBAUnormSrgb = 0x0000002E,
-	BC3RGBAUnorm = 0x0000002F,
-	BC3RGBAUnormSrgb = 0x00000030,
-	BC4RUnorm = 0x00000031,
-	BC4RSnorm = 0x00000032,
-	BC5RGUnorm = 0x00000033,
-	BC5RGSnorm = 0x00000034,
-	BC6HRGBUfloat = 0x00000035,
-	BC6HRGBFloat = 0x00000036,
-	BC7RGBAUnorm = 0x00000037,
-	BC7RGBAUnormSrgb = 0x00000038,
-	ETC2RGB8Unorm = 0x00000039,
-	ETC2RGB8UnormSrgb = 0x0000003A,
-	ETC2RGB8A1Unorm = 0x0000003B,
-	ETC2RGB8A1UnormSrgb = 0x0000003C,
-	ETC2RGBA8Unorm = 0x0000003D,
-	ETC2RGBA8UnormSrgb = 0x0000003E,
-	EACR11Unorm = 0x0000003F,
-	EACR11Snorm = 0x00000040,
-	EACRG11Unorm = 0x00000041,
-	EACRG11Snorm = 0x00000042,
-	ASTC4x4Unorm = 0x00000043,
-	ASTC4x4UnormSrgb = 0x00000044,
-	ASTC5x4Unorm = 0x00000045,
-	ASTC5x4UnormSrgb = 0x00000046,
-	ASTC5x5Unorm = 0x00000047,
-	ASTC5x5UnormSrgb = 0x00000048,
-	ASTC6x5Unorm = 0x00000049,
-	ASTC6x5UnormSrgb = 0x0000004A,
-	ASTC6x6Unorm = 0x0000004B,
-	ASTC6x6UnormSrgb = 0x0000004C,
-	ASTC8x5Unorm = 0x0000004D,
-	ASTC8x5UnormSrgb = 0x0000004E,
-	ASTC8x6Unorm = 0x0000004F,
-	ASTC8x6UnormSrgb = 0x00000050,
-	ASTC8x8Unorm = 0x00000051,
-	ASTC8x8UnormSrgb = 0x00000052,
-	ASTC10x5Unorm = 0x00000053,
-	ASTC10x5UnormSrgb = 0x00000054,
-	ASTC10x6Unorm = 0x00000055,
-	ASTC10x6UnormSrgb = 0x00000056,
-	ASTC10x8Unorm = 0x00000057,
-	ASTC10x8UnormSrgb = 0x00000058,
-	ASTC10x10Unorm = 0x00000059,
-	ASTC10x10UnormSrgb = 0x0000005A,
-	ASTC12x10Unorm = 0x0000005B,
-	ASTC12x10UnormSrgb = 0x0000005C,
-	ASTC12x12Unorm = 0x0000005D,
-	ASTC12x12UnormSrgb = 0x0000005E,
+	RGB10A2Uint = 0x00000019,
+	RGB10A2Unorm = 0x0000001A,
+	RG11B10Ufloat = 0x0000001B,
+	RGB9E5Ufloat = 0x0000001C,
+	RG32Float = 0x0000001D,
+	RG32Uint = 0x0000001E,
+	RG32Sint = 0x0000001F,
+	RGBA16Uint = 0x00000020,
+	RGBA16Sint = 0x00000021,
+	RGBA16Float = 0x00000022,
+	RGBA32Float = 0x00000023,
+	RGBA32Uint = 0x00000024,
+	RGBA32Sint = 0x00000025,
+	Stencil8 = 0x00000026,
+	Depth16Unorm = 0x00000027,
+	Depth24Plus = 0x00000028,
+	Depth24PlusStencil8 = 0x00000029,
+	Depth32Float = 0x0000002A,
+	Depth32FloatStencil8 = 0x0000002B,
+	BC1RGBAUnorm = 0x0000002C,
+	BC1RGBAUnormSrgb = 0x0000002D,
+	BC2RGBAUnorm = 0x0000002E,
+	BC2RGBAUnormSrgb = 0x0000002F,
+	BC3RGBAUnorm = 0x00000030,
+	BC3RGBAUnormSrgb = 0x00000031,
+	BC4RUnorm = 0x00000032,
+	BC4RSnorm = 0x00000033,
+	BC5RGUnorm = 0x00000034,
+	BC5RGSnorm = 0x00000035,
+	BC6HRGBUfloat = 0x00000036,
+	BC6HRGBFloat = 0x00000037,
+	BC7RGBAUnorm = 0x00000038,
+	BC7RGBAUnormSrgb = 0x00000039,
+	ETC2RGB8Unorm = 0x0000003A,
+	ETC2RGB8UnormSrgb = 0x0000003B,
+	ETC2RGB8A1Unorm = 0x0000003C,
+	ETC2RGB8A1UnormSrgb = 0x0000003D,
+	ETC2RGBA8Unorm = 0x0000003E,
+	ETC2RGBA8UnormSrgb = 0x0000003F,
+	EACR11Unorm = 0x00000040,
+	EACR11Snorm = 0x00000041,
+	EACRG11Unorm = 0x00000042,
+	EACRG11Snorm = 0x00000043,
+	ASTC4x4Unorm = 0x00000044,
+	ASTC4x4UnormSrgb = 0x00000045,
+	ASTC5x4Unorm = 0x00000046,
+	ASTC5x4UnormSrgb = 0x00000047,
+	ASTC5x5Unorm = 0x00000048,
+	ASTC5x5UnormSrgb = 0x00000049,
+	ASTC6x5Unorm = 0x0000004A,
+	ASTC6x5UnormSrgb = 0x0000004B,
+	ASTC6x6Unorm = 0x0000004C,
+	ASTC6x6UnormSrgb = 0x0000004D,
+	ASTC8x5Unorm = 0x0000004E,
+	ASTC8x5UnormSrgb = 0x0000004F,
+	ASTC8x6Unorm = 0x00000050,
+	ASTC8x6UnormSrgb = 0x00000051,
+	ASTC8x8Unorm = 0x00000052,
+	ASTC8x8UnormSrgb = 0x00000053,
+	ASTC10x5Unorm = 0x00000054,
+	ASTC10x5UnormSrgb = 0x00000055,
+	ASTC10x6Unorm = 0x00000056,
+	ASTC10x6UnormSrgb = 0x00000057,
+	ASTC10x8Unorm = 0x00000058,
+	ASTC10x8UnormSrgb = 0x00000059,
+	ASTC10x10Unorm = 0x0000005A,
+	ASTC10x10UnormSrgb = 0x0000005B,
+	ASTC12x10Unorm = 0x0000005C,
+	ASTC12x10UnormSrgb = 0x0000005D,
+	ASTC12x12Unorm = 0x0000005E,
+	ASTC12x12UnormSrgb = 0x0000005F,
 }
 
 public enum WGPUTextureSampleType
@@ -566,23 +566,27 @@ public enum WGPUTextureUsage
 
 public enum WGPUNativeSType
 {
-	DeviceExtras = 0x60000001,
-	AdapterExtras = 0x60000002,
-	RequiredLimitsExtras = 0x60000003,
-	PipelineLayoutExtras = 0x60000004,
-	ShaderModuleGLSLDescriptor = 0x60000005,
-	SupportedLimitsExtras = 0x60000003,
-	InstanceExtras = 0x60000006,
-	SwapChainDescriptorExtras = 0x60000007,
+	DeviceExtras = 0x00030001,
+	RequiredLimitsExtras = 0x00030002,
+	PipelineLayoutExtras = 0x00030003,
+	ShaderModuleGLSLDescriptor = 0x00030004,
+	SupportedLimitsExtras = 0x00030005,
+	InstanceExtras = 0x00030006,
+	BindGroupEntryExtras = 0x00030007,
+	BindGroupLayoutEntryExtras = 0x00030008,
+	QuerySetDescriptorExtras = 0x00030009,
 }
 
 public enum WGPUNativeFeature
 {
-	PushConstants = 0x60000001,
-	TextureAdapterSpecificFormatFeatures = 0x60000002,
-	MultiDrawIndirect = 0x60000003,
-	MultiDrawIndirectCount = 0x60000004,
-	VertexWritableStorage = 0x60000005,
+	PushConstants = 0x00030001,
+	TextureAdapterSpecificFormatFeatures = 0x00030002,
+	MultiDrawIndirect = 0x00030003,
+	MultiDrawIndirectCount = 0x00030004,
+	VertexWritableStorage = 0x00030005,
+	TextureBindingArray = 0x00030006,
+	SampledTextureAndStorageBufferArrayNonUniformIndexing = 0x00030007,
+	PipelineStatisticsQuery = 0x00030008,
 }
 
 public enum WGPULogLevel
@@ -598,15 +602,23 @@ public enum WGPULogLevel
 [Flags]
 public enum WGPUInstanceBackend
 {
-	Vulkan = 1 << 1,
-	GL = 1 << 5,
+	None = 0,
+	All = 0x00000000,
+	Vulkan = 1 << 0,
+	GL = 1 << 1,
 	Metal = 1 << 2,
 	DX12 = 1 << 3,
 	DX11 = 1 << 4,
-	BrowserWebGPU = 1 << 6,
+	BrowserWebGPU = 1 << 5,
 	Primary = Vulkan | Metal | DX12 | BrowserWebGPU,
 	Secondary = GL | DX11,
-	None = 0x00000000,
+}
+
+public enum WGPUInstanceFlag
+{
+	Debug = 1 << 0,
+	Validation = 1 << 1,
+	DiscardHalLabels = 1 << 2,
 }
 
 public enum WGPUDx12Compiler
@@ -616,12 +628,25 @@ public enum WGPUDx12Compiler
 	Dxc = 0x00000002,
 }
 
-public enum WGPUCompositeAlphaMode
+public enum WGPUGles3MinorVersion
 {
-	Auto = 0x00000000,
-	Opaque = 0x00000001,
-	PreMultiplied = 0x00000002,
-	PostMultiplied = 0x00000003,
-	Inherit = 0x00000004,
+	Automatic = 0x00000000,
+	Version0 = 0x00000001,
+	Version1 = 0x00000002,
+	Version2 = 0x00000003,
+}
+
+public enum WGPUPipelineStatisticName
+{
+	VertexShaderInvocations = 0x00000000,
+	ClipperInvocations = 0x00000001,
+	ClipperPrimitivesOut = 0x00000002,
+	FragmentShaderInvocations = 0x00000003,
+	ComputeShaderInvocations = 0x00000004,
+}
+
+public enum WGPUNativeQueryType
+{
+	PipelineStatistics = 0x00030000,
 }
 

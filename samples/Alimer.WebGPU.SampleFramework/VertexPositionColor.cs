@@ -1,10 +1,10 @@
-﻿// Copyright © Amer Koleci and Contributors.
+﻿// Copyright (c) Amer Koleci and Contributors.
 // Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 using System.Numerics;
 using System.Runtime.InteropServices;
 
-namespace Alimer.WebGPU.SampleFramework;
+namespace Alimer.WebGPU.Samples;
 
 [StructLayout(LayoutKind.Sequential, Pack = 4)]
 public readonly struct VertexPositionColor

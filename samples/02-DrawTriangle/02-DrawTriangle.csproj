@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IsPackable>false</IsPackable>
-    <RootNamespace>DrawTriangle</RootNamespace>
+    <RootNamespace>Alimer.WebGPU.Samples</RootNamespace>
   </PropertyGroup>
 
   <Import Project="$(RepoRootPath)Alimer.Bindings.WebGPU.Native.targets" />

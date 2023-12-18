@@ -1,11 +1,10 @@
-// Copyright © Amer Koleci and Contributors.
+// Copyright (c) Amer Koleci and Contributors.
 // Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
-using Alimer.WebGPU.SampleFramework;
 using WebGPU;
 using static WebGPU.WebGPU;
 
-namespace ClearScreen;
+namespace Alimer.WebGPU.Samples;
 
 public static unsafe class Program
 {
@@ -38,18 +37,19 @@ public static unsafe class Program
             _graphicsDevice!.RenderFrame(OnDraw);
         }
 
-        private void OnDraw(WGPUCommandEncoder encoder, WGPUTextureView swapChainTextureView)
+        private void OnDraw(WGPUCommandEncoder encoder, WGPUTexture target)
         {
             float g = _green + 0.001f;
             if (g > 1.0f)
                 g = 0.0f;
             _green = g;
 
+            WGPUTextureView targetView = wgpuTextureCreateView(target, null);
 
             WGPURenderPassColorAttachment renderPassColorAttachment = new();
             // The attachment is tighed to the view returned by the swap chain, so that
             // the render pass draws directly on screen.
-            renderPassColorAttachment.view = swapChainTextureView;
+            renderPassColorAttachment.view = targetView;
             // Not relevant here because we do not use multi-sampling
             renderPassColorAttachment.resolveTarget = WGPUTextureView.Null;
             renderPassColorAttachment.loadOp = WGPULoadOp.Clear;
@@ -66,7 +66,6 @@ public static unsafe class Program
                 depthStencilAttachment = null,
 
                 // We do not use timers for now neither
-                timestampWriteCount = 0,
                 timestampWrites = null
             };
 
@@ -75,6 +74,8 @@ public static unsafe class Program
             WGPURenderPassEncoder renderPass = wgpuCommandEncoderBeginRenderPass(encoder, &renderPassDesc);
 
             wgpuRenderPassEncoderEnd(renderPass);
+
+            wgpuTextureViewReference(targetView);
         }
     }
 }

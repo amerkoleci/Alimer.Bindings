@@ -434,27 +434,6 @@ public readonly partial struct WGPUSurface : IEquatable<WGPUSurface>
 }
 
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public readonly partial struct WGPUSwapChain : IEquatable<WGPUSwapChain>
-{
-	public WGPUSwapChain(nint handle) { Handle = handle; }
-	public nint Handle { get; }
-	public bool IsNull => Handle == 0;
-	public bool IsNotNull => Handle != 0;
-	public static WGPUSwapChain Null => new(0);
-	public static implicit operator WGPUSwapChain(nint handle) => new(handle);
-	public static bool operator ==(WGPUSwapChain left, WGPUSwapChain right) => left.Handle == right.Handle;
-	public static bool operator !=(WGPUSwapChain left, WGPUSwapChain right) => left.Handle != right.Handle;
-	public static bool operator ==(WGPUSwapChain left, nint right) => left.Handle == right;
-	public static bool operator !=(WGPUSwapChain left, nint right) => left.Handle != right;
-	public bool Equals(WGPUSwapChain other) => Handle == other.Handle;
-	/// <inheritdoc/>
-	public override bool Equals(object? obj) => obj is WGPUSwapChain handle && Equals(handle);
-	/// <inheritdoc/>
-	public override int GetHashCode() => Handle.GetHashCode();
-	private string DebuggerDisplay => $"{nameof(WGPUSwapChain)} [0x{Handle.ToString("X")}]";
-}
-
-[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public readonly partial struct WGPUTexture : IEquatable<WGPUTexture>
 {
 	public WGPUTexture(nint handle) { Handle = handle; }

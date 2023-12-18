@@ -21,6 +21,8 @@ public static partial class WebGPU
 	public const ulong WGPU_LIMIT_U64_UNDEFINED = 0xffffffffffffffffUL;
 	/// <unmanaged>WGPU_MIP_LEVEL_COUNT_UNDEFINED</unmanaged>
 	public const ulong WGPU_MIP_LEVEL_COUNT_UNDEFINED = 0xffffffffUL;
+	/// <unmanaged>WGPU_QUERY_SET_INDEX_UNDEFINED</unmanaged>
+	public const ulong WGPU_QUERY_SET_INDEX_UNDEFINED = 0xffffffffUL;
 	/// <unmanaged>WGPU_WHOLE_MAP_SIZE</unmanaged>
 	public static readonly nuint WGPU_WHOLE_MAP_SIZE = nuint.MaxValue;
 	/// <unmanaged>WGPU_WHOLE_SIZE</unmanaged>
