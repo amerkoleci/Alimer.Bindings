@@ -62,7 +62,7 @@ public sealed unsafe class Window
             throw new Exception("SDL: failed to create window");
         }
 
-        SDL_SetWindowPosition(_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+        _ = SDL_SetWindowPosition(_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
         Id = SDL_GetWindowID(_window);
     }
 

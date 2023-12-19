@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using System.Diagnostics.CodeAnalysis;
 
-#pragma warning disable CS0649;
+#pragma warning disable CS0649
 namespace WebGPU;
 
 public partial struct WGPUAdapterProperties
@@ -670,7 +670,7 @@ public partial struct WGPUInstanceExtras
 {
 	public WGPUChainedStruct chain;
 	public WGPUInstanceBackend backends;
-	public WGPUInstance flags;
+	public WGPUInstanceFlags flags;
 	public WGPUDx12Compiler dx12ShaderCompiler;
 	public WGPUGles3MinorVersion gles3MinorVersion;
 	public unsafe sbyte* dxilPath;

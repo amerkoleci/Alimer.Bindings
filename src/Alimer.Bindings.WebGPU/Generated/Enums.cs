@@ -614,8 +614,10 @@ public enum WGPUInstanceBackend
 	Secondary = GL | DX11,
 }
 
-public enum WGPUInstanceFlag
+[Flags]
+public enum WGPUInstanceFlags
 {
+	None = 0,
 	Debug = 1 << 0,
 	Validation = 1 << 1,
 	DiscardHalLabels = 1 << 2,

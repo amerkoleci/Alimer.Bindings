@@ -16,25 +16,22 @@ public static unsafe class Program
 
     class TestApp : Application
     {
-        private GraphicsDevice? _graphicsDevice;
+        
         private float _green = 0.0f;
         public override string Name => "01-ClearScreen";
 
         protected override void Initialize()
         {
-            _graphicsDevice = new GraphicsDevice(MainWindow);
         }
 
         public override void Dispose()
         {
-            _graphicsDevice!.Dispose();
-
             base.Dispose();
         }
 
         protected override void OnTick()
         {
-            _graphicsDevice!.RenderFrame(OnDraw);
+            _graphicsDevice.RenderFrame(OnDraw);
         }
 
         private void OnDraw(WGPUCommandEncoder encoder, WGPUTexture target)

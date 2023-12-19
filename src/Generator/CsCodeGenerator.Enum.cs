@@ -18,7 +18,6 @@ public static partial class CsCodeGenerator
         {
             if (string.IsNullOrEmpty(cppEnum.Name))
             {
-                // VGPU constants -> VGPU_MAX_INFLIGHT_FRAMES
                 continue;
             }
 
@@ -28,7 +27,9 @@ public static partial class CsCodeGenerator
                 cppEnum.Name == "WGPUShaderStage" ||
                 cppEnum.Name == "WGPUColorWriteMask" ||
                 cppEnum.Name == "WGPUMapMode" ||
-                cppEnum.Name == "WGPUInstanceBackend";
+                cppEnum.Name == "WGPUInstanceBackend" ||
+                cppEnum.Name.EndsWith("Flag") ||
+                cppEnum.Name.EndsWith("Flags");
 
             if (isBitmask)
             {
@@ -110,7 +111,8 @@ public static partial class CsCodeGenerator
                     continue;
                 }
 
-                if (typedef.ElementType is CppPointerType)
+                if (typedef.ElementType is CppPointerType ||
+                    typedef.Name == "WGPUInstanceFlags")
                 {
                     continue;
                 }

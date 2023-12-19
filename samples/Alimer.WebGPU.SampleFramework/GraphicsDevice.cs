@@ -17,13 +17,21 @@ public unsafe sealed class GraphicsDevice : IDisposable
     public WGPUSupportedLimits AdapterLimits;
     public WGPUDevice Device;
     public readonly WGPUQueue Queue;
-    public readonly WGPUTextureFormat SwapChainFormat;
 
-    public GraphicsDevice(Window window)
+    public GraphicsDevice(Window window, bool vsync = true)
     {
+        VSync = vsync;
+
+        WGPUInstanceExtras extras = new()
+        {
+#if DEBUG
+            flags = WGPUInstanceFlags.Validation
+#endif
+        };
+
         WGPUInstanceDescriptor instanceDescriptor = new()
         {
-            nextInChain = null
+            nextInChain = (WGPUChainedStruct*)&extras
         };
         Instance = wgpuCreateInstance(&instanceDescriptor);
 
@@ -72,8 +80,20 @@ public unsafe sealed class GraphicsDevice : IDisposable
         SwapChainFormat = wgpuSurfaceGetPreferredFormat(Surface, Adapter);
         Debug.Assert(SwapChainFormat != WGPUTextureFormat.Undefined);
 
-        WGPUTextureFormat viewFormat = SwapChainFormat;
+        Resize(window.ClientSize.width, window.ClientSize.height);
+    }
 
+    public WGPUTextureFormat SwapChainFormat { get; }
+    public uint Width { get; private set; }
+    public uint Height { get; private set; }
+    public bool VSync { get; set; }
+
+    public void Resize(uint width, uint height)
+    {
+        Width = width;
+        Height = height;
+
+        WGPUTextureFormat viewFormat = SwapChainFormat;
         WGPUSurfaceConfiguration surfaceConfiguration = new()
         {
             nextInChain = null,
@@ -82,9 +102,10 @@ public unsafe sealed class GraphicsDevice : IDisposable
             usage = WGPUTextureUsage.RenderAttachment,
             viewFormatCount = 1,
             viewFormats = &viewFormat,
-            width = window.ClientSize.width,
-            height = window.ClientSize.height,
-            presentMode = WGPUPresentMode.Fifo
+            alphaMode = WGPUCompositeAlphaMode.Auto,
+            width = width,
+            height = height,
+            presentMode = VSync ? WGPUPresentMode.Fifo : WGPUPresentMode.Immediate,
         };
         wgpuSurfaceConfigure(Surface, &surfaceConfiguration);
         Log.Info("SwapChain created");
@@ -124,7 +145,7 @@ public unsafe sealed class GraphicsDevice : IDisposable
 
     private static void HandleUncapturedErrorCallback(WGPUErrorType type, sbyte* pMessage, nint pUserData)
     {
-        string message = Interop.GetString(pMessage);
+        string message = Interop.GetString(pMessage)!;
         Log.Error($"Uncaptured device error: type: {type} ({message})");
     }
 
@@ -152,6 +173,12 @@ public unsafe sealed class GraphicsDevice : IDisposable
         if (surfaceTexture.status == WGPUSurfaceGetCurrentTextureStatus.Timeout)
         {
             Log.Error("Cannot acquire next swap chain texture");
+            return;
+        }
+
+        if (surfaceTexture.status == WGPUSurfaceGetCurrentTextureStatus.Outdated)
+        {
+            Log.Warn("Surface texture is outdated, reconfigure the surface!");
             return;
         }
 

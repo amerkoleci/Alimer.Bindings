@@ -17,7 +17,6 @@ public static unsafe class Program
 
     class TestApp : Application
     {
-        private GraphicsDevice _graphicsDevice;
         public override string Name => "03-DrawIndexedQuad";
 
         private WGPUPipelineLayout _pipelineLayout;
@@ -27,8 +26,6 @@ public static unsafe class Program
 
         protected override void Initialize()
         {
-            _graphicsDevice = new GraphicsDevice(MainWindow);
-
             WGPUPipelineLayoutDescriptor layoutDesc = new()
             {
                 nextInChain = null,
@@ -135,26 +132,24 @@ public static unsafe class Program
 
             wgpuShaderModuleRelease(shaderModule);
 
-            ReadOnlySpan<VertexPositionColor> vertexData = [
+            Span<VertexPositionColor> vertexData = [
                 new(new Vector3(-0.5f, 0.5f, 0.5f), new Vector4(1.0f, 0.0f, 0.0f, 1.0f)),
                 new(new Vector3(0.5f, 0.5f, 0.5f), new Vector4(0.0f, 1.0f, 0.0f, 1.0f)),
                 new(new Vector3(0.5f, -0.5f, 0.5f), new Vector4(0.0f, 0.0f, 1.0f, 1.0f)),
                 new(new Vector3(-0.5f, -0.5f, 0.5f), new Vector4(1.0f, 1.0f, 0.0f, 1.0f))
             ];
-            _vertexBuffer = wgpuDeviceCreateBuffer(_graphicsDevice.Device, WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst, vertexData.Length * VertexPositionColor.SizeInBytes);
-            wgpuQueueWriteBuffer(_graphicsDevice.Queue, _vertexBuffer, vertexData);
+            _vertexBuffer = wgpuDeviceCreateBuffer(_graphicsDevice.Device, _graphicsDevice.Queue, vertexData,  WGPUBufferUsage.Vertex);
 
             // Index buffer
-            ReadOnlySpan<ushort> indices = stackalloc ushort[] {
+            Span<ushort> indices = [
                 0,
                 1,
                 2,    // first triangle
                 0,
                 2,
                 3,    // second triangle
-            };
-            _indexBuffer = wgpuDeviceCreateBuffer(_graphicsDevice.Device, WGPUBufferUsage.Index | WGPUBufferUsage.CopyDst, indices.Length * sizeof(ushort));
-            wgpuQueueWriteBuffer(_graphicsDevice.Queue, _indexBuffer, indices);
+            ];
+            _indexBuffer = wgpuDeviceCreateBuffer(_graphicsDevice.Device, _graphicsDevice.Queue, indices, WGPUBufferUsage.Index | WGPUBufferUsage.CopyDst);
         }
 
         public override void Dispose()
@@ -166,14 +161,12 @@ public static unsafe class Program
             wgpuBufferDestroy(_indexBuffer);
             wgpuBufferRelease(_indexBuffer);
 
-            _graphicsDevice.Dispose();
-
             base.Dispose();
         }
 
         protected override void OnTick()
         {
-            _graphicsDevice!.RenderFrame(OnDraw);
+            _graphicsDevice.RenderFrame(OnDraw);
         }
 
         private void OnDraw(WGPUCommandEncoder encoder, WGPUTexture target)

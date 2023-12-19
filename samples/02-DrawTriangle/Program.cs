@@ -16,7 +16,6 @@ public static unsafe class Program
 
     class TestApp : Application
     {
-        private GraphicsDevice _graphicsDevice;
         public override string Name => "02-DrawTriangle";
 
         private WGPUPipelineLayout _pipelineLayout;
@@ -25,8 +24,6 @@ public static unsafe class Program
 
         protected override void Initialize()
         {
-            _graphicsDevice = new GraphicsDevice(MainWindow);
-
             WGPUPipelineLayoutDescriptor layoutDesc = new()
             {
                 nextInChain = null,
@@ -149,14 +146,12 @@ public static unsafe class Program
             wgpuBufferDestroy(_vertexBuffer);
             wgpuBufferRelease(_vertexBuffer);
 
-            _graphicsDevice.Dispose();
-
             base.Dispose();
         }
 
         protected override void OnTick()
         {
-            _graphicsDevice!.RenderFrame(OnDraw);
+            _graphicsDevice.RenderFrame(OnDraw);
         }
 
         private void OnDraw(WGPUCommandEncoder encoder, WGPUTexture target)

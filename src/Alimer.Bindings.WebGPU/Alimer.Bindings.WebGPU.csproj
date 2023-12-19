@@ -6,6 +6,12 @@
     <PackageTags>3D graphics vulkan standard game gamedev</PackageTags>
   </PropertyGroup>
 
+  <!-- Version -->
+  <PropertyGroup>
+    <VersionPrefix>1.3.3</VersionPrefix>
+    <VersionSuffix Condition="'$(VersionSuffix)' == ''"></VersionSuffix>
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Include="build\**" PackagePath="build" Pack="true" />
     <Content Include="runtimes\**" PackagePath="runtimes" Pack="true" />

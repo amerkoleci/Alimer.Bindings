@@ -11,7 +11,9 @@ public static unsafe partial class WebGPU
 {
     private const string LibName = "wgpu_native";
 
+#if USE_FUNCTION_POINTERS
     private static IntPtr s_wgpuModule;
+#endif
 
     static WebGPU()
     {
@@ -119,8 +121,45 @@ public static unsafe partial class WebGPU
         nativeLibrary = 0;
         return false;
     }
-
+#else
+    private static IntPtr LoadFunctionPointer(string name)
+    {
+        return NativeLibrary.GetExport(s_wgpuModule, name);
+    }
 #endif
+    public static ReadOnlySpan<WGPUFeatureName> wgpuAdapterEnumerateFeatures(WGPUAdapter adapter)
+    {
+        nuint count = wgpuAdapterEnumerateFeatures(adapter, null);
+
+        ReadOnlySpan<WGPUFeatureName> features = new WGPUFeatureName[(int)count];
+        fixed (WGPUFeatureName* pFeatures = features)
+        {
+            wgpuAdapterEnumerateFeatures(adapter, pFeatures);
+        }
+
+        return features;
+    }
+
+    public static void wgpuQueueSubmit(WGPUQueue queue, WGPUCommandBuffer commandBuffer)
+    {
+        wgpuQueueSubmit(queue, 1u, &commandBuffer);
+    }
+
+    public static void wgpuQueueSubmit(WGPUQueue queue,  ReadOnlySpan<WGPUCommandBuffer> commandBuffers)
+    {
+        fixed (WGPUCommandBuffer* pCommandBuffers = commandBuffers)
+        {
+            wgpuQueueSubmit(queue, (nuint)commandBuffers.Length, pCommandBuffers);
+        }
+    }
+
+    public static void wgpuQueueSubmit(WGPUQueue queue, WGPUCommandBuffer[] commandBuffers)
+    {
+        fixed (WGPUCommandBuffer* pCommandBuffers = commandBuffers)
+        {
+            wgpuQueueSubmit(queue, (nuint)commandBuffers.LongLength, pCommandBuffers);
+        }
+    }
 
     public static void wgpuQueueWriteBuffer<T>(WGPUQueue queue, WGPUBuffer buffer, ref T data, ulong bufferOffset, nuint size)
         where T : unmanaged
@@ -226,8 +265,24 @@ public static unsafe partial class WebGPU
         return wgpuDeviceCreateBuffer(device, &descriptor);
     }
 
-    private static IntPtr LoadFunctionPointer(string name)
+    public static WGPUBuffer wgpuDeviceCreateBuffer<T>(WGPUDevice device, WGPUQueue queue, Span<T> data, WGPUBufferUsage usage, bool mappedAtCreation = false)
+        where T : unmanaged
     {
-        return NativeLibrary.GetExport(s_wgpuModule, name);
+        WGPUBufferDescriptor descriptor = new()
+        {
+            nextInChain = null,
+            usage = usage | WGPUBufferUsage.CopyDst,
+            size = (ulong)(sizeof(T) * data.Length),
+            mappedAtCreation = mappedAtCreation
+        };
+
+        WGPUBuffer buffer = wgpuDeviceCreateBuffer(device, &descriptor);
+
+        fixed (void* dataPointer = data)
+        {
+            wgpuQueueWriteBuffer(queue, buffer, 0, dataPointer, (nuint)descriptor.size);
+        }
+
+        return buffer;
     }
 }

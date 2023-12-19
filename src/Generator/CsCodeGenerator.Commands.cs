@@ -139,13 +139,16 @@ public static partial class CsCodeGenerator
         string modifier = "public static";
         if (!useFunctionPointers)
         {
-            string dllName = "wgpu_native";
-            if (className == "VGPU")
+            if (_options.GenerateLibraryImport)
             {
-                dllName = "vgpu";
+                modifier += " partial";
+                writer.WriteLine($"[LibraryImport(LibName, EntryPoint = \"{cppFunction.Name}\")]");
             }
-            modifier += " extern";
-            writer.WriteLine($"[DllImport(\"{dllName}\", CallingConvention = CallingConvention.Cdecl, EntryPoint = \"{cppFunction.Name}\")]");
+            else
+            {
+                modifier += " extern";
+                writer.WriteLine($"[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = \"{cppFunction.Name}\")]");
+            }
         }
 
         if (useFunctionPointers)

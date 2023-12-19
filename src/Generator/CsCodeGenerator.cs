@@ -7,11 +7,11 @@ namespace Generator;
 
 public static partial class CsCodeGenerator
 {
-    private static readonly HashSet<string> s_keywords = new()
-    {
+    private static readonly HashSet<string> s_keywords =
+    [
         "object",
         "event",
-    };
+    ];
 
     private static readonly Dictionary<string, string> s_csNameMappings = new()
     {
@@ -32,9 +32,7 @@ public static partial class CsCodeGenerator
 
         { "WGPUSubmissionIndex", "ulong" },
         { "WGPUProc", "nint" },
-
-        { "VGPUDeviceAddress", "ulong" },
-        { "VGPUNativeObjectType", "uint" },
+        { "WGPUInstanceFlag", "WGPUInstanceFlags" },
     };
 
     private static CsCodeGeneratorOptions _options = new();
@@ -68,8 +66,6 @@ public static partial class CsCodeGenerator
                     || cppMacro.Name.Equals("WGPU_EXPORT", StringComparison.OrdinalIgnoreCase)
                     || cppMacro.Name.Equals("WGPU_SHARED_LIBRARY", StringComparison.OrdinalIgnoreCase)
                     || cppMacro.Name.Equals("WGPU_IMPLEMENTATION", StringComparison.OrdinalIgnoreCase)
-                    || cppMacro.Name.Equals("_VGPU_EXTERN", StringComparison.OrdinalIgnoreCase)
-                    || cppMacro.Name.Equals("VGPU_API", StringComparison.OrdinalIgnoreCase)
                     )
                 {
                     continue;

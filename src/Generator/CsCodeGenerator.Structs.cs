@@ -18,11 +18,11 @@ public static partial class CsCodeGenerator
         using var writer = new CodeWriter(Path.Combine(_options.OutputPath, "Structs.cs"),
             false,
             _options.Namespace,
-            new string[] {
+            [
                 "System.Runtime.InteropServices",
                 "System.Runtime.CompilerServices",
                 "System.Diagnostics.CodeAnalysis"
-            },
+            ],
             "#pragma warning disable CS0649"
             );
 
@@ -66,11 +66,6 @@ public static partial class CsCodeGenerator
             {
                 modifier = "readonly partial";
                 isReadOnly = true;
-            }
-
-            if (csName == "VGPUPushConstantDesc")
-            {
-
             }
 
             bool handleSType = false;

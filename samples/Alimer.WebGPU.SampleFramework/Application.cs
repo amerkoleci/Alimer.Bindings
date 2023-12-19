@@ -9,6 +9,7 @@ namespace Alimer.WebGPU.Samples;
 public abstract class Application : IDisposable
 {
     private bool _closeRequested = false;
+    protected readonly GraphicsDevice _graphicsDevice;
 
     protected unsafe Application()
     {
@@ -21,7 +22,10 @@ public abstract class Application : IDisposable
         SDL_LogSetOutputFunction(Log_SDL);
 
         // Create main window.
-        MainWindow = new Window(Name, 1280, 720);
+        MainWindow = new Window(Name, 1280, 720, WindowFlags.Resizable);
+
+        // Create graphics device
+        _graphicsDevice = new GraphicsDevice(MainWindow);
     }
 
     public abstract string Name { get; }
@@ -30,6 +34,8 @@ public abstract class Application : IDisposable
 
     public virtual void Dispose()
     {
+        _graphicsDevice.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     protected virtual void Initialize()
@@ -64,6 +70,10 @@ public abstract class Application : IDisposable
                     running = false;
                     break;
                 }
+                else if (evt.type >= SDL_EventType.WindowFirst && evt.type <= SDL_EventType.WindowLast)
+                {
+                    HandleWindowEvent(evt);
+                }
             }
 
             if (!running)
@@ -71,6 +81,31 @@ public abstract class Application : IDisposable
 
             OnTick();
         }
+    }
+
+    private void HandleWindowEvent(in SDL_Event evt)
+    {
+        switch (evt.window.type)
+        {
+            case SDL_EventType.WindowResized:
+                //_minimized = false;
+                HandleResize(evt);
+                break;
+        }
+    }
+
+    private void HandleResize(in SDL_Event evt)
+    {
+        //if (MainWindow.ClientSize.width != evt.window.data1 ||
+        //    MainWindow.ClientSize.height != evt.window.data2)
+        {
+            _graphicsDevice.Resize((uint)evt.window.data1, (uint)evt.window.data2);
+            OnSizeChanged(evt.window.data1, evt.window.data2);
+        }
+    }
+
+    protected virtual void OnSizeChanged(int width, int height)
+    {
     }
 
     protected virtual void OnDraw(int width, int height)
