@@ -30,9 +30,6 @@ public unsafe delegate void WGPUCreateRenderPipelineAsyncCallback(WGPUCreatePipe
 public unsafe delegate void WGPUDeviceLostCallback(WGPUDeviceLostReason reason, sbyte* message, nint userdata = 0);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUErrorCallback(WGPUErrorType type, sbyte* message, nint userdata = 0);
-
-[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 public unsafe delegate void WGPUQueueWorkDoneCallback(WGPUQueueWorkDoneStatus status, nint userdata = 0);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -42,10 +39,7 @@ public unsafe delegate void WGPURequestAdapterCallback(WGPURequestAdapterStatus 
 public unsafe delegate void WGPURequestDeviceCallback(WGPURequestDeviceStatus status, WGPUDevice device, sbyte* message, nint userdata = 0);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUProcDeviceSetUncapturedErrorCallback(WGPUDevice device, WGPUErrorCallback callback, nint userdata = 0);
-
-[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPULogCallback(WGPULogLevel level, sbyte* message, nint userdata = 0);
+public unsafe delegate void WGPUProcDeviceSetUncapturedErrorCallback(WGPUDevice device, delegate* unmanaged<WGPUErrorType, sbyte*, nint, void> callback, nint userdata = 0);
 
 public unsafe partial class WebGPU
 {
@@ -61,14 +55,20 @@ public unsafe partial class WebGPU
 	[LibraryImport(LibName, EntryPoint = "wgpuAdapterGetLimits")]
 	public static partial WGPUBool wgpuAdapterGetLimits(WGPUAdapter adapter, WGPUSupportedLimits* limits);
 
+	[LibraryImport(LibName, EntryPoint = "wgpuAdapterGetLimits")]
+	public static partial WGPUBool wgpuAdapterGetLimits(WGPUAdapter adapter, out WGPUSupportedLimits limits);
+
 	[LibraryImport(LibName, EntryPoint = "wgpuAdapterGetProperties")]
 	public static partial void wgpuAdapterGetProperties(WGPUAdapter adapter, WGPUAdapterProperties* properties);
+
+	[LibraryImport(LibName, EntryPoint = "wgpuAdapterGetProperties")]
+	public static partial void wgpuAdapterGetProperties(WGPUAdapter adapter, out WGPUAdapterProperties properties);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuAdapterHasFeature")]
 	public static partial WGPUBool wgpuAdapterHasFeature(WGPUAdapter adapter, WGPUFeatureName feature);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuAdapterRequestDevice")]
-	public static partial void wgpuAdapterRequestDevice(WGPUAdapter adapter, WGPUDeviceDescriptor* descriptor, WGPURequestDeviceCallback callback, nint userdata = 0);
+	public static partial void wgpuAdapterRequestDevice(WGPUAdapter adapter, WGPUDeviceDescriptor* descriptor, delegate* unmanaged<WGPURequestDeviceStatus, WGPUDevice, sbyte*, nint, void> callback, nint userdata = 0);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuAdapterReference")]
 	public static partial void wgpuAdapterReference(WGPUAdapter adapter);
@@ -139,7 +139,7 @@ public unsafe partial class WebGPU
 	public static partial WGPUBufferUsage wgpuBufferGetUsage(WGPUBuffer buffer);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuBufferMapAsync")]
-	public static partial void wgpuBufferMapAsync(WGPUBuffer buffer, WGPUMapMode mode, nuint offset, nuint size, WGPUBufferMapCallback callback, nint userdata = 0);
+	public static partial void wgpuBufferMapAsync(WGPUBuffer buffer, WGPUMapMode mode, nuint offset, nuint size, delegate* unmanaged<WGPUBufferMapAsyncStatus, nint, void> callback, nint userdata = 0);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuBufferSetLabel")]
 	public static partial void wgpuBufferSetLabel(WGPUBuffer buffer, sbyte* label);
@@ -388,7 +388,7 @@ public unsafe partial class WebGPU
 	public static partial WGPUComputePipeline wgpuDeviceCreateComputePipeline(WGPUDevice device, WGPUComputePipelineDescriptor* descriptor);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateComputePipelineAsync")]
-	public static partial void wgpuDeviceCreateComputePipelineAsync(WGPUDevice device, WGPUComputePipelineDescriptor* descriptor, WGPUCreateComputePipelineAsyncCallback callback, nint userdata = 0);
+	public static partial void wgpuDeviceCreateComputePipelineAsync(WGPUDevice device, WGPUComputePipelineDescriptor* descriptor, delegate* unmanaged<WGPUCreatePipelineAsyncStatus, WGPUComputePipeline, sbyte*, nint, void> callback, nint userdata = 0);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreatePipelineLayout")]
 	public static partial WGPUPipelineLayout wgpuDeviceCreatePipelineLayout(WGPUDevice device, WGPUPipelineLayoutDescriptor* descriptor);
@@ -403,7 +403,7 @@ public unsafe partial class WebGPU
 	public static partial WGPURenderPipeline wgpuDeviceCreateRenderPipeline(WGPUDevice device, WGPURenderPipelineDescriptor* descriptor);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateRenderPipelineAsync")]
-	public static partial void wgpuDeviceCreateRenderPipelineAsync(WGPUDevice device, WGPURenderPipelineDescriptor* descriptor, WGPUCreateRenderPipelineAsyncCallback callback, nint userdata = 0);
+	public static partial void wgpuDeviceCreateRenderPipelineAsync(WGPUDevice device, WGPURenderPipelineDescriptor* descriptor, delegate* unmanaged<WGPUCreatePipelineAsyncStatus, WGPURenderPipeline, sbyte*, nint, void> callback, nint userdata = 0);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateSampler")]
 	public static partial WGPUSampler wgpuDeviceCreateSampler(WGPUDevice device, WGPUSamplerDescriptor* descriptor);
@@ -423,6 +423,9 @@ public unsafe partial class WebGPU
 	[LibraryImport(LibName, EntryPoint = "wgpuDeviceGetLimits")]
 	public static partial WGPUBool wgpuDeviceGetLimits(WGPUDevice device, WGPUSupportedLimits* limits);
 
+	[LibraryImport(LibName, EntryPoint = "wgpuDeviceGetLimits")]
+	public static partial WGPUBool wgpuDeviceGetLimits(WGPUDevice device, out WGPUSupportedLimits limits);
+
 	[LibraryImport(LibName, EntryPoint = "wgpuDeviceGetQueue")]
 	public static partial WGPUQueue wgpuDeviceGetQueue(WGPUDevice device);
 
@@ -430,7 +433,7 @@ public unsafe partial class WebGPU
 	public static partial WGPUBool wgpuDeviceHasFeature(WGPUDevice device, WGPUFeatureName feature);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuDevicePopErrorScope")]
-	public static partial void wgpuDevicePopErrorScope(WGPUDevice device, WGPUErrorCallback callback, nint userdata = 0);
+	public static partial void wgpuDevicePopErrorScope(WGPUDevice device, delegate* unmanaged<WGPUErrorType, sbyte*, nint, void> callback, nint userdata = 0);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuDevicePushErrorScope")]
 	public static partial void wgpuDevicePushErrorScope(WGPUDevice device, WGPUErrorFilter filter);
@@ -452,7 +455,7 @@ public unsafe partial class WebGPU
 	}
 
 	[LibraryImport(LibName, EntryPoint = "wgpuDeviceSetUncapturedErrorCallback")]
-	public static partial void wgpuDeviceSetUncapturedErrorCallback(WGPUDevice device, WGPUErrorCallback callback, nint userdata = 0);
+	public static partial void wgpuDeviceSetUncapturedErrorCallback(WGPUDevice device, delegate* unmanaged<WGPUErrorType, sbyte*, nint, void> callback, nint userdata = 0);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuDeviceReference")]
 	public static partial void wgpuDeviceReference(WGPUDevice device);
@@ -467,7 +470,7 @@ public unsafe partial class WebGPU
 	public static partial void wgpuInstanceProcessEvents(WGPUInstance instance);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuInstanceRequestAdapter")]
-	public static partial void wgpuInstanceRequestAdapter(WGPUInstance instance, WGPURequestAdapterOptions* options, WGPURequestAdapterCallback callback, nint userdata = 0);
+	public static partial void wgpuInstanceRequestAdapter(WGPUInstance instance, WGPURequestAdapterOptions* options, delegate* unmanaged<WGPURequestAdapterStatus, WGPUAdapter, sbyte*, nint, void> callback, nint userdata = 0);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuInstanceReference")]
 	public static partial void wgpuInstanceReference(WGPUInstance instance);
@@ -529,7 +532,7 @@ public unsafe partial class WebGPU
 	public static partial void wgpuQuerySetRelease(WGPUQuerySet querySet);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuQueueOnSubmittedWorkDone")]
-	public static partial void wgpuQueueOnSubmittedWorkDone(WGPUQueue queue, WGPUQueueWorkDoneCallback callback, nint userdata = 0);
+	public static partial void wgpuQueueOnSubmittedWorkDone(WGPUQueue queue, delegate* unmanaged<WGPUQueueWorkDoneStatus, nint, void> callback, nint userdata = 0);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuQueueSetLabel")]
 	public static partial void wgpuQueueSetLabel(WGPUQueue queue, sbyte* label);
@@ -821,7 +824,7 @@ public unsafe partial class WebGPU
 	public static partial void wgpuSamplerRelease(WGPUSampler sampler);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuShaderModuleGetCompilationInfo")]
-	public static partial void wgpuShaderModuleGetCompilationInfo(WGPUShaderModule shaderModule, WGPUCompilationInfoCallback callback, nint userdata = 0);
+	public static partial void wgpuShaderModuleGetCompilationInfo(WGPUShaderModule shaderModule, delegate* unmanaged<WGPUCompilationInfoRequestStatus, WGPUCompilationInfo*, nint, void> callback, nint userdata = 0);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuShaderModuleSetLabel")]
 	public static partial void wgpuShaderModuleSetLabel(WGPUShaderModule shaderModule, sbyte* label);
@@ -851,8 +854,14 @@ public unsafe partial class WebGPU
 	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceGetCapabilities")]
 	public static partial void wgpuSurfaceGetCapabilities(WGPUSurface surface, WGPUAdapter adapter, WGPUSurfaceCapabilities* capabilities);
 
+	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceGetCapabilities")]
+	public static partial void wgpuSurfaceGetCapabilities(WGPUSurface surface, WGPUAdapter adapter, out WGPUSurfaceCapabilities capabilities);
+
 	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceGetCurrentTexture")]
 	public static partial void wgpuSurfaceGetCurrentTexture(WGPUSurface surface, WGPUSurfaceTexture* surfaceTexture);
+
+	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceGetCurrentTexture")]
+	public static partial void wgpuSurfaceGetCurrentTexture(WGPUSurface surface, out WGPUSurfaceTexture surfaceTexture);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceGetPreferredFormat")]
 	public static partial WGPUTextureFormat wgpuSurfaceGetPreferredFormat(WGPUSurface surface, WGPUAdapter adapter);
@@ -959,7 +968,7 @@ public unsafe partial class WebGPU
 	public static partial WGPUBool wgpuDevicePoll(WGPUDevice device, WGPUBool wait, WGPUWrappedSubmissionIndex* wrappedSubmissionIndex);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuSetLogCallback")]
-	public static partial void wgpuSetLogCallback(WGPULogCallback callback, nint userdata = 0);
+	public static partial void wgpuSetLogCallback(delegate* unmanaged<WGPULogLevel, sbyte*, nint, void> callback, nint userdata = 0);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuSetLogLevel")]
 	public static partial void wgpuSetLogLevel(WGPULogLevel level);

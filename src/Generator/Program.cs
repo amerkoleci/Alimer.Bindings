@@ -62,7 +62,6 @@ public static class Program
             ClassName = "WebGPU",
             Namespace = "WebGPU",
             PublicVisiblity = true,
-            GenerateLibraryImport = true,
             GenerateFunctionPointers = false,
             EnumWriteUnmanagedTag = false
         };

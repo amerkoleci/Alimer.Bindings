@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using WebGPU;
 using static WebGPU.WebGPU;
 
@@ -21,6 +22,8 @@ public unsafe sealed class GraphicsDevice : IDisposable
     public GraphicsDevice(Window window, bool vsync = true)
     {
         VSync = vsync;
+
+        wgpuSetLogCallback(LogCallback);
 
         WGPUInstanceExtras extras = new()
         {
@@ -45,12 +48,21 @@ public unsafe sealed class GraphicsDevice : IDisposable
         };
 
         // Call to the WebGPU request adapter procedure
+        WGPUAdapter result = WGPUAdapter.Null;
         wgpuInstanceRequestAdapter(
             Instance /* equivalent of navigator.gpu */,
             &options,
-            OnAdapterRequestEnded,
-            IntPtr.Zero
+            &OnAdapterRequestEnded,
+            new nint(&result)
         );
+        Adapter = result;
+        wgpuAdapterGetProperties(Adapter, out WGPUAdapterProperties properties);
+
+        WGPUSupportedLimits limits;
+        wgpuAdapterGetLimits(Adapter, &limits);
+
+        AdapterProperties = properties;
+        AdapterLimits = limits;
 
         fixed (sbyte* pDeviceName = "My Device".GetUtf8Span())
         {
@@ -64,12 +76,14 @@ public unsafe sealed class GraphicsDevice : IDisposable
             deviceDesc.defaultQueue.nextInChain = null;
             //deviceDesc.defaultQueue.label = "The default queue";
 
+            WGPUDevice device = WGPUDevice.Null;
             wgpuAdapterRequestDevice(
                 Adapter,
                 &deviceDesc,
-                OnDeviceRequestEnded,
-                IntPtr.Zero
+                &OnDeviceRequestEnded,
+                new nint(&device)
             );
+            Device = device;
         }
 
         wgpuDeviceSetUncapturedErrorCallback(Device, HandleUncapturedErrorCallback);
@@ -111,19 +125,12 @@ public unsafe sealed class GraphicsDevice : IDisposable
         Log.Info("SwapChain created");
     }
 
-    private void OnAdapterRequestEnded(WGPURequestAdapterStatus status, WGPUAdapter candidateAdapter, sbyte* message, nint pUserData)
+    [UnmanagedCallersOnly]
+    private static void OnAdapterRequestEnded(WGPURequestAdapterStatus status, WGPUAdapter candidateAdapter, sbyte* message, nint pUserData)
     {
         if (status == WGPURequestAdapterStatus.Success)
         {
-            Adapter = candidateAdapter;
-            WGPUAdapterProperties properties;
-            wgpuAdapterGetProperties(candidateAdapter, &properties);
-
-            WGPUSupportedLimits limits;
-            wgpuAdapterGetLimits(candidateAdapter, &limits);
-
-            AdapterProperties = properties;
-            AdapterLimits = limits;
+            *(WGPUAdapter*)pUserData = candidateAdapter;
         }
         else
         {
@@ -131,11 +138,12 @@ public unsafe sealed class GraphicsDevice : IDisposable
         }
     }
 
-    private void OnDeviceRequestEnded(WGPURequestDeviceStatus status, WGPUDevice device, sbyte* message, nint pUserData)
+    [UnmanagedCallersOnly]
+    private static void OnDeviceRequestEnded(WGPURequestDeviceStatus status, WGPUDevice device, sbyte* message, nint pUserData)
     {
         if (status == WGPURequestDeviceStatus.Success)
         {
-            Device = device;
+            *(WGPUDevice*)pUserData = device;
         }
         else
         {
@@ -143,9 +151,26 @@ public unsafe sealed class GraphicsDevice : IDisposable
         }
     }
 
-    private static void HandleUncapturedErrorCallback(WGPUErrorType type, sbyte* pMessage, nint pUserData)
+    private static void LogCallback(WGPULogLevel level, string message, nint userdata = 0)
     {
-        string message = Interop.GetString(pMessage)!;
+        switch (level)
+        {
+            case WGPULogLevel.Error:
+                Log.Error(message);
+                break;
+            case WGPULogLevel.Warn:
+                Log.Warn(message);
+                break;
+            case WGPULogLevel.Info:
+            case WGPULogLevel.Debug:
+            case WGPULogLevel.Trace:
+                Log.Info(message);
+                break;
+        }
+    }
+
+    private static void HandleUncapturedErrorCallback(WGPUErrorType type, string message)
+    {
         Log.Error($"Uncaptured device error: type: {type} ({message})");
     }
 
@@ -182,33 +207,15 @@ public unsafe sealed class GraphicsDevice : IDisposable
             return;
         }
 
-        fixed (sbyte* pLabel = "Command Encoder".GetUtf8Span())
-        {
-            WGPUCommandEncoderDescriptor commandEncoderDesc = new()
-            {
-                nextInChain = null,
-                label = pLabel
-            };
-            WGPUCommandEncoder encoder = wgpuDeviceCreateCommandEncoder(Device, &commandEncoderDesc);
+        WGPUCommandEncoder encoder = wgpuDeviceCreateCommandEncoder(Device, "Main Command Encoder");
+        wgpuCommandEncoderPushDebugGroup(encoder, frameName);
+        draw(encoder, surfaceTexture.texture);
+        wgpuCommandEncoderPopDebugGroup(encoder);
 
-            draw(encoder, surfaceTexture.texture);
+        WGPUCommandBuffer command = wgpuCommandEncoderFinish(encoder, "Command Buffer");
+        wgpuQueueSubmit(Queue, command);
 
-            //wgpuTextureViewRelease(nextTexture);
-
-            fixed (sbyte* pBufferLabel = "Command Buffer".GetUtf8Span())
-            {
-                WGPUCommandBufferDescriptor cmdBufferDescriptor = new()
-                {
-                    nextInChain = null,
-                    label = pBufferLabel
-                };
-
-                WGPUCommandBuffer command = wgpuCommandEncoderFinish(encoder, &cmdBufferDescriptor);
-                wgpuQueueSubmit(Queue, 1, &command);
-            }
-
-            //wgpuCommandEncoderRelease(encoder);
-        }
+        wgpuCommandEncoderRelease(encoder);
 
         // We can tell the surface to present the next texture.
         wgpuSurfacePresent(Surface);

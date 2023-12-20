@@ -19,7 +19,7 @@ public enum WindowFlags
     Maximized = 1 << 4,
 }
 
-public sealed unsafe class Window
+public sealed unsafe partial class Window
 {
     private readonly SDL_Window _window;
 
@@ -27,7 +27,6 @@ public sealed unsafe class Window
     {
         Title = title;
 
-        bool fullscreen = false;
         SDL_WindowFlags sdl_flags = SDL_WindowFlags.HighPixelDensity | SDL_WindowFlags.Vulkan | SDL_WindowFlags.Hidden;
         if ((flags & WindowFlags.Fullscreen) != WindowFlags.None)
         {
@@ -89,7 +88,7 @@ public sealed unsafe class Window
 
     public void Show()
     {
-        SDL_ShowWindow(_window);
+        _ = SDL_ShowWindow(_window);
     }
 
     public WGPUSurface CreateSurface(WGPUInstance instance, bool useWayland = false)
@@ -173,6 +172,6 @@ public sealed unsafe class Window
         return WGPUSurface.Null;
     }
 
-    [DllImport("kernel32", ExactSpelling = true)]
-    private static extern nint GetModuleHandleW(ushort* lpModuleName);
+    [LibraryImport("kernel32")]
+    private static partial nint GetModuleHandleW(ushort* lpModuleName);
 }

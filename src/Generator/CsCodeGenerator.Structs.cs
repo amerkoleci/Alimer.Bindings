@@ -206,32 +206,17 @@ public static partial class CsCodeGenerator
         else
         {
             // VkAllocationCallbacks members
+            string csFieldType = string.Empty;
             if (field.Type is CppTypedef typedef &&
                 typedef.ElementType is CppPointerType pointerType &&
                 pointerType.ElementType is CppFunctionType functionType)
             {
-                StringBuilder builder = new();
-                foreach (CppParameter parameter in functionType.Parameters)
-                {
-                    string paramCsType = GetCsTypeName(parameter.Type, false);
-                    // Otherwise we get interop issues with non blittable types
-                    if (paramCsType == "VkBool32")
-                        paramCsType = "uint";
-                    builder.Append(paramCsType).Append(", ");
-                }
-
-                string returnCsName = GetCsTypeName(functionType.ReturnType, false);
-                // Otherwise we get interop issues with non blittable types
-                if (returnCsName == "VkBool32")
-                    returnCsName = "uint";
-
-                builder.Append(returnCsName);
-
-                writer.WriteLine($"public unsafe delegate* unmanaged<{builder}> {csFieldName};");
+                csFieldType = GetCallbackMemberSignature(functionType);
+                writer.WriteLine($"public unsafe {csFieldType} {csFieldName};");
                 return;
             }
 
-            string csFieldType = GetCsTypeName(field.Type, false);
+            csFieldType = GetCsTypeName(field.Type, false);
             if (csFieldName.Equals("specVersion", StringComparison.OrdinalIgnoreCase) ||
                 csFieldName.Equals("applicationVersion", StringComparison.OrdinalIgnoreCase) ||
                 csFieldName.Equals("engineVersion", StringComparison.OrdinalIgnoreCase) ||
