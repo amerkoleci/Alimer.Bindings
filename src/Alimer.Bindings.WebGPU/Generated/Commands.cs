@@ -977,7 +977,7 @@ public unsafe partial class WebGPU
 	public static partial uint wgpuGetVersion();
 
 	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderSetPushConstants")]
-	public static partial void wgpuRenderPassEncoderSetPushConstants(WGPURenderPassEncoder encoder, WGPUShaderStage stages, uint offset, uint sizeBytes, nint data);
+	public static partial void wgpuRenderPassEncoderSetPushConstants(WGPURenderPassEncoder encoder, WGPUShaderStage stages, uint offset, uint sizeBytes, void* data);
 
 	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderMultiDrawIndirect")]
 	public static partial void wgpuRenderPassEncoderMultiDrawIndirect(WGPURenderPassEncoder encoder, WGPUBuffer buffer, ulong offset, uint count);

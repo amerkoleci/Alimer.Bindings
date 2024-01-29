@@ -575,6 +575,7 @@ public enum WGPUNativeSType
 	BindGroupEntryExtras = 0x00030007,
 	BindGroupLayoutEntryExtras = 0x00030008,
 	QuerySetDescriptorExtras = 0x00030009,
+	SurfaceConfigurationExtras = 0x0003000A,
 }
 
 public enum WGPUNativeFeature

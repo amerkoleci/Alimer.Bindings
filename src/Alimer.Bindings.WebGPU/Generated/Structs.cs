@@ -711,7 +711,7 @@ public partial struct WGPUPushConstantRange
 public partial struct WGPUPipelineLayoutExtras
 {
 	public WGPUChainedStruct chain;
-	public uint pushConstantRangeCount;
+	public nuint pushConstantRangeCount;
 	public unsafe WGPUPushConstantRange* pushConstantRanges;
 }
 
@@ -741,7 +741,6 @@ public partial struct WGPURegistryReport
 	public nuint numAllocated;
 	public nuint numKeptFromUser;
 	public nuint numReleasedFromUser;
-	public nuint numDestroyedFromUser;
 	public nuint numError;
 	public nuint elementSize;
 }
@@ -804,5 +803,11 @@ public partial struct WGPUQuerySetDescriptorExtras
 	public WGPUChainedStruct chain;
 	public unsafe WGPUPipelineStatisticName* pipelineStatistics;
 	public nuint pipelineStatisticCount;
+}
+
+public partial struct WGPUSurfaceConfigurationExtras
+{
+	public WGPUChainedStruct chain;
+	public WGPUBool desiredMaximumFrameLatency;
 }
 

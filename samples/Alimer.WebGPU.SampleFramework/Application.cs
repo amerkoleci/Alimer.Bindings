@@ -85,7 +85,7 @@ public abstract class Application : IDisposable
 
     private void HandleWindowEvent(in SDL_Event evt)
     {
-        switch (evt.window.type)
+        switch ((SDL_EventType)evt.window.type)
         {
             case SDL_EventType.WindowResized:
                 //_minimized = false;
