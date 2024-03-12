@@ -14,7 +14,7 @@ public static partial class CsCodeGenerator
         // Generate Functions
         using var writer = new CodeWriter(Path.Combine(_options.OutputPath, "Handles.cs"),
             true,
-            _options.Namespace, new string[] { "System.Diagnostics" }
+            _options.Namespace, ["System.Diagnostics"]
             );
 
         foreach (CppTypedef typedef in compilation.Typedefs)

@@ -588,6 +588,8 @@ public enum WGPUNativeFeature
 	TextureBindingArray = 0x00030006,
 	SampledTextureAndStorageBufferArrayNonUniformIndexing = 0x00030007,
 	PipelineStatisticsQuery = 0x00030008,
+	StorageResourceBindingArray = 0x00030009,
+	PartiallyBoundBindingArray = 0x0003000A,
 }
 
 public enum WGPULogLevel

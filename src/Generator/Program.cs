@@ -62,7 +62,6 @@ public static class Program
             ClassName = "WebGPU",
             Namespace = "WebGPU",
             PublicVisiblity = true,
-            GenerateFunctionPointers = false,
             EnumWriteUnmanagedTag = false
         };
         CsCodeGenerator.Generate(compilation, generateOptions);
