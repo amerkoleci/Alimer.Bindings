@@ -19,7 +19,7 @@ public abstract class Application : IDisposable
             throw new Exception($"Failed to start SDL2: {error}");
         }
 
-        SDL_LogSetOutputFunction(Log_SDL);
+        SDL_SetLogOutputFunction(Log_SDL);
 
         // Create main window.
         MainWindow = new Window(Name, 1280, 720, WindowFlags.Resizable);
