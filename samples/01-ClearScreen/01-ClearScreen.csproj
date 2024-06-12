@@ -7,7 +7,7 @@
     <RootNamespace>Alimer.WebGPU.Samples</RootNamespace>
   </PropertyGroup>
 
-  <Import Project="$(RepoRootPath)Alimer.Bindings.WebGPU.Native.targets" />
+  <Import Project="$(SrcDirectory)Alimer.Bindings.WebGPU.Native.targets" />
 
   <PropertyGroup>
     <PublishAot>true</PublishAot>

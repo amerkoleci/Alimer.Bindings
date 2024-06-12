@@ -3,11 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31808.319
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{C75EE8C9-129B-4B2A-B87A-0BE69AE0A237}"
+	ProjectSection(SolutionItems) = preProject
+		.github\FUNDING.yml = .github\FUNDING.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{D5D12E1D-4FE1-4F96-BD02-D3B21A048CAE}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{065268A8-16E6-4CFF-8F67-3FD99155877F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		Alimer.Bindings.WebGPU.Native.targets = Alimer.Bindings.WebGPU.Native.targets
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		Directory.Packages.props = Directory.Packages.props
@@ -15,6 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{065268A8
 		LICENSE = LICENSE
 		NuGet.config = NuGet.config
 		README.md = README.md
+		src\Alimer.Bindings.WebGPU.Native.targets = src\Alimer.Bindings.WebGPU.Native.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{08F6AF96-809B-45C5-BE6C-5BAB7D9AFB60}"
@@ -79,6 +89,7 @@ Global
 		{5A10816D-90A4-4AEA-B06E-6A463DA4A891} = {08F6AF96-809B-45C5-BE6C-5BAB7D9AFB60}
 		{F3C67C03-920C-414F-8B18-728660045060} = {08F6AF96-809B-45C5-BE6C-5BAB7D9AFB60}
 		{BFBB2C71-AA96-4FE6-982D-60A513239C49} = {08F6AF96-809B-45C5-BE6C-5BAB7D9AFB60}
+		{D5D12E1D-4FE1-4F96-BD02-D3B21A048CAE} = {C75EE8C9-129B-4B2A-B87A-0BE69AE0A237}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DF0375B3-E304-4A53-8E5F-FC9D23743647}
