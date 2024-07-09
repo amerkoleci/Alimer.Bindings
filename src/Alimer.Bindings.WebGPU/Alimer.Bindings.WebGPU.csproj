@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Description>WebGPU low level bindings.</Description>
     <PackageTags>3D graphics vulkan standard game gamedev</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <!-- Version -->
@@ -11,6 +12,10 @@
     <VersionPrefix>1.4.2</VersionPrefix>
     <VersionSuffix Condition="'$(VersionSuffix)' == ''"></VersionSuffix>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(RepoRootPath)/README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="build\**" PackagePath="build" Pack="true" />

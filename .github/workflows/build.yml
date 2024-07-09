@@ -23,7 +23,7 @@ jobs:
         global-json-file: ./global.json
 
     - name: Pack
-      run: dotnet pack Alimer.Bindings.sln --configuration Release    
+      run: dotnet pack Alimer.Bindings.sln --configuration Release
 
     - name: Publish to NuGet
       if: github.event_name == 'push'
