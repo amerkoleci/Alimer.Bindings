@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Meshopt;
+namespace MeshOptimizer;
 
 public static unsafe partial class Meshopt
 {

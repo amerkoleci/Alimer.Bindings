@@ -7,7 +7,7 @@
 // </auto-generated>
 // ------------------------------------------------------------------------------
 
-namespace Meshopt;
+namespace MeshOptimizer;
 
 public static partial class Meshopt
 {

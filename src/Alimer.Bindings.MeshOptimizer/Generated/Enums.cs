@@ -9,7 +9,7 @@
 
 using System;
 
-namespace Meshopt;
+namespace MeshOptimizer;
 
 public enum EncodeExpMode
 {

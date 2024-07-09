@@ -12,7 +12,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Meshopt;
+namespace MeshOptimizer;
 
 public unsafe partial class Meshopt
 {

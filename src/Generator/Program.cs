@@ -45,7 +45,7 @@ public static class Program
             generateOptions = new()
             {
                 ClassName = "Meshopt",
-                Namespace = "Meshopt",
+                Namespace = "MeshOptimizer",
                 PublicVisiblity = true,
                 EnumPrefixRemap = "meshopt_",
                 StructPrefixRemap = "meshopt_",

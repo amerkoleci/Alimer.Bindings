@@ -12,7 +12,7 @@ using System.Runtime.CompilerServices;
 using System.Diagnostics.CodeAnalysis;
 
 #pragma warning disable CS0649
-namespace Meshopt;
+namespace MeshOptimizer;
 
 public partial struct Stream
 {
