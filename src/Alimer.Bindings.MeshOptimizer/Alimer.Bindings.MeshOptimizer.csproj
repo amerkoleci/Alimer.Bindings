@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Description>meshoptimizer low level bindings.</Description>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageTags>3D graphics meshoptimizer standard game gamedev</PackageTags>
+  </PropertyGroup>
+
+  <!-- Version -->
+  <PropertyGroup>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix Condition="'$(VersionSuffix)' == ''"></VersionSuffix>
+  </PropertyGroup>
+
+  <!-- Native Libs -->
+  <ItemGroup>
+    <Content Include="$(NativeLibDirectory)win-x64\meshoptimizer.dll">
+      <PackagePath>runtimes/win-x64/native</PackagePath>
+      <Pack>true</Pack>
+      <Visible>False</Visible>
+    </Content>
+    <Content Include="$(NativeLibDirectory)win-arm64\meshoptimizer.dll">
+      <PackagePath>runtimes/win-arm64/native</PackagePath>
+      <Pack>True</Pack>
+      <Visible>False</Visible>
+    </Content>
+    <Content Include="$(NativeLibDirectory)linux-x64\libmeshoptimizer.so">
+      <PackagePath>runtimes\linux-x64\native</PackagePath>
+      <Pack>True</Pack>
+      <Visible>False</Visible>
+    </Content>
+    <Content Include="$(NativeLibDirectory)osx\libmeshoptimizer.dylib">
+      <PackagePath>runtimes\osx\native</PackagePath>
+      <Pack>True</Pack>
+      <Visible>False</Visible>
+    </Content>
+    <Content Include="$(NativeLibDirectory)android-arm\libmeshoptimizer.so">
+      <PackagePath>runtimes/android-arm/native</PackagePath>
+      <Pack>True</Pack>
+      <Visible>False</Visible>
+    </Content>
+    <Content Include="$(NativeLibDirectory)android-arm64\libmeshoptimizer.so">
+      <PackagePath>runtimes/android-arm64/native</PackagePath>
+      <Pack>True</Pack>
+      <Visible>False</Visible>
+    </Content>
+    <Content Include="$(NativeLibDirectory)android-x64\libmeshoptimizer.so">
+      <PackagePath>runtimes/android-x64/native</PackagePath>
+      <Pack>True</Pack>
+      <Visible>False</Visible>
+    </Content>
+  </ItemGroup>
+
+
+</Project>

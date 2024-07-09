@@ -6,9 +6,9 @@ using CppAst;
 
 namespace Generator;
 
-public static partial class CsCodeGenerator
+partial class CsCodeGenerator
 {
-    public static void GenerateEnums(CppCompilation compilation)
+    public void GenerateEnums(CppCompilation compilation)
     {
         string visibility = _options.PublicVisiblity ? "public" : "internal";
         using CodeWriter writer = new(Path.Combine(_options.OutputPath, "Enums.cs"), false, _options.Namespace, new string[] { "System" });
@@ -36,12 +36,19 @@ public static partial class CsCodeGenerator
                 writer.WriteLine("[Flags]");
             }
 
-            string csName = GetCsCleanName(cppEnum.Name);
+            string enumName = GetCsCleanName(cppEnum.Name);
+            if (!string.IsNullOrEmpty(_options.EnumPrefixRemap)
+                && enumName.StartsWith(_options.EnumPrefixRemap))
+            {
+                enumName = enumName.Replace(_options.EnumPrefixRemap, string.Empty);
+                enumName = PrettyString(enumName);
+                AddCsMapping(cppEnum.Name, enumName);
+            }
 
-            createdEnums.Add(csName, cppEnum.Name);
+            createdEnums.Add(enumName, cppEnum.Name);
 
             bool noneAdded = false;
-            using (writer.PushBlock($"{visibility} enum {csName}"))
+            using (writer.PushBlock($"{visibility} enum {enumName}"))
             {
                 if (isBitmask &&
                     !cppEnum.Items.Any(enumItem => GetEnumItemName(enumItem.Name) == "None"))
@@ -73,10 +80,10 @@ public static partial class CsCodeGenerator
                         continue;
                     }
 
-                    if (enumItemName != "Count" && _options.EnumWriteUnmanagedTag)
-                    {
-                        writer.WriteLine($"/// <unmanaged>{enumItem.Name}</unmanaged>");
-                    }
+                    //if (enumItemName != "Count" && _options.EnumWriteUnmanagedTag)
+                    //{
+                    //    writer.WriteLine($"/// <unmanaged>{enumItem.Name}</unmanaged>");
+                    //}
 
                     if (enumItem.ValueExpression is CppRawExpression rawExpression)
                     {
@@ -122,8 +129,8 @@ public static partial class CsCodeGenerator
                     continue;
                 }
 
-                csName = typedef.Name.Replace("Flags", "");
-                AddCsMapping(typedef.Name, csName);
+                enumName = typedef.Name.Replace("Flags", "");
+                AddCsMapping(typedef.Name, enumName);
             }
         }
     }

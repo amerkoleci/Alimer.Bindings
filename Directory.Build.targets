@@ -1,4 +1,8 @@
 <Project>
+  <!-- Emit the [DisableRuntimeMarshalling] attribute for all .NET 8 projects -->
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.DisableRuntimeMarshallingAttribute" />
+  </ItemGroup>
   
   <!-- Settings that are only set for executables -->
   <PropertyGroup Condition="'$(OutputType)' != 'Library' AND '$(UseWindowsForms)' != 'true'">

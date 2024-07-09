@@ -151,7 +151,7 @@ internal unsafe readonly struct NSView
         set => objc_msgSend(NativePtr, setWantsLayer, value);
     }
 
-    public IntPtr layer
+    public nint layer
     {
         get => IntPtr_objc_msgSend(NativePtr, "layer");
         set => objc_msgSend(NativePtr, setLayer, value);
@@ -181,9 +181,9 @@ internal unsafe readonly struct NSWindow
 
 internal unsafe readonly struct CAMetalLayer
 {
-    public readonly IntPtr Handle;
+    public readonly nint Handle;
 
-    public CAMetalLayer(IntPtr ptr) => Handle = ptr;
+    public CAMetalLayer(nint ptr) => Handle = ptr;
 
     public static CAMetalLayer New() => s_class.AllocInit<CAMetalLayer>();
 

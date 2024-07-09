@@ -7,7 +7,7 @@ namespace Generator;
 
 public static class Program
 {
-    public static int Main(string[] args)
+    public static void Main(string[] args)
     {
         string outputPath = AppContext.BaseDirectory;
         if (args.Length > 0)
@@ -30,13 +30,64 @@ public static class Program
             Directory.CreateDirectory(outputPath);
         }
 
-        string? headerFile = Path.Combine(AppContext.BaseDirectory, "webgpu", "wgpu.h");
-        var options = new CppParserOptions
-        {
-            ParseMacros = true
-        };
+        string? headerFile = default;
+        CppParserOptions? parseOptions = default;
+        CsCodeGeneratorOptions? generateOptions = default;
 
-        CppCompilation compilation = CppParser.ParseFile(headerFile, options);
+        if (outputPath.Contains("Alimer.Bindings.MeshOptimizer"))
+        {
+            headerFile = Path.Combine(AppContext.BaseDirectory, "headers", "meshoptimizer.h");
+            parseOptions = new()
+            {
+                ParseMacros = true
+            };
+
+            generateOptions = new()
+            {
+                ClassName = "Meshopt",
+                Namespace = "Meshopt",
+                PublicVisiblity = true,
+                EnumPrefixRemap = "meshopt_",
+                StructPrefixRemap = "meshopt_",
+                FunctionPrefixRemap = "meshopt_",
+                ExcludeConstants =
+                {
+                    "MESHOPTIMIZER_ALLOC_CALLCONV",
+                    "MESHOPTIMIZER_EXPERIMENTAL",
+                },
+                ExcludeFunctions =
+                {
+                    "meshopt_setAllocator"
+                },
+                FunctionParametersRemap =
+                {
+                    { "meshopt_simplify::options", "SimplificationOptions" },
+                    { "meshopt_simplifyWithAttributes::options", "SimplificationOptions" },
+                }
+            };
+        }
+        else if (outputPath.Contains("Alimer.Bindings.WebGPU"))
+        {
+            headerFile = Path.Combine(AppContext.BaseDirectory, "webgpu", "wgpu.h");
+            parseOptions = new()
+            {
+                ParseMacros = true
+            };
+
+            generateOptions = new()
+            {
+                ClassName = "WebGPU",
+                Namespace = "WebGPU",
+                PublicVisiblity = true,
+            };
+        }
+        else
+        {
+            Console.WriteLine("No generator configured");
+            return;
+        }
+
+        CppCompilation compilation = CppParser.ParseFile(headerFile, parseOptions!);
 
         // Print diagnostic messages
         if (compilation.HasErrors)
@@ -52,19 +103,11 @@ public static class Program
                 }
             }
 
-            return 0;
+            return;
         }
 
-
-        CsCodeGeneratorOptions generateOptions = new()
-        {
-            OutputPath = outputPath,
-            ClassName = "WebGPU",
-            Namespace = "WebGPU",
-            PublicVisiblity = true,
-            EnumWriteUnmanagedTag = false
-        };
-        CsCodeGenerator.Generate(compilation, generateOptions);
-        return 0;
+        generateOptions.OutputPath = outputPath;
+        CsCodeGenerator generator = new(generateOptions!);
+        generator.Generate(compilation);
     }
 }

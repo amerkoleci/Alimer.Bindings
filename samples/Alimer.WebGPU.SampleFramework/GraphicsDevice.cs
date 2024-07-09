@@ -53,7 +53,7 @@ public unsafe sealed class GraphicsDevice : IDisposable
             Instance /* equivalent of navigator.gpu */,
             &options,
             &OnAdapterRequestEnded,
-            new nint(&result)
+            &result
         );
         Adapter = result;
         wgpuAdapterGetProperties(Adapter, out WGPUAdapterProperties properties);
@@ -64,7 +64,7 @@ public unsafe sealed class GraphicsDevice : IDisposable
         AdapterProperties = properties;
         AdapterLimits = limits;
 
-        fixed (sbyte* pDeviceName = "My Device".GetUtf8Span())
+        fixed (byte* pDeviceName = "My Device".GetUtf8Span())
         {
             WGPUDeviceDescriptor deviceDesc = new()
             {
@@ -81,7 +81,7 @@ public unsafe sealed class GraphicsDevice : IDisposable
                 Adapter,
                 &deviceDesc,
                 &OnDeviceRequestEnded,
-                new nint(&device)
+                &device
             );
             Device = device;
         }
@@ -126,7 +126,7 @@ public unsafe sealed class GraphicsDevice : IDisposable
     }
 
     [UnmanagedCallersOnly]
-    private static void OnAdapterRequestEnded(WGPURequestAdapterStatus status, WGPUAdapter candidateAdapter, sbyte* message, nint pUserData)
+    private static void OnAdapterRequestEnded(WGPURequestAdapterStatus status, WGPUAdapter candidateAdapter, byte* message, void* pUserData)
     {
         if (status == WGPURequestAdapterStatus.Success)
         {
@@ -139,7 +139,7 @@ public unsafe sealed class GraphicsDevice : IDisposable
     }
 
     [UnmanagedCallersOnly]
-    private static void OnDeviceRequestEnded(WGPURequestDeviceStatus status, WGPUDevice device, sbyte* message, nint pUserData)
+    private static void OnDeviceRequestEnded(WGPURequestDeviceStatus status, WGPUDevice device, byte* message, void* pUserData)
     {
         if (status == WGPURequestDeviceStatus.Success)
         {

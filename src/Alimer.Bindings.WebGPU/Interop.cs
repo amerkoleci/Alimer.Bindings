@@ -66,14 +66,12 @@ public static unsafe class Interop
     /// <inheritdoc cref="MemoryMarshal.CreateSpan{T}(ref T, int)" />
     public static Span<T> CreateSpan<T>(scoped ref T reference, int length) => MemoryMarshal.CreateSpan(ref reference, length);
 
-    /// <inheritdoc cref="MemoryMarshal.CreateReadOnlySpan{T}(ref T, int)" />
-    public static ReadOnlySpan<T> CreateReadOnlySpan<T>(scoped in T reference, int length) => MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(in reference), length);
 
     /// <summary>Gets a null-terminated sequence of UTF8 characters for a string.</summary>
     /// <param name="source">The string for which to get the null-terminated UTF8 character sequence.</param>
     /// <returns>A null-terminated UTF8 character sequence created from <paramref name="source" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ReadOnlySpan<sbyte> GetUtf8Span(this string? source)
+    public static ReadOnlySpan<byte> GetUtf8Span(this string? source)
     {
         ReadOnlySpan<byte> result;
 
@@ -90,7 +88,7 @@ public static unsafe class Interop
             result = null;
         }
 
-        return result.As<byte, sbyte>();
+        return result;
     }
 
     /// <summary>Gets a span for a null-terminated UTF8 character sequence.</summary>
@@ -98,7 +96,7 @@ public static unsafe class Interop
     /// <param name="maxLength">The maximum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
     /// <returns>A span that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ReadOnlySpan<sbyte> GetUtf8Span(sbyte* source, int maxLength = -1)
+    public static ReadOnlySpan<byte> GetUtf8Span(byte* source, int maxLength = -1)
         => (source != null) ? GetUtf8Span(in source[0], maxLength) : null;
 
     /// <summary>Gets a span for a null-terminated UTF8 character sequence.</summary>
@@ -106,9 +104,9 @@ public static unsafe class Interop
     /// <param name="maxLength">The maximum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
     /// <returns>A span that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ReadOnlySpan<sbyte> GetUtf8Span(in sbyte source, int maxLength = -1)
+    public static ReadOnlySpan<byte> GetUtf8Span(in byte source, int maxLength = -1)
     {
-        ReadOnlySpan<sbyte> result;
+        ReadOnlySpan<byte> result;
 
         if (!IsNullRef(in source))
         {
@@ -117,8 +115,8 @@ public static unsafe class Interop
                 maxLength = int.MaxValue;
             }
 
-            result = CreateReadOnlySpan(in source, maxLength);
-            var length = result.IndexOf((sbyte)'\0');
+            result = MemoryMarshal.CreateReadOnlySpan(in source, maxLength);
+            int length = result.IndexOf((byte)'\0');
 
             if (length >= 0)
             {
@@ -134,24 +132,24 @@ public static unsafe class Interop
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string? GetString(sbyte* source, int maxLength = -1)
+    public static string? GetString(byte* source, int maxLength = -1)
          => (source != null) ? GetString(in source[0], maxLength) : null;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string? GetString(in sbyte source, int maxLength = -1) => GetString(GetUtf8Span(in source, maxLength));
+    public static string? GetString(in byte source, int maxLength = -1) => GetString(GetUtf8Span(in source, maxLength));
 
     /// <summary>Gets a string for a given span.</summary>
     /// <param name="span">The span for which to create the string.</param>
     /// <returns>A string created from <paramref name="span" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string? GetString(this ReadOnlySpan<sbyte> span)
-        => span.GetPointerUnsafe() != null ? Encoding.UTF8.GetString(span.As<sbyte, byte>()) : null;
+    public static string? GetString(this ReadOnlySpan<byte> span)
+        => span.GetPointerUnsafe() != null ? Encoding.UTF8.GetString(span) : null;
 
     /// <summary>Gets a string for a given span.</summary>
     /// <param name="span">The span for which to create the string.</param>
     /// <returns>A string created from <paramref name="span" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string? GetString(this ReadOnlySpan<ushort> span)
-        => span.GetPointerUnsafe() != null ? new string(span.As<ushort, char>()) : null;
+    public static string? GetString(this ReadOnlySpan<char> span)
+        => span.GetPointerUnsafe() != null ? new string(span) : null;
 
 }

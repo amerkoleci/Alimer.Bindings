@@ -10,6 +10,7 @@ Collection of cross platform **.net8.0** bindings.
 | Library               | Description                                                                           | Status   | NuGet |
 | -------               | -----------                                                                           | ------   |------ |
 | [wgpu](https://github.com/gfx-rs/wgpu-native) | wgpu bindings version [v0.17.2.1](https://github.com/gfx-rs/wgpu-native/releases/tag/v0.17.2.1)                                            | Done ✔️ | [![NuGet](https://img.shields.io/nuget/v/Alimer.Bindings.WebGPU.svg)](https://www.nuget.org/packages/Alimer.Bindings.WebGPU)|
+| [meshoptimizer](https://github.com/zeux/meshoptimizer) | meshoptimizer bindings                                            | Done ✔️ | [![NuGet](https://img.shields.io/nuget/v/Alimer.Bindings.MeshOptimizer.svg)](https://www.nuget.org/packages/Alimer.Bindings.MeshOptimizer)|
 
 ## Sponsors
 Please consider [SPONSOR](https://github.com/sponsors/amerkoleci) me to further help development and to allow faster issue triaging and new features to be implemented.

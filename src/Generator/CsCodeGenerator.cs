@@ -5,15 +5,19 @@ using CppAst;
 
 namespace Generator;
 
-public static partial class CsCodeGenerator
+public partial class CsCodeGenerator
 {
     private static readonly HashSet<string> s_keywords =
     [
         "object",
         "event",
+        "base",
+        "delegate",
+        "string",
+        "int",
     ];
 
-    private static readonly Dictionary<string, string> s_csNameMappings = new()
+    private static readonly Dictionary<string, string> s_knownTypeNameMappings = new()
     {
         { "bool", "bool" },
         { "uint8_t", "byte" },
@@ -35,12 +39,17 @@ public static partial class CsCodeGenerator
         { "WGPUInstanceFlag", "WGPUInstanceFlags" },
     };
 
-    private static CsCodeGeneratorOptions _options = new();
+    private readonly Dictionary<string, string> _csNameMappings = [];
 
-    public static void Generate(CppCompilation compilation, CsCodeGeneratorOptions options)
+    private readonly CsCodeGeneratorOptions _options;
+
+    public CsCodeGenerator(CsCodeGeneratorOptions options)
     {
         _options = options;
+    }
 
+    public void Generate(CppCompilation compilation)
+    {
         GenerateConstants(compilation);
         GenerateEnums(compilation);
         GenerateHandles(compilation);
@@ -48,69 +57,14 @@ public static partial class CsCodeGenerator
         GenerateCommands(compilation);
     }
 
-    public static void AddCsMapping(string typeName, string csTypeName)
+    public void AddCsMapping(string typeName, string csTypeName)
     {
-        s_csNameMappings[typeName] = csTypeName;
+        _csNameMappings[typeName] = csTypeName;
     }
 
-    private static void GenerateConstants(CppCompilation compilation)
+    private static string PrettyString(string str)
     {
-        string visibility = _options.PublicVisiblity ? "public" : "internal";
-        using var writer = new CodeWriter(Path.Combine(_options.OutputPath, "Constants.cs"), false, _options.Namespace, Array.Empty<string>());
-        using (writer.PushBlock($"{visibility} static partial class {_options.ClassName}"))
-        {
-            foreach (CppMacro cppMacro in compilation.Macros)
-            {
-                if (string.IsNullOrEmpty(cppMacro.Value)
-                    || cppMacro.Name.EndsWith("_H_", StringComparison.OrdinalIgnoreCase)
-                    || cppMacro.Name.Equals("WGPU_EXPORT", StringComparison.OrdinalIgnoreCase)
-                    || cppMacro.Name.Equals("WGPU_SHARED_LIBRARY", StringComparison.OrdinalIgnoreCase)
-                    || cppMacro.Name.Equals("WGPU_IMPLEMENTATION", StringComparison.OrdinalIgnoreCase)
-                    )
-                {
-                    continue;
-                }
-
-                //string csName = GetPrettyEnumName(cppMacro.Name, "VK_");
-
-                string modifier = "const";
-                string csDataType = "string";
-                string macroValue = NormalizeEnumValue(cppMacro.Value);
-                if (macroValue.EndsWith("F", StringComparison.OrdinalIgnoreCase))
-                {
-                    csDataType = "float";
-                }
-                else if (macroValue.EndsWith("UL", StringComparison.OrdinalIgnoreCase))
-                {
-                    csDataType = "ulong";
-                }
-                else if (macroValue.EndsWith("U", StringComparison.OrdinalIgnoreCase))
-                {
-                    csDataType = "uint";
-                }
-                else if (uint.TryParse(macroValue, out _) || macroValue.StartsWith("0x"))
-                {
-                    csDataType = "uint";
-                }
-
-                if (cppMacro.Name == "WGPU_WHOLE_MAP_SIZE")
-                {
-                    modifier = "static readonly";
-                    csDataType = "nuint";
-                    macroValue = "nuint.MaxValue";
-                }
-
-                writer.WriteLine($"/// <unmanaged>{cppMacro.Name}</unmanaged>");
-                if (cppMacro.Name == "VK_HEADER_VERSION_COMPLETE")
-                {
-                    writer.WriteLine($"public {modifier} {csDataType} {cppMacro.Name} = new VkVersion({cppMacro.Tokens[2]}, {cppMacro.Tokens[4]}, {cppMacro.Tokens[6]}, VK_HEADER_VERSION);");
-                }
-                else
-                {
-                    writer.WriteLine($"public {modifier} {csDataType} {cppMacro.Name} = {macroValue};");
-                }
-            }
-        }
+        return char.ToUpperInvariant(str[0]) + str.Substring(1);
     }
 
     private static string NormalizeFieldName(string name)
@@ -121,38 +75,39 @@ public static partial class CsCodeGenerator
         return name;
     }
 
-    private static string GetCsCleanName(string name)
+    private string GetCsCleanName(string name)
     {
-        if (s_csNameMappings.TryGetValue(name, out string? mappedName))
+        if (s_knownTypeNameMappings.TryGetValue(name, out string? knownMappedName))
+        {
+            return GetCsCleanName(knownMappedName);
+        }
+        else if(_csNameMappings.TryGetValue(name, out string? mappedName))
         {
             return GetCsCleanName(mappedName);
         }
         else if (name.StartsWith("PFN"))
         {
-            return "IntPtr";
+            return "nint";
         }
 
         return name;
     }
 
-    private static string GetCsTypeName(CppType? type, bool isPointer = false)
+    private string GetCsTypeName(CppType? type)
     {
         if (type is CppPrimitiveType primitiveType)
         {
-            return GetCsTypeName(primitiveType, isPointer);
+            return GetCsTypeName(primitiveType);
         }
 
         if (type is CppQualifiedType qualifiedType)
         {
-            return GetCsTypeName(qualifiedType.ElementType, isPointer);
+            return GetCsTypeName(qualifiedType.ElementType);
         }
 
         if (type is CppEnum enumType)
         {
             string enumCsName = GetCsCleanName(enumType.Name);
-            if (isPointer)
-                return enumCsName + "*";
-
             return enumCsName;
         }
 
@@ -160,119 +115,110 @@ public static partial class CsCodeGenerator
         {
             if (typedef.ElementType is CppClass classElementType)
             {
-                return GetCsTypeName(classElementType, isPointer);
+                return GetCsTypeName(classElementType);
             }
 
             string typeDefCsName = GetCsCleanName(typedef.Name);
-            if (isPointer)
-                return typeDefCsName + "*";
-
             return typeDefCsName;
         }
 
         if (type is CppClass @class)
         {
-            var className = GetCsCleanName(@class.Name);
-            if (isPointer)
-                return className + "*";
-
+            string className = GetCsCleanName(@class.Name);
             return className;
         }
 
         if (type is CppPointerType pointerType)
         {
-            return GetCsTypeName(pointerType);
+            string csPointerTypeName = GetCsTypeName(pointerType);
+            if (csPointerTypeName == "IntPtr" || csPointerTypeName == "nint" /*&& s_csNameMappings.ContainsKey(pointerType.)*/)
+            {
+                return csPointerTypeName;
+            }
+
+            return csPointerTypeName + "*";
         }
 
         if (type is CppArrayType arrayType)
         {
-            return GetCsTypeName(arrayType.ElementType, true);
+            return GetCsTypeName(arrayType.ElementType) + "*";
         }
 
         return string.Empty;
     }
 
-    private static string GetCsTypeName(CppPrimitiveType primitiveType, bool isPointer)
+    private static string GetCsTypeName(CppPrimitiveType primitiveType)
     {
         switch (primitiveType.Kind)
         {
             case CppPrimitiveKind.Void:
-                return isPointer ? "nint" : "void";
+                return "void";
 
             case CppPrimitiveKind.Char:
-                return isPointer ? "sbyte*" : "sbyte";
+                return "byte";
 
             case CppPrimitiveKind.Bool:
                 return "bool";
 
             case CppPrimitiveKind.WChar:
-                return isPointer ? "ushort*" : "ushort";
+                return "char";
 
             case CppPrimitiveKind.Short:
-                return isPointer ? "short*" : "short";
+                return "short";
             case CppPrimitiveKind.Int:
-                return isPointer ? "int*" : "int";
+                return "int";
 
             case CppPrimitiveKind.LongLong:
-                break;
+                return "long";
             case CppPrimitiveKind.UnsignedChar:
-                break;
+                return "byte";
             case CppPrimitiveKind.UnsignedShort:
-                return isPointer ? "ushort*" : "ushort";
+                return "ushort";
             case CppPrimitiveKind.UnsignedInt:
-                return isPointer ? "uint*" : "uint";
+                return "uint";
 
             case CppPrimitiveKind.UnsignedLongLong:
-                break;
+                return "ulong";
             case CppPrimitiveKind.Float:
-                return isPointer ? "float*" : "float";
+                return "float";
             case CppPrimitiveKind.Double:
-                return isPointer ? "double*" : "double";
+                return "double";
             case CppPrimitiveKind.LongDouble:
-                break;
-
+                return "double";
 
             default:
-                return string.Empty;
+                throw new InvalidOperationException($"Unknown primitive type: {primitiveType.Kind}");
         }
-
-        return string.Empty;
     }
 
-    private static string GetCsTypeName(CppPointerType pointerType)
+    private string GetCsTypeName(CppPointerType pointerType)
     {
         if (pointerType.ElementType is CppQualifiedType qualifiedType)
         {
             if (qualifiedType.ElementType is CppPrimitiveType primitiveType)
             {
-                if (primitiveType.Kind == CppPrimitiveKind.Void && qualifiedType.Qualifier == CppTypeQualifier.Const)
-                {
-                    // const void*
-                    return "void*";
-                }
-
-                return GetCsTypeName(primitiveType, true);
+                return GetCsTypeName(primitiveType);
             }
             else if (qualifiedType.ElementType is CppClass @classType)
             {
-                return GetCsTypeName(@classType, true);
+                return GetCsTypeName(@classType);
             }
             else if (qualifiedType.ElementType is CppPointerType subPointerType)
             {
-                return GetCsTypeName(subPointerType, true) + "*";
+                return GetCsTypeName(subPointerType) + "*";
             }
             else if (qualifiedType.ElementType is CppTypedef typedef)
             {
-                return GetCsTypeName(typedef, true);
+                return GetCsTypeName(typedef);
             }
             else if (qualifiedType.ElementType is CppEnum @enum)
             {
-                return GetCsTypeName(@enum, true);
+                return GetCsTypeName(@enum);
             }
 
-            return GetCsTypeName(qualifiedType.ElementType, true);
+            return GetCsTypeName(qualifiedType.ElementType);
         }
 
-        return GetCsTypeName(pointerType.ElementType, true);
+        return GetCsTypeName(pointerType.ElementType);
     }
 }

@@ -13,7 +13,7 @@ public delegate void WGPUErrorCallback(WGPUErrorType type, string message);
 
 public static unsafe partial class WebGPU
 {
-    private const string LibName = "wgpu_native";
+    private const string LibraryName = "wgpu_native";
 
 #if USE_FUNCTION_POINTERS
     private static IntPtr s_wgpuModule;
@@ -60,7 +60,7 @@ public static unsafe partial class WebGPU
             return nativeLibrary;
         }
 
-        if (libraryName.Equals(LibName) && TryResolveWGPU(assembly, searchPath, out nativeLibrary))
+        if (libraryName.Equals(LibraryName) && TryResolveWGPU(assembly, searchPath, out nativeLibrary))
         {
             return nativeLibrary;
         }
@@ -138,13 +138,13 @@ public static unsafe partial class WebGPU
     public static void wgpuSetLogCallback(WGPULogCallback callback, nint userdata = 0)
     {
         s_logCallback = callback;
-        wgpuSetLogCallback(callback != null ? &NativeLogCallback : null, userdata);
+        wgpuSetLogCallback(callback != null ? &NativeLogCallback : null, userdata.ToPointer());
     }
 
     public static void wgpuDeviceSetUncapturedErrorCallback(WGPUDevice device, WGPUErrorCallback? callback)
     {
         s_uncapturedErrorCallbacks[device] = callback;
-        wgpuDeviceSetUncapturedErrorCallback(device, callback != null ? &NativeUncapturedErrorCallback : null, device.Handle);
+        wgpuDeviceSetUncapturedErrorCallback(device, callback != null ? &NativeUncapturedErrorCallback : null, device.Handle.ToPointer());
     }
 
     public static ReadOnlySpan<WGPUFeatureName> wgpuAdapterEnumerateFeatures(WGPUAdapter adapter)
@@ -237,7 +237,7 @@ public static unsafe partial class WebGPU
 
     public static WGPUCommandEncoder wgpuDeviceCreateCommandEncoder(WGPUDevice device, string? label = default, WGPUChainedStruct* nextInChain = default)
     {
-        fixed (sbyte* pLabel = label.GetUtf8Span())
+        fixed (byte* pLabel = label.GetUtf8Span())
         {
             WGPUCommandEncoderDescriptor descriptor = new()
             {
@@ -251,7 +251,7 @@ public static unsafe partial class WebGPU
 
     public static WGPUCommandBuffer wgpuCommandEncoderFinish(WGPUCommandEncoder commandEncoder, string? label = default, WGPUChainedStruct* nextInChain = default)
     {
-        fixed (sbyte* pLabel = label.GetUtf8Span())
+        fixed (byte* pLabel = label.GetUtf8Span())
         {
             WGPUCommandBufferDescriptor descriptor = new()
             {
@@ -263,9 +263,9 @@ public static unsafe partial class WebGPU
         }
     }
 
-    public static WGPUShaderModule wgpuDeviceCreateShaderModule(WGPUDevice device, ReadOnlySpan<sbyte> wgslShaderSource)
+    public static WGPUShaderModule wgpuDeviceCreateShaderModule(WGPUDevice device, ReadOnlySpan<byte> wgslShaderSource)
     {
-        fixed (sbyte* pShaderSource = wgslShaderSource)
+        fixed (byte* pShaderSource = wgslShaderSource)
         {
             // Use the extension mechanism to load a WGSL shader source code
             WGPUShaderModuleWGSLDescriptor shaderCodeDesc = new();
@@ -336,19 +336,19 @@ public static unsafe partial class WebGPU
 
     #region Native Callbacks
     [UnmanagedCallersOnly]
-    private static void NativeLogCallback(WGPULogLevel level, sbyte* pMessage, nint userData)
+    private static void NativeLogCallback(WGPULogLevel level, byte* pMessage, void* userData)
     {
         if (s_logCallback != null)
         {
             string message = Interop.GetString(pMessage)!;
-            s_logCallback(level, message, userData);
+            s_logCallback(level, message, (nint)userData);
         }
     }
 
     [UnmanagedCallersOnly]
-    private static void NativeUncapturedErrorCallback(WGPUErrorType type, sbyte* pMessage, nint pUserData)
+    private static void NativeUncapturedErrorCallback(WGPUErrorType type, byte* pMessage, void* pUserData)
     {
-        WGPUDevice device = pUserData;
+        WGPUDevice device = (WGPUDevice)((nint)pUserData);
         if (s_uncapturedErrorCallbacks.TryGetValue(device, out WGPUErrorCallback? callback)
             && callback != null)
         {

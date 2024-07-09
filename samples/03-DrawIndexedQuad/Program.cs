@@ -51,8 +51,8 @@ public static unsafe class Program
                 stepMode = WGPUVertexStepMode.Vertex
             };
 
-            fixed (sbyte* pVertexEntryPoint = "vertexMain".GetUtf8Span())
-            fixed (sbyte* pFragmentEntryPoint = "fragmentMain".GetUtf8Span())
+            fixed (byte* pVertexEntryPoint = "vertexMain".GetUtf8Span())
+            fixed (byte* pFragmentEntryPoint = "fragmentMain".GetUtf8Span())
             {
                 WGPURenderPipelineDescriptor pipelineDesc = new();
                 pipelineDesc.layout = _pipelineLayout;

@@ -15,73 +15,73 @@ using System.Runtime.InteropServices;
 namespace WebGPU;
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUBufferMapCallback(WGPUBufferMapAsyncStatus status, nint userdata = 0);
+public unsafe delegate void WGPUBufferMapCallback(WGPUBufferMapAsyncStatus status, void* userdata);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUCompilationInfoCallback(WGPUCompilationInfoRequestStatus status, WGPUCompilationInfo* compilationInfo, nint userdata = 0);
+public unsafe delegate void WGPUCompilationInfoCallback(WGPUCompilationInfoRequestStatus status, WGPUCompilationInfo* compilationInfo, void* userdata);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUCreateComputePipelineAsyncCallback(WGPUCreatePipelineAsyncStatus status, WGPUComputePipeline pipeline, sbyte* message, nint userdata = 0);
+public unsafe delegate void WGPUCreateComputePipelineAsyncCallback(WGPUCreatePipelineAsyncStatus status, WGPUComputePipeline pipeline, byte* message, void* userdata);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUCreateRenderPipelineAsyncCallback(WGPUCreatePipelineAsyncStatus status, WGPURenderPipeline pipeline, sbyte* message, nint userdata = 0);
+public unsafe delegate void WGPUCreateRenderPipelineAsyncCallback(WGPUCreatePipelineAsyncStatus status, WGPURenderPipeline pipeline, byte* message, void* userdata);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUDeviceLostCallback(WGPUDeviceLostReason reason, sbyte* message, nint userdata = 0);
+public unsafe delegate void WGPUDeviceLostCallback(WGPUDeviceLostReason reason, byte* message, void* userdata);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUQueueWorkDoneCallback(WGPUQueueWorkDoneStatus status, nint userdata = 0);
+public unsafe delegate void WGPUQueueWorkDoneCallback(WGPUQueueWorkDoneStatus status, void* userdata);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPURequestAdapterCallback(WGPURequestAdapterStatus status, WGPUAdapter adapter, sbyte* message, nint userdata = 0);
+public unsafe delegate void WGPURequestAdapterCallback(WGPURequestAdapterStatus status, WGPUAdapter adapter, byte* message, void* userdata);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPURequestDeviceCallback(WGPURequestDeviceStatus status, WGPUDevice device, sbyte* message, nint userdata = 0);
+public unsafe delegate void WGPURequestDeviceCallback(WGPURequestDeviceStatus status, WGPUDevice device, byte* message, void* userdata);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUProcDeviceSetUncapturedErrorCallback(WGPUDevice device, delegate* unmanaged<WGPUErrorType, sbyte*, nint, void> callback, nint userdata = 0);
+public unsafe delegate void WGPUProcDeviceSetUncapturedErrorCallback(WGPUDevice device, delegate* unmanaged<WGPUErrorType, byte*, void*, void> callback, void* userdata);
 
 public unsafe partial class WebGPU
 {
-	[LibraryImport(LibName, EntryPoint = "wgpuCreateInstance")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCreateInstance")]
 	public static partial WGPUInstance wgpuCreateInstance(WGPUInstanceDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuGetProcAddress")]
-	public static partial nint wgpuGetProcAddress(WGPUDevice device, sbyte* procName);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuGetProcAddress")]
+	public static partial nint wgpuGetProcAddress(WGPUDevice device, byte* procName);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuAdapterEnumerateFeatures")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuAdapterEnumerateFeatures")]
 	public static partial nuint wgpuAdapterEnumerateFeatures(WGPUAdapter adapter, WGPUFeatureName* features);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuAdapterGetLimits")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuAdapterGetLimits")]
 	public static partial WGPUBool wgpuAdapterGetLimits(WGPUAdapter adapter, WGPUSupportedLimits* limits);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuAdapterGetLimits")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuAdapterGetLimits")]
 	public static partial WGPUBool wgpuAdapterGetLimits(WGPUAdapter adapter, out WGPUSupportedLimits limits);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuAdapterGetProperties")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuAdapterGetProperties")]
 	public static partial void wgpuAdapterGetProperties(WGPUAdapter adapter, WGPUAdapterProperties* properties);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuAdapterGetProperties")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuAdapterGetProperties")]
 	public static partial void wgpuAdapterGetProperties(WGPUAdapter adapter, out WGPUAdapterProperties properties);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuAdapterHasFeature")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuAdapterHasFeature")]
 	public static partial WGPUBool wgpuAdapterHasFeature(WGPUAdapter adapter, WGPUFeatureName feature);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuAdapterRequestDevice")]
-	public static partial void wgpuAdapterRequestDevice(WGPUAdapter adapter, WGPUDeviceDescriptor* descriptor, delegate* unmanaged<WGPURequestDeviceStatus, WGPUDevice, sbyte*, nint, void> callback, nint userdata = 0);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuAdapterRequestDevice")]
+	public static partial void wgpuAdapterRequestDevice(WGPUAdapter adapter, WGPUDeviceDescriptor* descriptor, delegate* unmanaged<WGPURequestDeviceStatus, WGPUDevice, byte*, void*, void> callback, void* userdata);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuAdapterReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuAdapterReference")]
 	public static partial void wgpuAdapterReference(WGPUAdapter adapter);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuAdapterRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuAdapterRelease")]
 	public static partial void wgpuAdapterRelease(WGPUAdapter adapter);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBindGroupSetLabel")]
-	public static partial void wgpuBindGroupSetLabel(WGPUBindGroup bindGroup, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBindGroupSetLabel")]
+	public static partial void wgpuBindGroupSetLabel(WGPUBindGroup bindGroup, byte* label);
 
-	public static void wgpuBindGroupSetLabel(WGPUBindGroup bindGroup, ReadOnlySpan<sbyte> label)
+	public static void wgpuBindGroupSetLabel(WGPUBindGroup bindGroup, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuBindGroupSetLabel(bindGroup, pLabel);
 		}
@@ -92,18 +92,18 @@ public unsafe partial class WebGPU
 		wgpuBindGroupSetLabel(bindGroup, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBindGroupReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBindGroupReference")]
 	public static partial void wgpuBindGroupReference(WGPUBindGroup bindGroup);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBindGroupRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBindGroupRelease")]
 	public static partial void wgpuBindGroupRelease(WGPUBindGroup bindGroup);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBindGroupLayoutSetLabel")]
-	public static partial void wgpuBindGroupLayoutSetLabel(WGPUBindGroupLayout bindGroupLayout, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBindGroupLayoutSetLabel")]
+	public static partial void wgpuBindGroupLayoutSetLabel(WGPUBindGroupLayout bindGroupLayout, byte* label);
 
-	public static void wgpuBindGroupLayoutSetLabel(WGPUBindGroupLayout bindGroupLayout, ReadOnlySpan<sbyte> label)
+	public static void wgpuBindGroupLayoutSetLabel(WGPUBindGroupLayout bindGroupLayout, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuBindGroupLayoutSetLabel(bindGroupLayout, pLabel);
 		}
@@ -114,39 +114,39 @@ public unsafe partial class WebGPU
 		wgpuBindGroupLayoutSetLabel(bindGroupLayout, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBindGroupLayoutReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBindGroupLayoutReference")]
 	public static partial void wgpuBindGroupLayoutReference(WGPUBindGroupLayout bindGroupLayout);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBindGroupLayoutRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBindGroupLayoutRelease")]
 	public static partial void wgpuBindGroupLayoutRelease(WGPUBindGroupLayout bindGroupLayout);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBufferDestroy")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferDestroy")]
 	public static partial void wgpuBufferDestroy(WGPUBuffer buffer);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBufferGetConstMappedRange")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferGetConstMappedRange")]
 	public static partial void* wgpuBufferGetConstMappedRange(WGPUBuffer buffer, nuint offset, nuint size);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBufferGetMapState")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferGetMapState")]
 	public static partial WGPUBufferMapState wgpuBufferGetMapState(WGPUBuffer buffer);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBufferGetMappedRange")]
-	public static partial nint wgpuBufferGetMappedRange(WGPUBuffer buffer, nuint offset, nuint size);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferGetMappedRange")]
+	public static partial void* wgpuBufferGetMappedRange(WGPUBuffer buffer, nuint offset, nuint size);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBufferGetSize")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferGetSize")]
 	public static partial ulong wgpuBufferGetSize(WGPUBuffer buffer);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBufferGetUsage")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferGetUsage")]
 	public static partial WGPUBufferUsage wgpuBufferGetUsage(WGPUBuffer buffer);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBufferMapAsync")]
-	public static partial void wgpuBufferMapAsync(WGPUBuffer buffer, WGPUMapMode mode, nuint offset, nuint size, delegate* unmanaged<WGPUBufferMapAsyncStatus, nint, void> callback, nint userdata = 0);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferMapAsync")]
+	public static partial void wgpuBufferMapAsync(WGPUBuffer buffer, WGPUMapMode mode, nuint offset, nuint size, delegate* unmanaged<WGPUBufferMapAsyncStatus, void*, void> callback, void* userdata);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBufferSetLabel")]
-	public static partial void wgpuBufferSetLabel(WGPUBuffer buffer, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferSetLabel")]
+	public static partial void wgpuBufferSetLabel(WGPUBuffer buffer, byte* label);
 
-	public static void wgpuBufferSetLabel(WGPUBuffer buffer, ReadOnlySpan<sbyte> label)
+	public static void wgpuBufferSetLabel(WGPUBuffer buffer, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuBufferSetLabel(buffer, pLabel);
 		}
@@ -157,21 +157,21 @@ public unsafe partial class WebGPU
 		wgpuBufferSetLabel(buffer, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBufferUnmap")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferUnmap")]
 	public static partial void wgpuBufferUnmap(WGPUBuffer buffer);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBufferReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferReference")]
 	public static partial void wgpuBufferReference(WGPUBuffer buffer);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuBufferRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferRelease")]
 	public static partial void wgpuBufferRelease(WGPUBuffer buffer);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandBufferSetLabel")]
-	public static partial void wgpuCommandBufferSetLabel(WGPUCommandBuffer commandBuffer, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandBufferSetLabel")]
+	public static partial void wgpuCommandBufferSetLabel(WGPUCommandBuffer commandBuffer, byte* label);
 
-	public static void wgpuCommandBufferSetLabel(WGPUCommandBuffer commandBuffer, ReadOnlySpan<sbyte> label)
+	public static void wgpuCommandBufferSetLabel(WGPUCommandBuffer commandBuffer, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuCommandBufferSetLabel(commandBuffer, pLabel);
 		}
@@ -182,42 +182,42 @@ public unsafe partial class WebGPU
 		wgpuCommandBufferSetLabel(commandBuffer, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandBufferReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandBufferReference")]
 	public static partial void wgpuCommandBufferReference(WGPUCommandBuffer commandBuffer);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandBufferRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandBufferRelease")]
 	public static partial void wgpuCommandBufferRelease(WGPUCommandBuffer commandBuffer);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderBeginComputePass")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderBeginComputePass")]
 	public static partial WGPUComputePassEncoder wgpuCommandEncoderBeginComputePass(WGPUCommandEncoder commandEncoder, WGPUComputePassDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderBeginRenderPass")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderBeginRenderPass")]
 	public static partial WGPURenderPassEncoder wgpuCommandEncoderBeginRenderPass(WGPUCommandEncoder commandEncoder, WGPURenderPassDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderClearBuffer")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderClearBuffer")]
 	public static partial void wgpuCommandEncoderClearBuffer(WGPUCommandEncoder commandEncoder, WGPUBuffer buffer, ulong offset, ulong size);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderCopyBufferToBuffer")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderCopyBufferToBuffer")]
 	public static partial void wgpuCommandEncoderCopyBufferToBuffer(WGPUCommandEncoder commandEncoder, WGPUBuffer source, ulong sourceOffset, WGPUBuffer destination, ulong destinationOffset, ulong size);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderCopyBufferToTexture")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderCopyBufferToTexture")]
 	public static partial void wgpuCommandEncoderCopyBufferToTexture(WGPUCommandEncoder commandEncoder, WGPUImageCopyBuffer* source, WGPUImageCopyTexture* destination, WGPUExtent3D* copySize);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderCopyTextureToBuffer")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderCopyTextureToBuffer")]
 	public static partial void wgpuCommandEncoderCopyTextureToBuffer(WGPUCommandEncoder commandEncoder, WGPUImageCopyTexture* source, WGPUImageCopyBuffer* destination, WGPUExtent3D* copySize);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderCopyTextureToTexture")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderCopyTextureToTexture")]
 	public static partial void wgpuCommandEncoderCopyTextureToTexture(WGPUCommandEncoder commandEncoder, WGPUImageCopyTexture* source, WGPUImageCopyTexture* destination, WGPUExtent3D* copySize);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderFinish")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderFinish")]
 	public static partial WGPUCommandBuffer wgpuCommandEncoderFinish(WGPUCommandEncoder commandEncoder, WGPUCommandBufferDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderInsertDebugMarker")]
-	public static partial void wgpuCommandEncoderInsertDebugMarker(WGPUCommandEncoder commandEncoder, sbyte* markerLabel);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderInsertDebugMarker")]
+	public static partial void wgpuCommandEncoderInsertDebugMarker(WGPUCommandEncoder commandEncoder, byte* markerLabel);
 
-	public static void wgpuCommandEncoderInsertDebugMarker(WGPUCommandEncoder commandEncoder, ReadOnlySpan<sbyte> markerLabel)
+	public static void wgpuCommandEncoderInsertDebugMarker(WGPUCommandEncoder commandEncoder, ReadOnlySpan<byte> markerLabel)
 	{
-		fixed (sbyte* pMarkerLabel = markerLabel)
+		fixed (byte* pMarkerLabel = markerLabel)
 		{
 			wgpuCommandEncoderInsertDebugMarker(commandEncoder, pMarkerLabel);
 		}
@@ -228,15 +228,15 @@ public unsafe partial class WebGPU
 		wgpuCommandEncoderInsertDebugMarker(commandEncoder, markerLabel.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderPopDebugGroup")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderPopDebugGroup")]
 	public static partial void wgpuCommandEncoderPopDebugGroup(WGPUCommandEncoder commandEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderPushDebugGroup")]
-	public static partial void wgpuCommandEncoderPushDebugGroup(WGPUCommandEncoder commandEncoder, sbyte* groupLabel);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderPushDebugGroup")]
+	public static partial void wgpuCommandEncoderPushDebugGroup(WGPUCommandEncoder commandEncoder, byte* groupLabel);
 
-	public static void wgpuCommandEncoderPushDebugGroup(WGPUCommandEncoder commandEncoder, ReadOnlySpan<sbyte> groupLabel)
+	public static void wgpuCommandEncoderPushDebugGroup(WGPUCommandEncoder commandEncoder, ReadOnlySpan<byte> groupLabel)
 	{
-		fixed (sbyte* pGroupLabel = groupLabel)
+		fixed (byte* pGroupLabel = groupLabel)
 		{
 			wgpuCommandEncoderPushDebugGroup(commandEncoder, pGroupLabel);
 		}
@@ -247,15 +247,15 @@ public unsafe partial class WebGPU
 		wgpuCommandEncoderPushDebugGroup(commandEncoder, groupLabel.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderResolveQuerySet")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderResolveQuerySet")]
 	public static partial void wgpuCommandEncoderResolveQuerySet(WGPUCommandEncoder commandEncoder, WGPUQuerySet querySet, uint firstQuery, uint queryCount, WGPUBuffer destination, ulong destinationOffset);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderSetLabel")]
-	public static partial void wgpuCommandEncoderSetLabel(WGPUCommandEncoder commandEncoder, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderSetLabel")]
+	public static partial void wgpuCommandEncoderSetLabel(WGPUCommandEncoder commandEncoder, byte* label);
 
-	public static void wgpuCommandEncoderSetLabel(WGPUCommandEncoder commandEncoder, ReadOnlySpan<sbyte> label)
+	public static void wgpuCommandEncoderSetLabel(WGPUCommandEncoder commandEncoder, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuCommandEncoderSetLabel(commandEncoder, pLabel);
 		}
@@ -266,30 +266,30 @@ public unsafe partial class WebGPU
 		wgpuCommandEncoderSetLabel(commandEncoder, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderWriteTimestamp")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderWriteTimestamp")]
 	public static partial void wgpuCommandEncoderWriteTimestamp(WGPUCommandEncoder commandEncoder, WGPUQuerySet querySet, uint queryIndex);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderReference")]
 	public static partial void wgpuCommandEncoderReference(WGPUCommandEncoder commandEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuCommandEncoderRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderRelease")]
 	public static partial void wgpuCommandEncoderRelease(WGPUCommandEncoder commandEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePassEncoderDispatchWorkgroups")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderDispatchWorkgroups")]
 	public static partial void wgpuComputePassEncoderDispatchWorkgroups(WGPUComputePassEncoder computePassEncoder, uint workgroupCountX, uint workgroupCountY, uint workgroupCountZ);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePassEncoderDispatchWorkgroupsIndirect")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderDispatchWorkgroupsIndirect")]
 	public static partial void wgpuComputePassEncoderDispatchWorkgroupsIndirect(WGPUComputePassEncoder computePassEncoder, WGPUBuffer indirectBuffer, ulong indirectOffset);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePassEncoderEnd")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderEnd")]
 	public static partial void wgpuComputePassEncoderEnd(WGPUComputePassEncoder computePassEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePassEncoderInsertDebugMarker")]
-	public static partial void wgpuComputePassEncoderInsertDebugMarker(WGPUComputePassEncoder computePassEncoder, sbyte* markerLabel);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderInsertDebugMarker")]
+	public static partial void wgpuComputePassEncoderInsertDebugMarker(WGPUComputePassEncoder computePassEncoder, byte* markerLabel);
 
-	public static void wgpuComputePassEncoderInsertDebugMarker(WGPUComputePassEncoder computePassEncoder, ReadOnlySpan<sbyte> markerLabel)
+	public static void wgpuComputePassEncoderInsertDebugMarker(WGPUComputePassEncoder computePassEncoder, ReadOnlySpan<byte> markerLabel)
 	{
-		fixed (sbyte* pMarkerLabel = markerLabel)
+		fixed (byte* pMarkerLabel = markerLabel)
 		{
 			wgpuComputePassEncoderInsertDebugMarker(computePassEncoder, pMarkerLabel);
 		}
@@ -300,15 +300,15 @@ public unsafe partial class WebGPU
 		wgpuComputePassEncoderInsertDebugMarker(computePassEncoder, markerLabel.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePassEncoderPopDebugGroup")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderPopDebugGroup")]
 	public static partial void wgpuComputePassEncoderPopDebugGroup(WGPUComputePassEncoder computePassEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePassEncoderPushDebugGroup")]
-	public static partial void wgpuComputePassEncoderPushDebugGroup(WGPUComputePassEncoder computePassEncoder, sbyte* groupLabel);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderPushDebugGroup")]
+	public static partial void wgpuComputePassEncoderPushDebugGroup(WGPUComputePassEncoder computePassEncoder, byte* groupLabel);
 
-	public static void wgpuComputePassEncoderPushDebugGroup(WGPUComputePassEncoder computePassEncoder, ReadOnlySpan<sbyte> groupLabel)
+	public static void wgpuComputePassEncoderPushDebugGroup(WGPUComputePassEncoder computePassEncoder, ReadOnlySpan<byte> groupLabel)
 	{
-		fixed (sbyte* pGroupLabel = groupLabel)
+		fixed (byte* pGroupLabel = groupLabel)
 		{
 			wgpuComputePassEncoderPushDebugGroup(computePassEncoder, pGroupLabel);
 		}
@@ -319,15 +319,15 @@ public unsafe partial class WebGPU
 		wgpuComputePassEncoderPushDebugGroup(computePassEncoder, groupLabel.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePassEncoderSetBindGroup")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderSetBindGroup")]
 	public static partial void wgpuComputePassEncoderSetBindGroup(WGPUComputePassEncoder computePassEncoder, uint groupIndex, WGPUBindGroup group, nuint dynamicOffsetCount, uint* dynamicOffsets);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePassEncoderSetLabel")]
-	public static partial void wgpuComputePassEncoderSetLabel(WGPUComputePassEncoder computePassEncoder, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderSetLabel")]
+	public static partial void wgpuComputePassEncoderSetLabel(WGPUComputePassEncoder computePassEncoder, byte* label);
 
-	public static void wgpuComputePassEncoderSetLabel(WGPUComputePassEncoder computePassEncoder, ReadOnlySpan<sbyte> label)
+	public static void wgpuComputePassEncoderSetLabel(WGPUComputePassEncoder computePassEncoder, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuComputePassEncoderSetLabel(computePassEncoder, pLabel);
 		}
@@ -338,24 +338,24 @@ public unsafe partial class WebGPU
 		wgpuComputePassEncoderSetLabel(computePassEncoder, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePassEncoderSetPipeline")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderSetPipeline")]
 	public static partial void wgpuComputePassEncoderSetPipeline(WGPUComputePassEncoder computePassEncoder, WGPUComputePipeline pipeline);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePassEncoderReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderReference")]
 	public static partial void wgpuComputePassEncoderReference(WGPUComputePassEncoder computePassEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePassEncoderRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderRelease")]
 	public static partial void wgpuComputePassEncoderRelease(WGPUComputePassEncoder computePassEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePipelineGetBindGroupLayout")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePipelineGetBindGroupLayout")]
 	public static partial WGPUBindGroupLayout wgpuComputePipelineGetBindGroupLayout(WGPUComputePipeline computePipeline, uint groupIndex);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePipelineSetLabel")]
-	public static partial void wgpuComputePipelineSetLabel(WGPUComputePipeline computePipeline, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePipelineSetLabel")]
+	public static partial void wgpuComputePipelineSetLabel(WGPUComputePipeline computePipeline, byte* label);
 
-	public static void wgpuComputePipelineSetLabel(WGPUComputePipeline computePipeline, ReadOnlySpan<sbyte> label)
+	public static void wgpuComputePipelineSetLabel(WGPUComputePipeline computePipeline, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuComputePipelineSetLabel(computePipeline, pLabel);
 		}
@@ -366,84 +366,84 @@ public unsafe partial class WebGPU
 		wgpuComputePipelineSetLabel(computePipeline, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePipelineReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePipelineReference")]
 	public static partial void wgpuComputePipelineReference(WGPUComputePipeline computePipeline);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePipelineRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePipelineRelease")]
 	public static partial void wgpuComputePipelineRelease(WGPUComputePipeline computePipeline);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateBindGroup")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateBindGroup")]
 	public static partial WGPUBindGroup wgpuDeviceCreateBindGroup(WGPUDevice device, WGPUBindGroupDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateBindGroupLayout")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateBindGroupLayout")]
 	public static partial WGPUBindGroupLayout wgpuDeviceCreateBindGroupLayout(WGPUDevice device, WGPUBindGroupLayoutDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateBuffer")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateBuffer")]
 	public static partial WGPUBuffer wgpuDeviceCreateBuffer(WGPUDevice device, WGPUBufferDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateCommandEncoder")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateCommandEncoder")]
 	public static partial WGPUCommandEncoder wgpuDeviceCreateCommandEncoder(WGPUDevice device, WGPUCommandEncoderDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateComputePipeline")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateComputePipeline")]
 	public static partial WGPUComputePipeline wgpuDeviceCreateComputePipeline(WGPUDevice device, WGPUComputePipelineDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateComputePipelineAsync")]
-	public static partial void wgpuDeviceCreateComputePipelineAsync(WGPUDevice device, WGPUComputePipelineDescriptor* descriptor, delegate* unmanaged<WGPUCreatePipelineAsyncStatus, WGPUComputePipeline, sbyte*, nint, void> callback, nint userdata = 0);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateComputePipelineAsync")]
+	public static partial void wgpuDeviceCreateComputePipelineAsync(WGPUDevice device, WGPUComputePipelineDescriptor* descriptor, delegate* unmanaged<WGPUCreatePipelineAsyncStatus, WGPUComputePipeline, byte*, void*, void> callback, void* userdata);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreatePipelineLayout")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreatePipelineLayout")]
 	public static partial WGPUPipelineLayout wgpuDeviceCreatePipelineLayout(WGPUDevice device, WGPUPipelineLayoutDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateQuerySet")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateQuerySet")]
 	public static partial WGPUQuerySet wgpuDeviceCreateQuerySet(WGPUDevice device, WGPUQuerySetDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateRenderBundleEncoder")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateRenderBundleEncoder")]
 	public static partial WGPURenderBundleEncoder wgpuDeviceCreateRenderBundleEncoder(WGPUDevice device, WGPURenderBundleEncoderDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateRenderPipeline")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateRenderPipeline")]
 	public static partial WGPURenderPipeline wgpuDeviceCreateRenderPipeline(WGPUDevice device, WGPURenderPipelineDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateRenderPipelineAsync")]
-	public static partial void wgpuDeviceCreateRenderPipelineAsync(WGPUDevice device, WGPURenderPipelineDescriptor* descriptor, delegate* unmanaged<WGPUCreatePipelineAsyncStatus, WGPURenderPipeline, sbyte*, nint, void> callback, nint userdata = 0);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateRenderPipelineAsync")]
+	public static partial void wgpuDeviceCreateRenderPipelineAsync(WGPUDevice device, WGPURenderPipelineDescriptor* descriptor, delegate* unmanaged<WGPUCreatePipelineAsyncStatus, WGPURenderPipeline, byte*, void*, void> callback, void* userdata);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateSampler")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateSampler")]
 	public static partial WGPUSampler wgpuDeviceCreateSampler(WGPUDevice device, WGPUSamplerDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateShaderModule")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateShaderModule")]
 	public static partial WGPUShaderModule wgpuDeviceCreateShaderModule(WGPUDevice device, WGPUShaderModuleDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceCreateTexture")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateTexture")]
 	public static partial WGPUTexture wgpuDeviceCreateTexture(WGPUDevice device, WGPUTextureDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceDestroy")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceDestroy")]
 	public static partial void wgpuDeviceDestroy(WGPUDevice device);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceEnumerateFeatures")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceEnumerateFeatures")]
 	public static partial nuint wgpuDeviceEnumerateFeatures(WGPUDevice device, WGPUFeatureName* features);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceGetLimits")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceGetLimits")]
 	public static partial WGPUBool wgpuDeviceGetLimits(WGPUDevice device, WGPUSupportedLimits* limits);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceGetLimits")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceGetLimits")]
 	public static partial WGPUBool wgpuDeviceGetLimits(WGPUDevice device, out WGPUSupportedLimits limits);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceGetQueue")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceGetQueue")]
 	public static partial WGPUQueue wgpuDeviceGetQueue(WGPUDevice device);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceHasFeature")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceHasFeature")]
 	public static partial WGPUBool wgpuDeviceHasFeature(WGPUDevice device, WGPUFeatureName feature);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDevicePopErrorScope")]
-	public static partial void wgpuDevicePopErrorScope(WGPUDevice device, delegate* unmanaged<WGPUErrorType, sbyte*, nint, void> callback, nint userdata = 0);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDevicePopErrorScope")]
+	public static partial void wgpuDevicePopErrorScope(WGPUDevice device, delegate* unmanaged<WGPUErrorType, byte*, void*, void> callback, void* userdata);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDevicePushErrorScope")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDevicePushErrorScope")]
 	public static partial void wgpuDevicePushErrorScope(WGPUDevice device, WGPUErrorFilter filter);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceSetLabel")]
-	public static partial void wgpuDeviceSetLabel(WGPUDevice device, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceSetLabel")]
+	public static partial void wgpuDeviceSetLabel(WGPUDevice device, byte* label);
 
-	public static void wgpuDeviceSetLabel(WGPUDevice device, ReadOnlySpan<sbyte> label)
+	public static void wgpuDeviceSetLabel(WGPUDevice device, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuDeviceSetLabel(device, pLabel);
 		}
@@ -454,36 +454,36 @@ public unsafe partial class WebGPU
 		wgpuDeviceSetLabel(device, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceSetUncapturedErrorCallback")]
-	public static partial void wgpuDeviceSetUncapturedErrorCallback(WGPUDevice device, delegate* unmanaged<WGPUErrorType, sbyte*, nint, void> callback, nint userdata = 0);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceSetUncapturedErrorCallback")]
+	public static partial void wgpuDeviceSetUncapturedErrorCallback(WGPUDevice device, delegate* unmanaged<WGPUErrorType, byte*, void*, void> callback, void* userdata);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceReference")]
 	public static partial void wgpuDeviceReference(WGPUDevice device);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDeviceRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceRelease")]
 	public static partial void wgpuDeviceRelease(WGPUDevice device);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuInstanceCreateSurface")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuInstanceCreateSurface")]
 	public static partial WGPUSurface wgpuInstanceCreateSurface(WGPUInstance instance, WGPUSurfaceDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuInstanceProcessEvents")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuInstanceProcessEvents")]
 	public static partial void wgpuInstanceProcessEvents(WGPUInstance instance);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuInstanceRequestAdapter")]
-	public static partial void wgpuInstanceRequestAdapter(WGPUInstance instance, WGPURequestAdapterOptions* options, delegate* unmanaged<WGPURequestAdapterStatus, WGPUAdapter, sbyte*, nint, void> callback, nint userdata = 0);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuInstanceRequestAdapter")]
+	public static partial void wgpuInstanceRequestAdapter(WGPUInstance instance, WGPURequestAdapterOptions* options, delegate* unmanaged<WGPURequestAdapterStatus, WGPUAdapter, byte*, void*, void> callback, void* userdata);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuInstanceReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuInstanceReference")]
 	public static partial void wgpuInstanceReference(WGPUInstance instance);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuInstanceRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuInstanceRelease")]
 	public static partial void wgpuInstanceRelease(WGPUInstance instance);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuPipelineLayoutSetLabel")]
-	public static partial void wgpuPipelineLayoutSetLabel(WGPUPipelineLayout pipelineLayout, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuPipelineLayoutSetLabel")]
+	public static partial void wgpuPipelineLayoutSetLabel(WGPUPipelineLayout pipelineLayout, byte* label);
 
-	public static void wgpuPipelineLayoutSetLabel(WGPUPipelineLayout pipelineLayout, ReadOnlySpan<sbyte> label)
+	public static void wgpuPipelineLayoutSetLabel(WGPUPipelineLayout pipelineLayout, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuPipelineLayoutSetLabel(pipelineLayout, pLabel);
 		}
@@ -494,27 +494,27 @@ public unsafe partial class WebGPU
 		wgpuPipelineLayoutSetLabel(pipelineLayout, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuPipelineLayoutReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuPipelineLayoutReference")]
 	public static partial void wgpuPipelineLayoutReference(WGPUPipelineLayout pipelineLayout);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuPipelineLayoutRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuPipelineLayoutRelease")]
 	public static partial void wgpuPipelineLayoutRelease(WGPUPipelineLayout pipelineLayout);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuQuerySetDestroy")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQuerySetDestroy")]
 	public static partial void wgpuQuerySetDestroy(WGPUQuerySet querySet);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuQuerySetGetCount")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQuerySetGetCount")]
 	public static partial uint wgpuQuerySetGetCount(WGPUQuerySet querySet);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuQuerySetGetType")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQuerySetGetType")]
 	public static partial WGPUQueryType wgpuQuerySetGetType(WGPUQuerySet querySet);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuQuerySetSetLabel")]
-	public static partial void wgpuQuerySetSetLabel(WGPUQuerySet querySet, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQuerySetSetLabel")]
+	public static partial void wgpuQuerySetSetLabel(WGPUQuerySet querySet, byte* label);
 
-	public static void wgpuQuerySetSetLabel(WGPUQuerySet querySet, ReadOnlySpan<sbyte> label)
+	public static void wgpuQuerySetSetLabel(WGPUQuerySet querySet, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuQuerySetSetLabel(querySet, pLabel);
 		}
@@ -525,21 +525,21 @@ public unsafe partial class WebGPU
 		wgpuQuerySetSetLabel(querySet, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuQuerySetReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQuerySetReference")]
 	public static partial void wgpuQuerySetReference(WGPUQuerySet querySet);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuQuerySetRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQuerySetRelease")]
 	public static partial void wgpuQuerySetRelease(WGPUQuerySet querySet);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuQueueOnSubmittedWorkDone")]
-	public static partial void wgpuQueueOnSubmittedWorkDone(WGPUQueue queue, delegate* unmanaged<WGPUQueueWorkDoneStatus, nint, void> callback, nint userdata = 0);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQueueOnSubmittedWorkDone")]
+	public static partial void wgpuQueueOnSubmittedWorkDone(WGPUQueue queue, delegate* unmanaged<WGPUQueueWorkDoneStatus, void*, void> callback, void* userdata);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuQueueSetLabel")]
-	public static partial void wgpuQueueSetLabel(WGPUQueue queue, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQueueSetLabel")]
+	public static partial void wgpuQueueSetLabel(WGPUQueue queue, byte* label);
 
-	public static void wgpuQueueSetLabel(WGPUQueue queue, ReadOnlySpan<sbyte> label)
+	public static void wgpuQueueSetLabel(WGPUQueue queue, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuQueueSetLabel(queue, pLabel);
 		}
@@ -550,27 +550,27 @@ public unsafe partial class WebGPU
 		wgpuQueueSetLabel(queue, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuQueueSubmit")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQueueSubmit")]
 	public static partial void wgpuQueueSubmit(WGPUQueue queue, nuint commandCount, WGPUCommandBuffer* commands);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuQueueWriteBuffer")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQueueWriteBuffer")]
 	public static partial void wgpuQueueWriteBuffer(WGPUQueue queue, WGPUBuffer buffer, ulong bufferOffset, void* data, nuint size);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuQueueWriteTexture")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQueueWriteTexture")]
 	public static partial void wgpuQueueWriteTexture(WGPUQueue queue, WGPUImageCopyTexture* destination, void* data, nuint dataSize, WGPUTextureDataLayout* dataLayout, WGPUExtent3D* writeSize);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuQueueReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQueueReference")]
 	public static partial void wgpuQueueReference(WGPUQueue queue);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuQueueRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQueueRelease")]
 	public static partial void wgpuQueueRelease(WGPUQueue queue);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleSetLabel")]
-	public static partial void wgpuRenderBundleSetLabel(WGPURenderBundle renderBundle, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleSetLabel")]
+	public static partial void wgpuRenderBundleSetLabel(WGPURenderBundle renderBundle, byte* label);
 
-	public static void wgpuRenderBundleSetLabel(WGPURenderBundle renderBundle, ReadOnlySpan<sbyte> label)
+	public static void wgpuRenderBundleSetLabel(WGPURenderBundle renderBundle, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuRenderBundleSetLabel(renderBundle, pLabel);
 		}
@@ -581,33 +581,33 @@ public unsafe partial class WebGPU
 		wgpuRenderBundleSetLabel(renderBundle, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleReference")]
 	public static partial void wgpuRenderBundleReference(WGPURenderBundle renderBundle);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleRelease")]
 	public static partial void wgpuRenderBundleRelease(WGPURenderBundle renderBundle);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderDraw")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderDraw")]
 	public static partial void wgpuRenderBundleEncoderDraw(WGPURenderBundleEncoder renderBundleEncoder, uint vertexCount, uint instanceCount = 1, uint firstVertex = 0, uint firstInstance = 0);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderDrawIndexed")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderDrawIndexed")]
 	public static partial void wgpuRenderBundleEncoderDrawIndexed(WGPURenderBundleEncoder renderBundleEncoder, uint indexCount, uint instanceCount = 1, uint firstIndex = 0, int baseVertex = 0, uint firstInstance = 0);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderDrawIndexedIndirect")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderDrawIndexedIndirect")]
 	public static partial void wgpuRenderBundleEncoderDrawIndexedIndirect(WGPURenderBundleEncoder renderBundleEncoder, WGPUBuffer indirectBuffer, ulong indirectOffset);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderDrawIndirect")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderDrawIndirect")]
 	public static partial void wgpuRenderBundleEncoderDrawIndirect(WGPURenderBundleEncoder renderBundleEncoder, WGPUBuffer indirectBuffer, ulong indirectOffset);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderFinish")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderFinish")]
 	public static partial WGPURenderBundle wgpuRenderBundleEncoderFinish(WGPURenderBundleEncoder renderBundleEncoder, WGPURenderBundleDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderInsertDebugMarker")]
-	public static partial void wgpuRenderBundleEncoderInsertDebugMarker(WGPURenderBundleEncoder renderBundleEncoder, sbyte* markerLabel);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderInsertDebugMarker")]
+	public static partial void wgpuRenderBundleEncoderInsertDebugMarker(WGPURenderBundleEncoder renderBundleEncoder, byte* markerLabel);
 
-	public static void wgpuRenderBundleEncoderInsertDebugMarker(WGPURenderBundleEncoder renderBundleEncoder, ReadOnlySpan<sbyte> markerLabel)
+	public static void wgpuRenderBundleEncoderInsertDebugMarker(WGPURenderBundleEncoder renderBundleEncoder, ReadOnlySpan<byte> markerLabel)
 	{
-		fixed (sbyte* pMarkerLabel = markerLabel)
+		fixed (byte* pMarkerLabel = markerLabel)
 		{
 			wgpuRenderBundleEncoderInsertDebugMarker(renderBundleEncoder, pMarkerLabel);
 		}
@@ -618,15 +618,15 @@ public unsafe partial class WebGPU
 		wgpuRenderBundleEncoderInsertDebugMarker(renderBundleEncoder, markerLabel.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderPopDebugGroup")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderPopDebugGroup")]
 	public static partial void wgpuRenderBundleEncoderPopDebugGroup(WGPURenderBundleEncoder renderBundleEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderPushDebugGroup")]
-	public static partial void wgpuRenderBundleEncoderPushDebugGroup(WGPURenderBundleEncoder renderBundleEncoder, sbyte* groupLabel);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderPushDebugGroup")]
+	public static partial void wgpuRenderBundleEncoderPushDebugGroup(WGPURenderBundleEncoder renderBundleEncoder, byte* groupLabel);
 
-	public static void wgpuRenderBundleEncoderPushDebugGroup(WGPURenderBundleEncoder renderBundleEncoder, ReadOnlySpan<sbyte> groupLabel)
+	public static void wgpuRenderBundleEncoderPushDebugGroup(WGPURenderBundleEncoder renderBundleEncoder, ReadOnlySpan<byte> groupLabel)
 	{
-		fixed (sbyte* pGroupLabel = groupLabel)
+		fixed (byte* pGroupLabel = groupLabel)
 		{
 			wgpuRenderBundleEncoderPushDebugGroup(renderBundleEncoder, pGroupLabel);
 		}
@@ -637,18 +637,18 @@ public unsafe partial class WebGPU
 		wgpuRenderBundleEncoderPushDebugGroup(renderBundleEncoder, groupLabel.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderSetBindGroup")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderSetBindGroup")]
 	public static partial void wgpuRenderBundleEncoderSetBindGroup(WGPURenderBundleEncoder renderBundleEncoder, uint groupIndex, WGPUBindGroup group, nuint dynamicOffsetCount, uint* dynamicOffsets);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderSetIndexBuffer")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderSetIndexBuffer")]
 	public static partial void wgpuRenderBundleEncoderSetIndexBuffer(WGPURenderBundleEncoder renderBundleEncoder, WGPUBuffer buffer, WGPUIndexFormat format, ulong offset = 0, ulong size = WGPU_WHOLE_SIZE);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderSetLabel")]
-	public static partial void wgpuRenderBundleEncoderSetLabel(WGPURenderBundleEncoder renderBundleEncoder, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderSetLabel")]
+	public static partial void wgpuRenderBundleEncoderSetLabel(WGPURenderBundleEncoder renderBundleEncoder, byte* label);
 
-	public static void wgpuRenderBundleEncoderSetLabel(WGPURenderBundleEncoder renderBundleEncoder, ReadOnlySpan<sbyte> label)
+	public static void wgpuRenderBundleEncoderSetLabel(WGPURenderBundleEncoder renderBundleEncoder, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuRenderBundleEncoderSetLabel(renderBundleEncoder, pLabel);
 		}
@@ -659,48 +659,48 @@ public unsafe partial class WebGPU
 		wgpuRenderBundleEncoderSetLabel(renderBundleEncoder, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderSetPipeline")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderSetPipeline")]
 	public static partial void wgpuRenderBundleEncoderSetPipeline(WGPURenderBundleEncoder renderBundleEncoder, WGPURenderPipeline pipeline);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderSetVertexBuffer")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderSetVertexBuffer")]
 	public static partial void wgpuRenderBundleEncoderSetVertexBuffer(WGPURenderBundleEncoder renderBundleEncoder, uint slot, WGPUBuffer buffer, ulong offset = 0, ulong size = WGPU_WHOLE_SIZE);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderReference")]
 	public static partial void wgpuRenderBundleEncoderReference(WGPURenderBundleEncoder renderBundleEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderBundleEncoderRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderRelease")]
 	public static partial void wgpuRenderBundleEncoderRelease(WGPURenderBundleEncoder renderBundleEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderBeginOcclusionQuery")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderBeginOcclusionQuery")]
 	public static partial void wgpuRenderPassEncoderBeginOcclusionQuery(WGPURenderPassEncoder renderPassEncoder, uint queryIndex);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderDraw")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderDraw")]
 	public static partial void wgpuRenderPassEncoderDraw(WGPURenderPassEncoder renderPassEncoder, uint vertexCount, uint instanceCount = 1, uint firstVertex = 0, uint firstInstance = 0);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderDrawIndexed")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderDrawIndexed")]
 	public static partial void wgpuRenderPassEncoderDrawIndexed(WGPURenderPassEncoder renderPassEncoder, uint indexCount, uint instanceCount = 1, uint firstIndex = 0, int baseVertex = 0, uint firstInstance = 0);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderDrawIndexedIndirect")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderDrawIndexedIndirect")]
 	public static partial void wgpuRenderPassEncoderDrawIndexedIndirect(WGPURenderPassEncoder renderPassEncoder, WGPUBuffer indirectBuffer, ulong indirectOffset);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderDrawIndirect")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderDrawIndirect")]
 	public static partial void wgpuRenderPassEncoderDrawIndirect(WGPURenderPassEncoder renderPassEncoder, WGPUBuffer indirectBuffer, ulong indirectOffset);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderEnd")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderEnd")]
 	public static partial void wgpuRenderPassEncoderEnd(WGPURenderPassEncoder renderPassEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderEndOcclusionQuery")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderEndOcclusionQuery")]
 	public static partial void wgpuRenderPassEncoderEndOcclusionQuery(WGPURenderPassEncoder renderPassEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderExecuteBundles")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderExecuteBundles")]
 	public static partial void wgpuRenderPassEncoderExecuteBundles(WGPURenderPassEncoder renderPassEncoder, nuint bundleCount, WGPURenderBundle* bundles);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderInsertDebugMarker")]
-	public static partial void wgpuRenderPassEncoderInsertDebugMarker(WGPURenderPassEncoder renderPassEncoder, sbyte* markerLabel);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderInsertDebugMarker")]
+	public static partial void wgpuRenderPassEncoderInsertDebugMarker(WGPURenderPassEncoder renderPassEncoder, byte* markerLabel);
 
-	public static void wgpuRenderPassEncoderInsertDebugMarker(WGPURenderPassEncoder renderPassEncoder, ReadOnlySpan<sbyte> markerLabel)
+	public static void wgpuRenderPassEncoderInsertDebugMarker(WGPURenderPassEncoder renderPassEncoder, ReadOnlySpan<byte> markerLabel)
 	{
-		fixed (sbyte* pMarkerLabel = markerLabel)
+		fixed (byte* pMarkerLabel = markerLabel)
 		{
 			wgpuRenderPassEncoderInsertDebugMarker(renderPassEncoder, pMarkerLabel);
 		}
@@ -711,15 +711,15 @@ public unsafe partial class WebGPU
 		wgpuRenderPassEncoderInsertDebugMarker(renderPassEncoder, markerLabel.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderPopDebugGroup")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderPopDebugGroup")]
 	public static partial void wgpuRenderPassEncoderPopDebugGroup(WGPURenderPassEncoder renderPassEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderPushDebugGroup")]
-	public static partial void wgpuRenderPassEncoderPushDebugGroup(WGPURenderPassEncoder renderPassEncoder, sbyte* groupLabel);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderPushDebugGroup")]
+	public static partial void wgpuRenderPassEncoderPushDebugGroup(WGPURenderPassEncoder renderPassEncoder, byte* groupLabel);
 
-	public static void wgpuRenderPassEncoderPushDebugGroup(WGPURenderPassEncoder renderPassEncoder, ReadOnlySpan<sbyte> groupLabel)
+	public static void wgpuRenderPassEncoderPushDebugGroup(WGPURenderPassEncoder renderPassEncoder, ReadOnlySpan<byte> groupLabel)
 	{
-		fixed (sbyte* pGroupLabel = groupLabel)
+		fixed (byte* pGroupLabel = groupLabel)
 		{
 			wgpuRenderPassEncoderPushDebugGroup(renderPassEncoder, pGroupLabel);
 		}
@@ -730,21 +730,21 @@ public unsafe partial class WebGPU
 		wgpuRenderPassEncoderPushDebugGroup(renderPassEncoder, groupLabel.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderSetBindGroup")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderSetBindGroup")]
 	public static partial void wgpuRenderPassEncoderSetBindGroup(WGPURenderPassEncoder renderPassEncoder, uint groupIndex, WGPUBindGroup group, nuint dynamicOffsetCount, uint* dynamicOffsets);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderSetBlendConstant")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderSetBlendConstant")]
 	public static partial void wgpuRenderPassEncoderSetBlendConstant(WGPURenderPassEncoder renderPassEncoder, WGPUColor* color);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderSetIndexBuffer")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderSetIndexBuffer")]
 	public static partial void wgpuRenderPassEncoderSetIndexBuffer(WGPURenderPassEncoder renderPassEncoder, WGPUBuffer buffer, WGPUIndexFormat format, ulong offset = 0, ulong size = WGPU_WHOLE_SIZE);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderSetLabel")]
-	public static partial void wgpuRenderPassEncoderSetLabel(WGPURenderPassEncoder renderPassEncoder, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderSetLabel")]
+	public static partial void wgpuRenderPassEncoderSetLabel(WGPURenderPassEncoder renderPassEncoder, byte* label);
 
-	public static void wgpuRenderPassEncoderSetLabel(WGPURenderPassEncoder renderPassEncoder, ReadOnlySpan<sbyte> label)
+	public static void wgpuRenderPassEncoderSetLabel(WGPURenderPassEncoder renderPassEncoder, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuRenderPassEncoderSetLabel(renderPassEncoder, pLabel);
 		}
@@ -755,36 +755,36 @@ public unsafe partial class WebGPU
 		wgpuRenderPassEncoderSetLabel(renderPassEncoder, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderSetPipeline")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderSetPipeline")]
 	public static partial void wgpuRenderPassEncoderSetPipeline(WGPURenderPassEncoder renderPassEncoder, WGPURenderPipeline pipeline);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderSetScissorRect")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderSetScissorRect")]
 	public static partial void wgpuRenderPassEncoderSetScissorRect(WGPURenderPassEncoder renderPassEncoder, uint x, uint y, uint width, uint height);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderSetStencilReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderSetStencilReference")]
 	public static partial void wgpuRenderPassEncoderSetStencilReference(WGPURenderPassEncoder renderPassEncoder, uint reference);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderSetVertexBuffer")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderSetVertexBuffer")]
 	public static partial void wgpuRenderPassEncoderSetVertexBuffer(WGPURenderPassEncoder renderPassEncoder, uint slot, WGPUBuffer buffer, ulong offset = 0, ulong size = WGPU_WHOLE_SIZE);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderSetViewport")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderSetViewport")]
 	public static partial void wgpuRenderPassEncoderSetViewport(WGPURenderPassEncoder renderPassEncoder, float x, float y, float width, float height, float minDepth, float maxDepth);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderReference")]
 	public static partial void wgpuRenderPassEncoderReference(WGPURenderPassEncoder renderPassEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderRelease")]
 	public static partial void wgpuRenderPassEncoderRelease(WGPURenderPassEncoder renderPassEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPipelineGetBindGroupLayout")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPipelineGetBindGroupLayout")]
 	public static partial WGPUBindGroupLayout wgpuRenderPipelineGetBindGroupLayout(WGPURenderPipeline renderPipeline, uint groupIndex);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPipelineSetLabel")]
-	public static partial void wgpuRenderPipelineSetLabel(WGPURenderPipeline renderPipeline, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPipelineSetLabel")]
+	public static partial void wgpuRenderPipelineSetLabel(WGPURenderPipeline renderPipeline, byte* label);
 
-	public static void wgpuRenderPipelineSetLabel(WGPURenderPipeline renderPipeline, ReadOnlySpan<sbyte> label)
+	public static void wgpuRenderPipelineSetLabel(WGPURenderPipeline renderPipeline, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuRenderPipelineSetLabel(renderPipeline, pLabel);
 		}
@@ -795,18 +795,18 @@ public unsafe partial class WebGPU
 		wgpuRenderPipelineSetLabel(renderPipeline, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPipelineReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPipelineReference")]
 	public static partial void wgpuRenderPipelineReference(WGPURenderPipeline renderPipeline);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPipelineRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPipelineRelease")]
 	public static partial void wgpuRenderPipelineRelease(WGPURenderPipeline renderPipeline);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSamplerSetLabel")]
-	public static partial void wgpuSamplerSetLabel(WGPUSampler sampler, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSamplerSetLabel")]
+	public static partial void wgpuSamplerSetLabel(WGPUSampler sampler, byte* label);
 
-	public static void wgpuSamplerSetLabel(WGPUSampler sampler, ReadOnlySpan<sbyte> label)
+	public static void wgpuSamplerSetLabel(WGPUSampler sampler, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuSamplerSetLabel(sampler, pLabel);
 		}
@@ -817,21 +817,21 @@ public unsafe partial class WebGPU
 		wgpuSamplerSetLabel(sampler, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSamplerReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSamplerReference")]
 	public static partial void wgpuSamplerReference(WGPUSampler sampler);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSamplerRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSamplerRelease")]
 	public static partial void wgpuSamplerRelease(WGPUSampler sampler);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuShaderModuleGetCompilationInfo")]
-	public static partial void wgpuShaderModuleGetCompilationInfo(WGPUShaderModule shaderModule, delegate* unmanaged<WGPUCompilationInfoRequestStatus, WGPUCompilationInfo*, nint, void> callback, nint userdata = 0);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuShaderModuleGetCompilationInfo")]
+	public static partial void wgpuShaderModuleGetCompilationInfo(WGPUShaderModule shaderModule, delegate* unmanaged<WGPUCompilationInfoRequestStatus, WGPUCompilationInfo*, void*, void> callback, void* userdata);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuShaderModuleSetLabel")]
-	public static partial void wgpuShaderModuleSetLabel(WGPUShaderModule shaderModule, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuShaderModuleSetLabel")]
+	public static partial void wgpuShaderModuleSetLabel(WGPUShaderModule shaderModule, byte* label);
 
-	public static void wgpuShaderModuleSetLabel(WGPUShaderModule shaderModule, ReadOnlySpan<sbyte> label)
+	public static void wgpuShaderModuleSetLabel(WGPUShaderModule shaderModule, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuShaderModuleSetLabel(shaderModule, pLabel);
 		}
@@ -842,81 +842,81 @@ public unsafe partial class WebGPU
 		wgpuShaderModuleSetLabel(shaderModule, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuShaderModuleReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuShaderModuleReference")]
 	public static partial void wgpuShaderModuleReference(WGPUShaderModule shaderModule);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuShaderModuleRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuShaderModuleRelease")]
 	public static partial void wgpuShaderModuleRelease(WGPUShaderModule shaderModule);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceConfigure")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSurfaceConfigure")]
 	public static partial void wgpuSurfaceConfigure(WGPUSurface surface, WGPUSurfaceConfiguration* config);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceGetCapabilities")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSurfaceGetCapabilities")]
 	public static partial void wgpuSurfaceGetCapabilities(WGPUSurface surface, WGPUAdapter adapter, WGPUSurfaceCapabilities* capabilities);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceGetCapabilities")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSurfaceGetCapabilities")]
 	public static partial void wgpuSurfaceGetCapabilities(WGPUSurface surface, WGPUAdapter adapter, out WGPUSurfaceCapabilities capabilities);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceGetCurrentTexture")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSurfaceGetCurrentTexture")]
 	public static partial void wgpuSurfaceGetCurrentTexture(WGPUSurface surface, WGPUSurfaceTexture* surfaceTexture);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceGetCurrentTexture")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSurfaceGetCurrentTexture")]
 	public static partial void wgpuSurfaceGetCurrentTexture(WGPUSurface surface, out WGPUSurfaceTexture surfaceTexture);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceGetPreferredFormat")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSurfaceGetPreferredFormat")]
 	public static partial WGPUTextureFormat wgpuSurfaceGetPreferredFormat(WGPUSurface surface, WGPUAdapter adapter);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSurfacePresent")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSurfacePresent")]
 	public static partial void wgpuSurfacePresent(WGPUSurface surface);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceUnconfigure")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSurfaceUnconfigure")]
 	public static partial void wgpuSurfaceUnconfigure(WGPUSurface surface);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSurfaceReference")]
 	public static partial void wgpuSurfaceReference(WGPUSurface surface);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSurfaceRelease")]
 	public static partial void wgpuSurfaceRelease(WGPUSurface surface);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSurfaceCapabilitiesFreeMembers")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSurfaceCapabilitiesFreeMembers")]
 	public static partial void wgpuSurfaceCapabilitiesFreeMembers(WGPUSurfaceCapabilities capabilities);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureCreateView")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureCreateView")]
 	public static partial WGPUTextureView wgpuTextureCreateView(WGPUTexture texture, WGPUTextureViewDescriptor* descriptor);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureDestroy")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureDestroy")]
 	public static partial void wgpuTextureDestroy(WGPUTexture texture);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureGetDepthOrArrayLayers")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureGetDepthOrArrayLayers")]
 	public static partial uint wgpuTextureGetDepthOrArrayLayers(WGPUTexture texture);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureGetDimension")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureGetDimension")]
 	public static partial WGPUTextureDimension wgpuTextureGetDimension(WGPUTexture texture);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureGetFormat")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureGetFormat")]
 	public static partial WGPUTextureFormat wgpuTextureGetFormat(WGPUTexture texture);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureGetHeight")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureGetHeight")]
 	public static partial uint wgpuTextureGetHeight(WGPUTexture texture);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureGetMipLevelCount")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureGetMipLevelCount")]
 	public static partial uint wgpuTextureGetMipLevelCount(WGPUTexture texture);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureGetSampleCount")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureGetSampleCount")]
 	public static partial uint wgpuTextureGetSampleCount(WGPUTexture texture);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureGetUsage")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureGetUsage")]
 	public static partial WGPUTextureUsage wgpuTextureGetUsage(WGPUTexture texture);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureGetWidth")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureGetWidth")]
 	public static partial uint wgpuTextureGetWidth(WGPUTexture texture);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureSetLabel")]
-	public static partial void wgpuTextureSetLabel(WGPUTexture texture, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureSetLabel")]
+	public static partial void wgpuTextureSetLabel(WGPUTexture texture, byte* label);
 
-	public static void wgpuTextureSetLabel(WGPUTexture texture, ReadOnlySpan<sbyte> label)
+	public static void wgpuTextureSetLabel(WGPUTexture texture, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuTextureSetLabel(texture, pLabel);
 		}
@@ -927,18 +927,18 @@ public unsafe partial class WebGPU
 		wgpuTextureSetLabel(texture, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureReference")]
 	public static partial void wgpuTextureReference(WGPUTexture texture);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureRelease")]
 	public static partial void wgpuTextureRelease(WGPUTexture texture);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureViewSetLabel")]
-	public static partial void wgpuTextureViewSetLabel(WGPUTextureView textureView, sbyte* label);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureViewSetLabel")]
+	public static partial void wgpuTextureViewSetLabel(WGPUTextureView textureView, byte* label);
 
-	public static void wgpuTextureViewSetLabel(WGPUTextureView textureView, ReadOnlySpan<sbyte> label)
+	public static void wgpuTextureViewSetLabel(WGPUTextureView textureView, ReadOnlySpan<byte> label)
 	{
-		fixed (sbyte* pLabel = label)
+		fixed (byte* pLabel = label)
 		{
 			wgpuTextureViewSetLabel(textureView, pLabel);
 		}
@@ -949,58 +949,58 @@ public unsafe partial class WebGPU
 		wgpuTextureViewSetLabel(textureView, label.GetUtf8Span());
 	}
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureViewReference")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureViewReference")]
 	public static partial void wgpuTextureViewReference(WGPUTextureView textureView);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuTextureViewRelease")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureViewRelease")]
 	public static partial void wgpuTextureViewRelease(WGPUTextureView textureView);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuGenerateReport")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuGenerateReport")]
 	public static partial void wgpuGenerateReport(WGPUInstance instance, WGPUGlobalReport* report);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuInstanceEnumerateAdapters")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuInstanceEnumerateAdapters")]
 	public static partial nuint wgpuInstanceEnumerateAdapters(WGPUInstance instance, WGPUInstanceEnumerateAdapterOptions* options, WGPUAdapter* adapters);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuQueueSubmitForIndex")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQueueSubmitForIndex")]
 	public static partial ulong wgpuQueueSubmitForIndex(WGPUQueue queue, nuint commandCount, WGPUCommandBuffer* commands);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuDevicePoll")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDevicePoll")]
 	public static partial WGPUBool wgpuDevicePoll(WGPUDevice device, WGPUBool wait, WGPUWrappedSubmissionIndex* wrappedSubmissionIndex);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSetLogCallback")]
-	public static partial void wgpuSetLogCallback(delegate* unmanaged<WGPULogLevel, sbyte*, nint, void> callback, nint userdata = 0);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSetLogCallback")]
+	public static partial void wgpuSetLogCallback(delegate* unmanaged<WGPULogLevel, byte*, void*, void> callback, void* userdata);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuSetLogLevel")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSetLogLevel")]
 	public static partial void wgpuSetLogLevel(WGPULogLevel level);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuGetVersion")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuGetVersion")]
 	public static partial uint wgpuGetVersion();
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderSetPushConstants")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderSetPushConstants")]
 	public static partial void wgpuRenderPassEncoderSetPushConstants(WGPURenderPassEncoder encoder, WGPUShaderStage stages, uint offset, uint sizeBytes, void* data);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderMultiDrawIndirect")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderMultiDrawIndirect")]
 	public static partial void wgpuRenderPassEncoderMultiDrawIndirect(WGPURenderPassEncoder encoder, WGPUBuffer buffer, ulong offset, uint count);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderMultiDrawIndexedIndirect")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderMultiDrawIndexedIndirect")]
 	public static partial void wgpuRenderPassEncoderMultiDrawIndexedIndirect(WGPURenderPassEncoder encoder, WGPUBuffer buffer, ulong offset, uint count);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderMultiDrawIndirectCount")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderMultiDrawIndirectCount")]
 	public static partial void wgpuRenderPassEncoderMultiDrawIndirectCount(WGPURenderPassEncoder encoder, WGPUBuffer buffer, ulong offset, WGPUBuffer count_buffer, ulong count_buffer_offset, uint max_count);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderMultiDrawIndexedIndirectCount")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderMultiDrawIndexedIndirectCount")]
 	public static partial void wgpuRenderPassEncoderMultiDrawIndexedIndirectCount(WGPURenderPassEncoder encoder, WGPUBuffer buffer, ulong offset, WGPUBuffer count_buffer, ulong count_buffer_offset, uint max_count);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePassEncoderBeginPipelineStatisticsQuery")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderBeginPipelineStatisticsQuery")]
 	public static partial void wgpuComputePassEncoderBeginPipelineStatisticsQuery(WGPUComputePassEncoder computePassEncoder, WGPUQuerySet querySet, uint queryIndex);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuComputePassEncoderEndPipelineStatisticsQuery")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderEndPipelineStatisticsQuery")]
 	public static partial void wgpuComputePassEncoderEndPipelineStatisticsQuery(WGPUComputePassEncoder computePassEncoder);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderBeginPipelineStatisticsQuery")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderBeginPipelineStatisticsQuery")]
 	public static partial void wgpuRenderPassEncoderBeginPipelineStatisticsQuery(WGPURenderPassEncoder renderPassEncoder, WGPUQuerySet querySet, uint queryIndex);
 
-	[LibraryImport(LibName, EntryPoint = "wgpuRenderPassEncoderEndPipelineStatisticsQuery")]
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderEndPipelineStatisticsQuery")]
 	public static partial void wgpuRenderPassEncoderEndPipelineStatisticsQuery(WGPURenderPassEncoder renderPassEncoder);
 
 }

@@ -9,5 +9,21 @@ public sealed class CsCodeGeneratorOptions
     public string ClassName { get; set; } = null!;
     public string? Namespace { get; set; }
     public bool PublicVisiblity { get; set; } = true;
-    public bool EnumWriteUnmanagedTag { get; set; } = true;
+    public bool GenerateSizeOfStructs { get; set; }
+
+    /// <summary>
+    /// List of the excluded constants.
+    /// </summary>
+    public HashSet<string> ExcludeConstants { get; private set; } = [];
+
+    /// <summary>
+    /// List of the excluded functions.
+    /// </summary>
+    public HashSet<string> ExcludeFunctions { get; private set; } = [];
+
+    public string? EnumPrefixRemap { get; set; }
+    public string? StructPrefixRemap { get; set; }
+    public string? FunctionPrefixRemap { get; set; }
+
+    public Dictionary<string, string> FunctionParametersRemap { get; set; } = [];
 }

@@ -1,16 +1,13 @@
 ﻿// Copyright (c) Amer Koleci and Contributors.
 // Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
-using System.Text;
 using CppAst;
 
 namespace Generator;
 
-public static partial class CsCodeGenerator
+partial class CsCodeGenerator
 {
-    private static bool generateSizeOfStructs = false;
-
-    private static void GenerateStructAndUnions(CppCompilation compilation)
+    private void GenerateStructAndUnions(CppCompilation compilation)
     {
         string visibility = _options.PublicVisiblity ? "public" : "internal";
 
@@ -47,14 +44,8 @@ public static partial class CsCodeGenerator
                 continue;
             }
 
+            string structName = cppClass.Name;
             bool isUnion = cppClass.ClassKind == CppClassKind.Union;
-            bool hasSType = false;
-            if (cppClass.Fields.FirstOrDefault(item => item.Name == "sType") != null)
-            {
-                hasSType = true;
-            }
-
-            string csName = cppClass.Name;
             if (isUnion)
             {
                 writer.WriteLine("[StructLayout(LayoutKind.Explicit)]");
@@ -62,26 +53,21 @@ public static partial class CsCodeGenerator
 
             bool isReadOnly = false;
             string modifier = "partial";
-            if (csName == "VkClearDepthStencilValue")
+
+            if (!string.IsNullOrEmpty(_options.StructPrefixRemap)
+                && structName.StartsWith(_options.StructPrefixRemap))
             {
-                modifier = "readonly partial";
-                isReadOnly = true;
+                structName = structName.Replace(_options.StructPrefixRemap, string.Empty);
+                structName = PrettyString(structName);
+                AddCsMapping(cppClass.Name, structName);
             }
 
-            bool handleSType = false;
-            if (hasSType &&
-                csName != "VkBaseInStructure" &&
-                csName != "VkBaseOutStructure")
+            using (writer.PushBlock($"{visibility} {modifier} struct {structName}"))
             {
-                handleSType = true;
-            }
-
-            using (writer.PushBlock($"{visibility} {modifier} struct {csName}"))
-            {
-                if (generateSizeOfStructs && cppClass.SizeOf > 0)
+                if (_options.GenerateSizeOfStructs && cppClass.SizeOf > 0)
                 {
                     writer.WriteLine("/// <summary>");
-                    writer.WriteLine($"/// The size of the <see cref=\"{csName}\"/> type, in bytes.");
+                    writer.WriteLine($"/// The size of the <see cref=\"{structName}\"/> type, in bytes.");
                     writer.WriteLine("/// </summary>");
                     writer.WriteLine($"public static readonly int SizeInBytes = {cppClass.SizeOf};");
                     writer.WriteLine();
@@ -89,28 +75,7 @@ public static partial class CsCodeGenerator
 
                 foreach (CppField cppField in cppClass.Fields)
                 {
-                    WriteField(writer, cppField, handleSType, isUnion, isReadOnly);
-                }
-
-                if (handleSType)
-                {
-                    string structureTypeValue = csName;
-                    if (structureTypeValue.StartsWith("Vk"))
-                    {
-                        structureTypeValue = structureTypeValue.Substring(2);
-                    }
-                    if (structureTypeValue.EndsWith("ANDROID"))
-                    {
-                        structureTypeValue = structureTypeValue.Replace("ANDROID", "Android");
-                    }
-
-                    //writer.WriteLine();
-                    //using (writer.PushBlock($"public {csName}()"))
-                    //{
-                    //    writer.WriteLine($"Unsafe.SkipInit(out this);");
-                    //    writer.WriteLine();
-                    //    writer.WriteLine($"sType = WGPUSType.{structureTypeValue};");
-                    //}
+                    WriteField(writer, cppField, isUnion, isReadOnly);
                 }
             }
 
@@ -118,7 +83,7 @@ public static partial class CsCodeGenerator
         }
     }
 
-    private static void WriteField(CodeWriter writer, CppField field, bool handleSType, bool isUnion = false, bool isReadOnly = false)
+    private void WriteField(CodeWriter writer, CppField field, bool isUnion = false, bool isReadOnly = false)
     {
         string csFieldName = NormalizeFieldName(field.Name);
 
@@ -142,7 +107,7 @@ public static partial class CsCodeGenerator
 
             if (canUseFixed)
             {
-                string csFieldType = GetCsTypeName(arrayType.ElementType, false);
+                string csFieldType = GetCsTypeName(arrayType.ElementType);
                 writer.WriteLine($"public unsafe fixed {csFieldType} {csFieldName}[{arrayType.Size}];");
             }
             else
@@ -151,12 +116,12 @@ public static partial class CsCodeGenerator
                 if (arrayType.ElementType is CppArrayType elementArrayType)
                 {
                     // vk-video madness
-                    csFieldType = GetCsTypeName(elementArrayType.ElementType, false);
+                    csFieldType = GetCsTypeName(elementArrayType.ElementType);
                     writer.WriteLine($"public unsafe fixed {csFieldType} {csFieldName}[{arrayType.Size} * {elementArrayType.Size}];");
                 }
                 else
                 {
-                    csFieldType = GetCsTypeName(arrayType.ElementType, false);
+                    csFieldType = GetCsTypeName(arrayType.ElementType);
 
                     writer.WriteLine($"public {csFieldName}__FixedBuffer {csFieldName};");
                     writer.WriteLine();
@@ -216,7 +181,7 @@ public static partial class CsCodeGenerator
                 return;
             }
 
-            csFieldType = GetCsTypeName(field.Type, false);
+            csFieldType = GetCsTypeName(field.Type);
             if (csFieldName.Equals("specVersion", StringComparison.OrdinalIgnoreCase) ||
                 csFieldName.Equals("applicationVersion", StringComparison.OrdinalIgnoreCase) ||
                 csFieldName.Equals("engineVersion", StringComparison.OrdinalIgnoreCase) ||

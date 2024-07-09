@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{065268A8
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		src\Alimer.Bindings.WebGPU.Native.targets = src\Alimer.Bindings.WebGPU.Native.targets
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		Directory.Packages.props = Directory.Packages.props
@@ -24,7 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{065268A8
 		LICENSE = LICENSE
 		NuGet.config = NuGet.config
 		README.md = README.md
-		src\Alimer.Bindings.WebGPU.Native.targets = src\Alimer.Bindings.WebGPU.Native.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{08F6AF96-809B-45C5-BE6C-5BAB7D9AFB60}"
@@ -44,6 +44,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02-DrawTriangle", "samples\02-DrawTriangle\02-DrawTriangle.csproj", "{F3C67C03-920C-414F-8B18-728660045060}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03-DrawIndexedQuad", "samples\03-DrawIndexedQuad\03-DrawIndexedQuad.csproj", "{BFBB2C71-AA96-4FE6-982D-60A513239C49}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alimer.Bindings.MeshOptimizer", "src\Alimer.Bindings.MeshOptimizer\Alimer.Bindings.MeshOptimizer.csproj", "{4DEE2D26-7624-4AD9-9AFF-5E34FC5EC1C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,17 +81,21 @@ Global
 		{BFBB2C71-AA96-4FE6-982D-60A513239C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFBB2C71-AA96-4FE6-982D-60A513239C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFBB2C71-AA96-4FE6-982D-60A513239C49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DEE2D26-7624-4AD9-9AFF-5E34FC5EC1C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DEE2D26-7624-4AD9-9AFF-5E34FC5EC1C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DEE2D26-7624-4AD9-9AFF-5E34FC5EC1C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DEE2D26-7624-4AD9-9AFF-5E34FC5EC1C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{D5D12E1D-4FE1-4F96-BD02-D3B21A048CAE} = {C75EE8C9-129B-4B2A-B87A-0BE69AE0A237}
 		{898042D9-7E34-40AE-ACC6-A43B25907CFA} = {253C0AE5-70CF-4519-A8B6-4395B5ABD4DA}
 		{DDF1A64E-1B31-44C3-9B08-FDBD16661FD8} = {08F6AF96-809B-45C5-BE6C-5BAB7D9AFB60}
 		{5A10816D-90A4-4AEA-B06E-6A463DA4A891} = {08F6AF96-809B-45C5-BE6C-5BAB7D9AFB60}
 		{F3C67C03-920C-414F-8B18-728660045060} = {08F6AF96-809B-45C5-BE6C-5BAB7D9AFB60}
 		{BFBB2C71-AA96-4FE6-982D-60A513239C49} = {08F6AF96-809B-45C5-BE6C-5BAB7D9AFB60}
-		{D5D12E1D-4FE1-4F96-BD02-D3B21A048CAE} = {C75EE8C9-129B-4B2A-B87A-0BE69AE0A237}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DF0375B3-E304-4A53-8E5F-FC9D23743647}

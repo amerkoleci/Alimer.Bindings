@@ -5,18 +5,11 @@ using CppAst;
 
 namespace Generator;
 
-public static partial class CsCodeGenerator
+partial class CsCodeGenerator
 {
-    private static void GenerateHandles(CppCompilation compilation)
+    private void GenerateHandles(CppCompilation compilation)
     {
-        string visibility = _options.PublicVisiblity ? "public" : "internal";
-
-        // Generate Functions
-        using var writer = new CodeWriter(Path.Combine(_options.OutputPath, "Handles.cs"),
-            true,
-            _options.Namespace, ["System.Diagnostics"]
-            );
-
+        HashSet<CppTypedef> handles = [];
         foreach (CppTypedef typedef in compilation.Typedefs)
         {
             if (typedef.Name.StartsWith("WGPUProc") ||
@@ -29,6 +22,22 @@ public static partial class CsCodeGenerator
             {
                 continue;
             }
+            handles.Add(typedef);
+        }
+
+        if (handles.Count == 0)
+            return;
+
+        string visibility = _options.PublicVisiblity ? "public" : "internal";
+
+        // Generate Functions
+        using var writer = new CodeWriter(Path.Combine(_options.OutputPath, "Handles.cs"),
+            true,
+            _options.Namespace, ["System.Diagnostics"]
+            );
+
+        foreach (CppTypedef typedef in handles)
+        {
             bool isDispatchable = true;
 
             string csName = typedef.Name;

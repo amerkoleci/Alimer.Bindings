@@ -97,7 +97,7 @@ public sealed unsafe partial class Window
         {
             WGPUSurfaceDescriptorFromWindowsHWND chain = new()
             {
-                hwnd = SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.win32.hwnd"),
+                hwnd = (void*)SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.win32.hwnd"),
                 hinstance = GetModuleHandleW(null),
                 chain = new WGPUChainedStruct()
                 {
@@ -119,7 +119,7 @@ public sealed unsafe partial class Window
 
             WGPUSurfaceDescriptorFromMetalLayer chain = new()
             {
-                layer = metal_layer.Handle,
+                layer = metal_layer.Handle.ToPointer(),
                 chain = new WGPUChainedStruct()
                 {
                     sType = WGPUSType.SurfaceDescriptorFromMetalLayer
@@ -137,8 +137,8 @@ public sealed unsafe partial class Window
             {
                 WGPUSurfaceDescriptorFromWaylandSurface chain = new()
                 {
-                    display = SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.wayland.display"),
-                    surface = SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.wayland.surface"),
+                    display = (void*)SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.wayland.display"),
+                    surface = (void*)SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.wayland.surface"),
                     chain = new WGPUChainedStruct()
                     {
                         sType = WGPUSType.SurfaceDescriptorFromWaylandSurface
@@ -154,7 +154,7 @@ public sealed unsafe partial class Window
             {
                 WGPUSurfaceDescriptorFromXlibWindow chain = new()
                 {
-                    display = SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.x11.display"),
+                    display = (void*)SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.x11.display"),
                     window = (ulong)SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.x11.window"),
                     chain = new WGPUChainedStruct()
                     {
@@ -173,5 +173,5 @@ public sealed unsafe partial class Window
     }
 
     [LibraryImport("kernel32")]
-    private static partial nint GetModuleHandleW(ushort* lpModuleName);
+    private static partial void* GetModuleHandleW(ushort* lpModuleName);
 }
