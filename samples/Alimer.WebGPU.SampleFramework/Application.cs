@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Amer Koleci and Contributors.
 // Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
-using SDL;
-using static SDL.SDL;
+using SDL3;
+using static SDL3.SDL3;
 
 namespace Alimer.WebGPU.Samples;
 
@@ -13,9 +13,9 @@ public abstract class Application : IDisposable
 
     protected unsafe Application()
     {
-        if (SDL_Init(SDL_InitFlags.Video) != 0)
+        if (SDL_Init(SDL_InitFlags.Video) == false)
         {
-            var error = SDL_GetErrorString();
+            var error = SDL_GetError();
             throw new Exception($"Failed to start SDL2: {error}");
         }
 
@@ -85,7 +85,7 @@ public abstract class Application : IDisposable
 
     private void HandleWindowEvent(in SDL_Event evt)
     {
-        switch ((SDL_EventType)evt.window.type)
+        switch (evt.window.type)
         {
             case SDL_EventType.WindowResized:
                 //_minimized = false;
@@ -114,15 +114,15 @@ public abstract class Application : IDisposable
     }
 
     //[UnmanagedCallersOnly]
-    private static void Log_SDL(SDL_LogCategory category, SDL_LogPriority priority, string description)
+    private static void Log_SDL(SDL_LogCategory category, SDL_LogPriority priority, string? message)
     {
         if (priority >= SDL_LogPriority.Error)
         {
-            Log.Error($"[{priority}] SDL: {description}");
+            Log.Error($"[{priority}] SDL: {message}");
         }
         else
         {
-            Log.Info($"[{priority}] SDL: {description}");
+            Log.Info($"[{priority}] SDL: {message}");
         }
     }
 }

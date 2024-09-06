@@ -133,18 +133,11 @@ public static unsafe partial class WebGPU
 #endif
 
     private static WGPULogCallback? s_logCallback;
-    private static readonly Dictionary<WGPUDevice, WGPUErrorCallback?> s_uncapturedErrorCallbacks = [];
 
     public static void wgpuSetLogCallback(WGPULogCallback callback, nint userdata = 0)
     {
         s_logCallback = callback;
         wgpuSetLogCallback(callback != null ? &NativeLogCallback : null, userdata.ToPointer());
-    }
-
-    public static void wgpuDeviceSetUncapturedErrorCallback(WGPUDevice device, WGPUErrorCallback? callback)
-    {
-        s_uncapturedErrorCallbacks[device] = callback;
-        wgpuDeviceSetUncapturedErrorCallback(device, callback != null ? &NativeUncapturedErrorCallback : null, device.Handle.ToPointer());
     }
 
     public static ReadOnlySpan<WGPUFeatureName> wgpuAdapterEnumerateFeatures(WGPUAdapter adapter)
@@ -342,18 +335,6 @@ public static unsafe partial class WebGPU
         {
             string message = Interop.GetString(pMessage)!;
             s_logCallback(level, message, (nint)userData);
-        }
-    }
-
-    [UnmanagedCallersOnly]
-    private static void NativeUncapturedErrorCallback(WGPUErrorType type, byte* pMessage, void* pUserData)
-    {
-        WGPUDevice device = (WGPUDevice)((nint)pUserData);
-        if (s_uncapturedErrorCallbacks.TryGetValue(device, out WGPUErrorCallback? callback)
-            && callback != null)
-        {
-            string message = Interop.GetString(pMessage)!;
-            callback(type, message);
         }
     }
     #endregion

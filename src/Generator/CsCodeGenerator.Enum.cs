@@ -202,38 +202,20 @@ partial class CsCodeGenerator
         return enumItemName;
     }
 
-    private static string NormalizeEnumValue(string value)
+    private static string NormalizeEnumValue(string value, out string csDataType)
     {
-        if (value == "(~0U)")
-        {
-            return "~0u";
-        }
-
-        if (value == "(~0ULL)")
-        {
-            return "~0ul";
-        }
-
-        if (value == "(~0U-1)")
-        {
-            return "~0u - 1";
-        }
-
-        if (value == "(~0U-2)")
-        {
-            return "~0u - 2";
-        }
-
-        if (value == "(~0U-3)")
-        {
-            return "~0u - 3";
-        }
-
         if (value.StartsWith("(") && value.EndsWith(")"))
         {
             value = value.Substring(1, value.Length - 2);
         }
 
-        return value.Replace("ULL", "UL");
+        csDataType = "uint";
+        if (value.EndsWith("ULL", StringComparison.OrdinalIgnoreCase))
+        {
+            csDataType = "ulong";
+            value = value.Replace("ULL", String.Empty);
+        }
+
+        return value.Replace("UL", String.Empty);
     }
 }

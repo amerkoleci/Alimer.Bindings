@@ -30,24 +30,7 @@ partial class CsCodeGenerator
                 //string csName = GetPrettyEnumName(cppMacro.Name, "VK_");
 
                 string modifier = "const";
-                string csDataType = "string";
-                string macroValue = NormalizeEnumValue(cppMacro.Value);
-                if (macroValue.EndsWith("F", StringComparison.OrdinalIgnoreCase))
-                {
-                    csDataType = "float";
-                }
-                else if (macroValue.EndsWith("UL", StringComparison.OrdinalIgnoreCase))
-                {
-                    csDataType = "ulong";
-                }
-                else if (macroValue.EndsWith("U", StringComparison.OrdinalIgnoreCase))
-                {
-                    csDataType = "uint";
-                }
-                else if (uint.TryParse(macroValue, out _) || macroValue.StartsWith("0x"))
-                {
-                    csDataType = "uint";
-                }
+                string macroValue = NormalizeEnumValue(cppMacro.Value, out string csDataType);
 
                 if (cppMacro.Name == "WGPU_WHOLE_MAP_SIZE")
                 {

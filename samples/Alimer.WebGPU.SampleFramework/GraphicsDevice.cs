@@ -11,16 +11,18 @@ namespace Alimer.WebGPU.Samples;
 
 public unsafe sealed class GraphicsDevice : IDisposable
 {
+    public readonly Window Window;
     public readonly WGPUInstance Instance;
     public readonly WGPUSurface Surface;
     public WGPUAdapter Adapter;
-    public WGPUAdapterProperties AdapterProperties;
+    public WGPUAdapterInfo AdapterInfo;
     public WGPUSupportedLimits AdapterLimits;
     public WGPUDevice Device;
     public readonly WGPUQueue Queue;
 
     public GraphicsDevice(Window window, bool vsync = true)
     {
+        Window = window;
         VSync = vsync;
 
         wgpuSetLogCallback(LogCallback);
@@ -56,12 +58,12 @@ public unsafe sealed class GraphicsDevice : IDisposable
             &result
         );
         Adapter = result;
-        wgpuAdapterGetProperties(Adapter, out WGPUAdapterProperties properties);
+        wgpuAdapterGetInfo(Adapter, out WGPUAdapterInfo adapterInfo);
 
         WGPUSupportedLimits limits;
         wgpuAdapterGetLimits(Adapter, &limits);
 
-        AdapterProperties = properties;
+        AdapterInfo = adapterInfo;
         AdapterLimits = limits;
 
         fixed (byte* pDeviceName = "My Device".GetUtf8Span())
@@ -71,7 +73,11 @@ public unsafe sealed class GraphicsDevice : IDisposable
                 nextInChain = null,
                 label = pDeviceName,
                 requiredFeatureCount = 0,
-                requiredLimits = null
+                requiredLimits = null,
+                uncapturedErrorCallbackInfo = new WGPUUncapturedErrorCallbackInfo()
+                {
+                    callback = &HandleUncapturedErrorCallback
+                }
             };
             deviceDesc.defaultQueue.nextInChain = null;
             //deviceDesc.defaultQueue.label = "The default queue";
@@ -86,37 +92,32 @@ public unsafe sealed class GraphicsDevice : IDisposable
             Device = device;
         }
 
-        wgpuDeviceSetUncapturedErrorCallback(Device, HandleUncapturedErrorCallback);
-
         Queue = wgpuDeviceGetQueue(Device);
-
-        // WGPUTextureFormat_BGRA8UnormSrgb on desktop, WGPUTextureFormat_BGRA8Unorm on mobile
-        SwapChainFormat = wgpuSurfaceGetPreferredFormat(Surface, Adapter);
-        Debug.Assert(SwapChainFormat != WGPUTextureFormat.Undefined);
 
         Resize(window.ClientSize.width, window.ClientSize.height);
     }
 
-    public WGPUTextureFormat SwapChainFormat { get; }
+    public WGPUTextureFormat SwapChainFormat { get; private set; }
     public uint Width { get; private set; }
     public uint Height { get; private set; }
-    public bool VSync { get; set; }
+    public bool VSync { get; set; } = true;
 
     public void Resize(uint width, uint height)
     {
         Width = width;
         Height = height;
 
-        WGPUTextureFormat viewFormat = SwapChainFormat;
+        // WGPUTextureFormat_BGRA8UnormSrgb on desktop, WGPUTextureFormat_BGRA8Unorm on mobile
+        wgpuSurfaceGetCapabilities(Surface, Adapter, out WGPUSurfaceCapabilities capabilities);
+        SwapChainFormat = capabilities.formats[0];
+        Debug.Assert(SwapChainFormat != WGPUTextureFormat.Undefined);
+
         WGPUSurfaceConfiguration surfaceConfiguration = new()
         {
-            nextInChain = null,
             device = Device,
             format = SwapChainFormat,
             usage = WGPUTextureUsage.RenderAttachment,
-            viewFormatCount = 1,
-            viewFormats = &viewFormat,
-            alphaMode = WGPUCompositeAlphaMode.Auto,
+            alphaMode = capabilities.alphaModes[0],
             width = width,
             height = height,
             presentMode = VSync ? WGPUPresentMode.Fifo : WGPUPresentMode.Immediate,
@@ -169,8 +170,10 @@ public unsafe sealed class GraphicsDevice : IDisposable
         }
     }
 
-    private static void HandleUncapturedErrorCallback(WGPUErrorType type, string message)
+    [UnmanagedCallersOnly]
+    private static void HandleUncapturedErrorCallback(WGPUErrorType type, byte* pMessage, void* userData)
     {
+        string message = Interop.GetString(pMessage)!;
         Log.Error($"Uncaptured device error: type: {type} ({message})");
     }
 
@@ -184,7 +187,7 @@ public unsafe sealed class GraphicsDevice : IDisposable
     }
 
     public void RenderFrame(
-        Action<WGPUCommandEncoder, WGPUTexture> draw,
+        Action<WGPUCommandEncoder, WGPUTexture, WGPUTextureView> draw,
         [CallerMemberName] string? frameName = null)
     {
         if (Surface.IsNull)
@@ -193,31 +196,47 @@ public unsafe sealed class GraphicsDevice : IDisposable
         WGPUSurfaceTexture surfaceTexture = default;
         wgpuSurfaceGetCurrentTexture(Surface, &surfaceTexture);
 
-        // Getting the texture may fail, in particular if the window has been resized
-        // and thus the target surface changed.
-        if (surfaceTexture.status == WGPUSurfaceGetCurrentTextureStatus.Timeout)
+        switch (surfaceTexture.status)
         {
-            Log.Error("Cannot acquire next swap chain texture");
-            return;
+            case WGPUSurfaceGetCurrentTextureStatus.Success:
+                // All good, could check for `surface_texture.suboptimal` here.
+                break;
+            case WGPUSurfaceGetCurrentTextureStatus.Timeout:
+            case WGPUSurfaceGetCurrentTextureStatus.Outdated:
+            case WGPUSurfaceGetCurrentTextureStatus.Lost:
+                // Skip this frame, and re-configure surface.
+                if (surfaceTexture.texture.IsNotNull)
+                {
+                    wgpuTextureRelease(surfaceTexture.texture);
+                }
+
+                Resize(Window.ClientSize.width, Window.ClientSize.height);
+                return;
+
+            case WGPUSurfaceGetCurrentTextureStatus.OutOfMemory:
+            case WGPUSurfaceGetCurrentTextureStatus.DeviceLost:
+                // Fatal error
+                Log.Error($"{nameof(wgpuSurfaceGetCurrentTexture)} status = {surfaceTexture.status}");
+                throw new Exception();
         }
+        Debug.Assert(surfaceTexture.texture.IsNotNull);
 
-        if (surfaceTexture.status == WGPUSurfaceGetCurrentTextureStatus.Outdated)
-        {
-            Log.Warn("Surface texture is outdated, reconfigure the surface!");
-            return;
-        }
+        WGPUTextureView textureView = wgpuTextureCreateView(surfaceTexture.texture, null);
+        Debug.Assert(textureView.IsNotNull);
 
-        WGPUCommandEncoder encoder = wgpuDeviceCreateCommandEncoder(Device, "Main Command Encoder");
-        wgpuCommandEncoderPushDebugGroup(encoder, frameName);
-        draw(encoder, surfaceTexture.texture);
-        wgpuCommandEncoderPopDebugGroup(encoder);
+        WGPUCommandEncoder commandEncoder = wgpuDeviceCreateCommandEncoder(Device, "Main Command Encoder");
+        wgpuCommandEncoderPushDebugGroup(commandEncoder, frameName);
+        draw(commandEncoder, surfaceTexture.texture, textureView);
+        wgpuCommandEncoderPopDebugGroup(commandEncoder);
 
-        WGPUCommandBuffer command = wgpuCommandEncoderFinish(encoder, "Command Buffer");
-        wgpuQueueSubmit(Queue, command);
-
-        wgpuCommandEncoderRelease(encoder);
-
+        WGPUCommandBuffer commandBuffer = wgpuCommandEncoderFinish(commandEncoder, "Command Buffer");
+        wgpuQueueSubmit(Queue, commandBuffer);
         // We can tell the surface to present the next texture.
         wgpuSurfacePresent(Surface);
+
+        wgpuCommandBufferRelease(commandBuffer);
+        wgpuCommandEncoderRelease(commandEncoder);
+        wgpuTextureViewRelease(textureView);
+        wgpuTextureRelease(surfaceTexture.texture);
     }
 }

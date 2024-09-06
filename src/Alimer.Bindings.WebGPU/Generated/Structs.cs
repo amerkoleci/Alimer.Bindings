@@ -14,17 +14,17 @@ using System.Diagnostics.CodeAnalysis;
 #pragma warning disable CS0649
 namespace WebGPU;
 
-public partial struct WGPUAdapterProperties
+public partial struct WGPUAdapterInfo
 {
 	public unsafe WGPUChainedStructOut* nextInChain;
-	public uint vendorID;
-	public unsafe byte* vendorName;
+	public unsafe byte* vendor;
 	public unsafe byte* architecture;
-	public uint deviceID;
-	public unsafe byte* name;
-	public unsafe byte* driverDescription;
-	public WGPUAdapterType adapterType;
+	public unsafe byte* device;
+	public unsafe byte* description;
 	public WGPUBackendType backendType;
+	public WGPUAdapterType adapterType;
+	public uint vendorID;
+	public uint deviceID;
 }
 
 public partial struct WGPUBindGroupEntry
@@ -324,6 +324,7 @@ public partial struct WGPUStorageTextureBindingLayout
 public partial struct WGPUSurfaceCapabilities
 {
 	public unsafe WGPUChainedStructOut* nextInChain;
+	public WGPUTextureUsage usages;
 	public nuint formatCount;
 	public unsafe WGPUTextureFormat* formats;
 	public nuint presentModeCount;
@@ -434,6 +435,13 @@ public partial struct WGPUTextureViewDescriptor
 	public WGPUTextureAspect aspect;
 }
 
+public partial struct WGPUUncapturedErrorCallbackInfo
+{
+	public unsafe WGPUChainedStruct* nextInChain;
+	public unsafe delegate* unmanaged<WGPUErrorType, byte*, void*, void> callback;
+	public unsafe void* userdata;
+}
+
 public partial struct WGPUVertexAttribute
 {
 	public WGPUVertexFormat format;
@@ -525,6 +533,7 @@ public partial struct WGPURenderPassColorAttachment
 {
 	public unsafe WGPUChainedStruct* nextInChain;
 	public WGPUTextureView view;
+	public uint depthSlice;
 	public WGPUTextureView resolveTarget;
 	public WGPULoadOp loadOp;
 	public WGPUStoreOp storeOp;
@@ -607,6 +616,7 @@ public partial struct WGPUDeviceDescriptor
 	public WGPUQueueDescriptor defaultQueue;
 	public unsafe delegate* unmanaged<WGPUDeviceLostReason, byte*, void*, void> deviceLostCallback;
 	public unsafe void* deviceLostUserdata;
+	public WGPUUncapturedErrorCallbackInfo uncapturedErrorCallbackInfo;
 }
 
 public partial struct WGPURenderPassDescriptor
@@ -808,6 +818,6 @@ public partial struct WGPUQuerySetDescriptorExtras
 public partial struct WGPUSurfaceConfigurationExtras
 {
 	public WGPUChainedStruct chain;
-	public WGPUBool desiredMaximumFrameLatency;
+	public uint desiredMaximumFrameLatency;
 }
 

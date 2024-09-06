@@ -149,8 +149,8 @@ public enum WGPUCullMode
 
 public enum WGPUDeviceLostReason
 {
-	Undefined = 0x00000000,
-	Destroyed = 0x00000001,
+	Unknown = 0x00000001,
+	Destroyed = 0x00000002,
 }
 
 public enum WGPUErrorFilter
@@ -509,6 +509,15 @@ public enum WGPUVertexStepMode
 	VertexBufferNotUsed = 0x00000002,
 }
 
+public enum WGPUWGSLFeatureName
+{
+	Undefined = 0x00000000,
+	ReadonlyAndReadwriteStorageTextures = 0x00000001,
+	Packed4x8IntegerDotProduct = 0x00000002,
+	UnrestrictedPointerParameters = 0x00000003,
+	PointerCompositeAccess = 0x00000004,
+}
+
 [Flags]
 public enum WGPUBufferUsage
 {
@@ -533,7 +542,7 @@ public enum WGPUColorWriteMask
 	Green = 0x00000002,
 	Blue = 0x00000004,
 	Alpha = 0x00000008,
-	All = 0x0000000F,
+	All = None | Red | Green | Blue | Alpha,
 }
 
 [Flags]
@@ -590,6 +599,19 @@ public enum WGPUNativeFeature
 	PipelineStatisticsQuery = 0x00030008,
 	StorageResourceBindingArray = 0x00030009,
 	PartiallyBoundBindingArray = 0x0003000A,
+	TextureFormat16bitNorm = 0x0003000B,
+	TextureCompressionAstcHdr = 0x0003000C,
+	MappablePrimaryBuffers = 0x0003000E,
+	BufferBindingArray = 0x0003000F,
+	UniformBufferAndStorageTextureArrayNonUniformIndexing = 0x00030010,
+	VertexAttribute64bit = 0x00030019,
+	TextureFormatNv12 = 0x0003001A,
+	RayTracingAccelerationStructure = 0x0003001B,
+	RayQuery = 0x0003001C,
+	ShaderF64 = 0x0003001D,
+	ShaderI16 = 0x0003001E,
+	ShaderPrimitiveIndex = 0x0003001F,
+	ShaderEarlyDepthTest = 0x00030020,
 }
 
 public enum WGPULogLevel
@@ -653,5 +675,16 @@ public enum WGPUPipelineStatisticName
 public enum WGPUNativeQueryType
 {
 	PipelineStatistics = 0x00030000,
+}
+
+public enum WGPUNativeTextureFormat
+{
+	R16Unorm = 0x00030001,
+	R16Snorm = 0x00030002,
+	Rg16Unorm = 0x00030003,
+	Rg16Snorm = 0x00030004,
+	Rgba16Unorm = 0x00030005,
+	Rgba16Snorm = 0x00030006,
+	NV12 = 0x00030007,
 }
 

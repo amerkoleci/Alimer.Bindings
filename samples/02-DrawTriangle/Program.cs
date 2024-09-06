@@ -154,19 +154,20 @@ public static unsafe class Program
             _graphicsDevice.RenderFrame(OnDraw);
         }
 
-        private void OnDraw(WGPUCommandEncoder encoder, WGPUTexture target)
+        private void OnDraw(WGPUCommandEncoder encoder, WGPUTexture target, WGPUTextureView textureView)
         {
-            WGPUTextureView targetView = wgpuTextureCreateView(target, null);
-
-            WGPURenderPassColorAttachment renderPassColorAttachment = new();
-            // The attachment is tighed to the view returned by the swap chain, so that
-            // the render pass draws directly on screen.
-            renderPassColorAttachment.view = targetView;
-            // Not relevant here because we do not use multi-sampling
-            renderPassColorAttachment.resolveTarget = WGPUTextureView.Null;
-            renderPassColorAttachment.loadOp = WGPULoadOp.Clear;
-            renderPassColorAttachment.storeOp = WGPUStoreOp.Store;
-            renderPassColorAttachment.clearValue = new WGPUColor(0.0, 0.0, 0.0, 1.0);
+            WGPURenderPassColorAttachment renderPassColorAttachment = new()
+            {
+                // The attachment is tighed to the view returned by the swap chain, so that
+                // the render pass draws directly on screen.
+                view = textureView,
+                // Not relevant here because we do not use multi-sampling
+                resolveTarget = WGPUTextureView.Null,
+                loadOp = WGPULoadOp.Clear,
+                storeOp = WGPUStoreOp.Store,
+                depthSlice = WGPU_DEPTH_SLICE_UNDEFINED,
+                clearValue = new WGPUColor(0.0, 0.0, 0.0, 1.0)
+            };
 
             // Describe a render pass, which targets the texture view
             WGPURenderPassDescriptor renderPassDesc = new()
@@ -191,8 +192,7 @@ public static unsafe class Program
             wgpuRenderPassEncoderDraw(renderPass, 3);
 
             wgpuRenderPassEncoderEnd(renderPass);
-
-            wgpuTextureViewReference(targetView);
+            wgpuRenderPassEncoderRelease(renderPass);
         }
     }
 }

@@ -11,7 +11,7 @@ partial class CsCodeGenerator
     private static readonly HashSet<string> s_outReturnFunctions =
     [
         "wgpuAdapterGetLimits",
-        "wgpuAdapterGetProperties",
+        "wgpuAdapterGetInfo",
         "wgpuDeviceGetLimits",
         "wgpuSurfaceGetCapabilities",
         "wgpuSurfaceGetCurrentTexture",

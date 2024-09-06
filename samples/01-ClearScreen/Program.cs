@@ -34,24 +34,25 @@ public static unsafe class Program
             _graphicsDevice.RenderFrame(OnDraw);
         }
 
-        private void OnDraw(WGPUCommandEncoder encoder, WGPUTexture target)
+        private void OnDraw(WGPUCommandEncoder encoder, WGPUTexture target, WGPUTextureView textureView)
         {
             float g = _green + 0.001f;
             if (g > 1.0f)
                 g = 0.0f;
             _green = g;
 
-            WGPUTextureView targetView = wgpuTextureCreateView(target, null);
-
-            WGPURenderPassColorAttachment renderPassColorAttachment = new();
-            // The attachment is tighed to the view returned by the swap chain, so that
-            // the render pass draws directly on screen.
-            renderPassColorAttachment.view = targetView;
-            // Not relevant here because we do not use multi-sampling
-            renderPassColorAttachment.resolveTarget = WGPUTextureView.Null;
-            renderPassColorAttachment.loadOp = WGPULoadOp.Clear;
-            renderPassColorAttachment.storeOp = WGPUStoreOp.Store;
-            renderPassColorAttachment.clearValue = new WGPUColor(1.0f, _green, 0.0f, 1.0f);
+            WGPURenderPassColorAttachment renderPassColorAttachment = new()
+            {
+                // The attachment is tighed to the view returned by the swap chain, so that
+                // the render pass draws directly on screen.
+                view = textureView,
+                depthSlice = WGPU_DEPTH_SLICE_UNDEFINED,
+                // Not relevant here because we do not use multi-sampling
+                resolveTarget = WGPUTextureView.Null,
+                loadOp = WGPULoadOp.Clear,
+                storeOp = WGPUStoreOp.Store,
+                clearValue = new WGPUColor(1.0f, _green, 0.0f, 1.0f)
+            };
 
             // Describe a render pass, which targets the texture view
             WGPURenderPassDescriptor renderPassDesc = new()
@@ -71,8 +72,7 @@ public static unsafe class Program
             WGPURenderPassEncoder renderPass = wgpuCommandEncoderBeginRenderPass(encoder, &renderPassDesc);
 
             wgpuRenderPassEncoderEnd(renderPass);
-
-            wgpuTextureViewReference(targetView);
+            wgpuRenderPassEncoderRelease(renderPass);
         }
     }
 }

@@ -4,8 +4,8 @@
 using WebGPU;
 using static WebGPU.WebGPU;
 using System.Runtime.InteropServices;
-using SDL;
-using static SDL.SDL;
+using SDL3;
+using static SDL3.SDL3;
 
 namespace Alimer.WebGPU.Samples;
 [Flags]
@@ -86,10 +86,7 @@ public sealed unsafe partial class Window
         }
     }
 
-    public void Show()
-    {
-        _ = SDL_ShowWindow(_window);
-    }
+    public bool Show() => SDL_ShowWindow(_window);
 
     public WGPUSurface CreateSurface(WGPUInstance instance, bool useWayland = false)
     {
@@ -97,7 +94,7 @@ public sealed unsafe partial class Window
         {
             WGPUSurfaceDescriptorFromWindowsHWND chain = new()
             {
-                hwnd = (void*)SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.win32.hwnd"),
+                hwnd = (void*)SDL_GetPointerProperty(SDL_GetWindowProperties(_window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, 0),
                 hinstance = GetModuleHandleW(null),
                 chain = new WGPUChainedStruct()
                 {
@@ -112,7 +109,7 @@ public sealed unsafe partial class Window
         }
         else if (OperatingSystem.IsMacOS() || OperatingSystem.IsMacCatalyst())
         {
-            NSWindow ns_window = new(SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.cocoa.window"));
+            NSWindow ns_window = new(SDL_GetPointerProperty(SDL_GetWindowProperties(_window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, 0));
             CAMetalLayer metal_layer = CAMetalLayer.New();
             ns_window.contentView.wantsLayer = true;
             ns_window.contentView.layer = metal_layer.Handle;
@@ -137,8 +134,8 @@ public sealed unsafe partial class Window
             {
                 WGPUSurfaceDescriptorFromWaylandSurface chain = new()
                 {
-                    display = (void*)SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.wayland.display"),
-                    surface = (void*)SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.wayland.surface"),
+                    display = (void*)SDL_GetPointerProperty(SDL_GetWindowProperties(_window), SDL_PROP_WINDOW_WAYLAND_DISPLAY_POINTER, 0),
+                    surface = (void*)SDL_GetPointerProperty(SDL_GetWindowProperties(_window), SDL_PROP_WINDOW_WAYLAND_SURFACE_POINTER, 0),
                     chain = new WGPUChainedStruct()
                     {
                         sType = WGPUSType.SurfaceDescriptorFromWaylandSurface
@@ -154,8 +151,8 @@ public sealed unsafe partial class Window
             {
                 WGPUSurfaceDescriptorFromXlibWindow chain = new()
                 {
-                    display = (void*)SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.x11.display"),
-                    window = (ulong)SDL_GetProperty(SDL_GetWindowProperties(_window), "SDL.window.x11.window"),
+                    display = (void*)SDL_GetPointerProperty(SDL_GetWindowProperties(_window), SDL_PROP_WINDOW_X11_DISPLAY_POINTER, 0),
+                    window = (ulong)SDL_GetNumberProperty(SDL_GetWindowProperties(_window), SDL_PROP_WINDOW_X11_WINDOW_NUMBER, 0),
                     chain = new WGPUChainedStruct()
                     {
                         sType = WGPUSType.SurfaceDescriptorFromXlibWindow
