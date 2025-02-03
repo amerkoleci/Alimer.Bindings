@@ -5,6 +5,7 @@
     <Description>WebGPU low level bindings.</Description>
     <PackageTags>3D graphics vulkan standard game gamedev</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>webgpu game engine game-development gamedev bindings</PackageTags>
   </PropertyGroup>
 
   <!-- Version -->

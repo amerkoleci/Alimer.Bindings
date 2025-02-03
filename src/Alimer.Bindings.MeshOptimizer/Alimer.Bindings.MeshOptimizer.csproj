@@ -6,13 +6,13 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <PackageTags>3D graphics meshoptimizer standard game gamedev</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>compression gpu optimization simplification mesh-processing game engine game-development gamedev bindings</PackageTags>
   </PropertyGroup>
 
   <!-- Version -->
   <PropertyGroup>
-    <VersionPrefix>1.1.0</VersionPrefix>
+    <VersionPrefix>1.1.1</VersionPrefix>
     <VersionSuffix Condition="'$(VersionSuffix)' == ''"></VersionSuffix>
   </PropertyGroup>
 

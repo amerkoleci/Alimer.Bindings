@@ -16,5 +16,6 @@ public enum EncodeExpMode
 	EncodeExpSeparate = 0,
 	EncodeExpSharedVector = 1,
 	EncodeExpSharedComponent = 2,
+	EncodeExpClamped = 3,
 }
 

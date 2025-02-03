@@ -12,5 +12,5 @@ namespace MeshOptimizer;
 public static partial class Meshopt
 {
 	/// <unmanaged>MESHOPTIMIZER_VERSION</unmanaged>
-	public const uint MESHOPTIMIZER_VERSION = 210;
+	public const uint MESHOPTIMIZER_VERSION = 220;
 }

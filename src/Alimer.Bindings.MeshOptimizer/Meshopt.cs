@@ -191,6 +191,18 @@ public static unsafe partial class Meshopt
             GenerateTessellationIndexBuffer(destinationPtr, indicesPtr, (nuint)indices.Length, vertexPositionsPtr, (nuint)vertexPositions.Length, vertexPositionsStride);
     }
 
+    public static void GenerateProvokingIndexBuffer(
+        Span<uint> destination,
+        Span<uint> reorder,
+        ReadOnlySpan<uint> indices,
+        nuint vertexCount)
+    {
+        fixed (uint* destinationPtr = destination)
+        fixed (uint* reorderPtr = reorder)
+        fixed (uint* indicesPtr = indices)
+            GenerateProvokingIndexBuffer(destinationPtr, reorderPtr, indicesPtr, (nuint)indices.Length, vertexCount);
+    }
+
     public static void OptimizeVertexCache(
         Span<uint> destination,
         ReadOnlySpan<uint> indices,
@@ -304,6 +316,16 @@ public static unsafe partial class Meshopt
         fixed (byte* bufferPtr = buffer)
         fixed (TVertex* verticesPtr = vertices)
             return EncodeVertexBuffer(bufferPtr, (nuint)buffer.Length, verticesPtr, (nuint)vertices.Length, (nuint)sizeof(TVertex));
+    }
+
+    public static nuint EncodeVertexBufferLevel<TVertex>(
+        Span<byte> buffer,
+        ReadOnlySpan<TVertex> vertices, int level)
+        where TVertex : unmanaged
+    {
+        fixed (byte* bufferPtr = buffer)
+        fixed (TVertex* verticesPtr = vertices)
+            return EncodeVertexBufferLevel(bufferPtr, (nuint)buffer.Length, verticesPtr, (nuint)vertices.Length, (nuint)sizeof(TVertex), level);
     }
 
     public static int DecodeVertexBuffer<TVertex>(

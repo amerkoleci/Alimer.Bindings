@@ -40,6 +40,9 @@ public unsafe partial class Meshopt
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_generateTessellationIndexBuffer")]
 	public static partial void GenerateTessellationIndexBuffer(uint* destination, uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride);
 
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_generateProvokingIndexBuffer")]
+	public static partial nuint GenerateProvokingIndexBuffer(uint* destination, uint* reorder, uint* indices, nuint index_count, nuint vertex_count);
+
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_optimizeVertexCache")]
 	public static partial void OptimizeVertexCache(uint* destination, uint* indices, nuint index_count, nuint vertex_count);
 
@@ -84,6 +87,9 @@ public unsafe partial class Meshopt
 
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_encodeVertexBufferBound")]
 	public static partial nuint EncodeVertexBufferBound(nuint vertex_count, nuint vertex_size);
+
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_encodeVertexBufferLevel")]
+	public static partial nuint EncodeVertexBufferLevel(byte* buffer, nuint buffer_size, void* vertices, nuint vertex_count, nuint vertex_size, int level);
 
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_encodeVertexVersion")]
 	public static partial void EncodeVertexVersion(int version);

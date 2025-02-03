@@ -1,15 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net4.6.1;net8.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net4.6.1;net8.0;net9.0</TargetFrameworks>
     <Description>wgpu-native libraries</Description>
-    <PackageVersion>1.0.1</PackageVersion>
+    <PackageVersion>1.0.2</PackageVersion>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>LICENSE.MIT.txt</PackageLicenseFile>
     <RepositoryUrl>https://github.com/gfx-rs/wgpu-native</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>webgpu game engine game-development gamedev bindings</PackageTags>
     <IncludeSymbols>false</IncludeSymbols>
   </PropertyGroup>
 
@@ -22,6 +23,7 @@
   <ItemGroup>
     <Content Include="build\**" PackagePath="build/%(RecursiveDir)%(Filename)%(Extension)" />
     <Content Include="runtimes\**" PackagePath="runtimes/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Content Include="$(MSBuildThisFileDirectory)_._" PackagePath="lib/net9.0" />
     <Content Include="$(MSBuildThisFileDirectory)_._" PackagePath="lib/net8.0" />
     <Content Include="$(MSBuildThisFileDirectory)_._" PackagePath="lib/net461" />
     <Content Include="$(MSBuildThisFileDirectory)_._" PackagePath="lib/netstandard2.0" />
