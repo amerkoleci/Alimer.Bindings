@@ -170,7 +170,7 @@ partial class CsCodeGenerator
                         index++;
                     }
 
-                    writer.Write(pointerName);
+                    writer.Write($"new WGPUStringView({pointerName}, {paramCsName}.Length)");
                     writer.WriteLine(");");
                 }
             }

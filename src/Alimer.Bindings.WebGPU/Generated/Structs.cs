@@ -14,13 +14,19 @@ using System.Diagnostics.CodeAnalysis;
 #pragma warning disable CS0649
 namespace WebGPU;
 
+public partial struct WGPUStringView
+{
+	public unsafe byte* data;
+	public nuint length;
+}
+
 public partial struct WGPUAdapterInfo
 {
 	public unsafe WGPUChainedStructOut* nextInChain;
-	public unsafe byte* vendor;
-	public unsafe byte* architecture;
-	public unsafe byte* device;
-	public unsafe byte* description;
+	public WGPUStringView vendor;
+	public WGPUStringView architecture;
+	public WGPUStringView device;
+	public WGPUStringView description;
 	public WGPUBackendType backendType;
 	public WGPUAdapterType adapterType;
 	public uint vendorID;
@@ -56,7 +62,7 @@ public partial struct WGPUBufferBindingLayout
 public partial struct WGPUBufferDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 	public WGPUBufferUsage usage;
 	public ulong size;
 	public WGPUBool mappedAtCreation;
@@ -73,27 +79,24 @@ public partial struct WGPUColor
 public partial struct WGPUCommandBufferDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 }
 
 public partial struct WGPUCommandEncoderDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 }
 
 public partial struct WGPUCompilationMessage
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* message;
+	public WGPUStringView message;
 	public WGPUCompilationMessageType type;
 	public ulong lineNum;
 	public ulong linePos;
 	public ulong offset;
 	public ulong length;
-	public ulong utf16LinePos;
-	public ulong utf16Offset;
-	public ulong utf16Length;
 }
 
 public partial struct WGPUComputePassTimestampWrites
@@ -106,7 +109,7 @@ public partial struct WGPUComputePassTimestampWrites
 public partial struct WGPUConstantEntry
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* key;
+	public WGPUStringView key;
 	public double value;
 }
 
@@ -117,13 +120,21 @@ public partial struct WGPUExtent3D
 	public uint depthOrArrayLayers;
 }
 
-public partial struct WGPUInstanceDescriptor
+public partial struct WGPUFuture
 {
-	public unsafe WGPUChainedStruct* nextInChain;
+	public ulong id;
+}
+
+public partial struct WGPUInstanceCapabilities
+{
+	public unsafe WGPUChainedStructOut* nextInChain;
+	public WGPUBool timedWaitAnyEnable;
+	public nuint timedWaitAnyMaxCount;
 }
 
 public partial struct WGPULimits
 {
+	public unsafe WGPUChainedStructOut* nextInChain;
 	public uint maxTextureDimension1D;
 	public uint maxTextureDimension2D;
 	public uint maxTextureDimension3D;
@@ -146,7 +157,6 @@ public partial struct WGPULimits
 	public ulong maxBufferSize;
 	public uint maxVertexAttributes;
 	public uint maxVertexBufferArrayStride;
-	public uint maxInterStageShaderComponents;
 	public uint maxInterStageShaderVariables;
 	public uint maxColorAttachments;
 	public uint maxColorAttachmentBytesPerSample;
@@ -176,15 +186,9 @@ public partial struct WGPUOrigin3D
 public partial struct WGPUPipelineLayoutDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 	public nuint bindGroupLayoutCount;
 	public unsafe WGPUBindGroupLayout* bindGroupLayouts;
-}
-
-public partial struct WGPUPrimitiveDepthClipControl
-{
-	public WGPUChainedStruct chain;
-	public WGPUBool unclippedDepth;
 }
 
 public partial struct WGPUPrimitiveState
@@ -194,12 +198,13 @@ public partial struct WGPUPrimitiveState
 	public WGPUIndexFormat stripIndexFormat;
 	public WGPUFrontFace frontFace;
 	public WGPUCullMode cullMode;
+	public WGPUBool unclippedDepth;
 }
 
 public partial struct WGPUQuerySetDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 	public WGPUQueryType type;
 	public uint count;
 }
@@ -207,19 +212,19 @@ public partial struct WGPUQuerySetDescriptor
 public partial struct WGPUQueueDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 }
 
 public partial struct WGPURenderBundleDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 }
 
 public partial struct WGPURenderBundleEncoderDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 	public nuint colorFormatCount;
 	public unsafe WGPUTextureFormat* colorFormats;
 	public WGPUTextureFormat depthStencilFormat;
@@ -241,7 +246,7 @@ public partial struct WGPURenderPassDepthStencilAttachment
 	public WGPUBool stencilReadOnly;
 }
 
-public partial struct WGPURenderPassDescriptorMaxDrawCount
+public partial struct WGPURenderPassMaxDrawCount
 {
 	public WGPUChainedStruct chain;
 	public ulong maxDrawCount;
@@ -257,10 +262,11 @@ public partial struct WGPURenderPassTimestampWrites
 public partial struct WGPURequestAdapterOptions
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public WGPUSurface compatibleSurface;
+	public WGPUFeatureLevel featureLevel;
 	public WGPUPowerPreference powerPreference;
-	public WGPUBackendType backendType;
 	public WGPUBool forceFallbackAdapter;
+	public WGPUBackendType backendType;
+	public WGPUSurface compatibleSurface;
 }
 
 public partial struct WGPUSamplerBindingLayout
@@ -272,7 +278,7 @@ public partial struct WGPUSamplerBindingLayout
 public partial struct WGPUSamplerDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 	public WGPUAddressMode addressModeU;
 	public WGPUAddressMode addressModeV;
 	public WGPUAddressMode addressModeW;
@@ -285,24 +291,23 @@ public partial struct WGPUSamplerDescriptor
 	public ushort maxAnisotropy;
 }
 
-public partial struct WGPUShaderModuleCompilationHint
+public partial struct WGPUShaderModuleDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* entryPoint;
-	public WGPUPipelineLayout layout;
+	public WGPUStringView label;
 }
 
-public partial struct WGPUShaderModuleSPIRVDescriptor
+public partial struct WGPUShaderSourceSPIRV
 {
 	public WGPUChainedStruct chain;
 	public uint codeSize;
 	public unsafe uint* code;
 }
 
-public partial struct WGPUShaderModuleWGSLDescriptor
+public partial struct WGPUShaderSourceWGSL
 {
 	public WGPUChainedStruct chain;
-	public unsafe byte* code;
+	public WGPUStringView code;
 }
 
 public partial struct WGPUStencilFaceState
@@ -319,6 +324,18 @@ public partial struct WGPUStorageTextureBindingLayout
 	public WGPUStorageTextureAccess access;
 	public WGPUTextureFormat format;
 	public WGPUTextureViewDimension viewDimension;
+}
+
+public partial struct WGPUSupportedFeatures
+{
+	public nuint featureCount;
+	public unsafe WGPUFeatureName* features;
+}
+
+public partial struct WGPUSupportedWGSLLanguageFeatures
+{
+	public nuint featureCount;
+	public unsafe WGPUWGSLLanguageFeatureName* features;
 }
 
 public partial struct WGPUSurfaceCapabilities
@@ -339,60 +356,54 @@ public partial struct WGPUSurfaceConfiguration
 	public WGPUDevice device;
 	public WGPUTextureFormat format;
 	public WGPUTextureUsage usage;
+	public uint width;
+	public uint height;
 	public nuint viewFormatCount;
 	public unsafe WGPUTextureFormat* viewFormats;
 	public WGPUCompositeAlphaMode alphaMode;
-	public uint width;
-	public uint height;
 	public WGPUPresentMode presentMode;
 }
 
 public partial struct WGPUSurfaceDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 }
 
-public partial struct WGPUSurfaceDescriptorFromAndroidNativeWindow
+public partial struct WGPUSurfaceSourceAndroidNativeWindow
 {
 	public WGPUChainedStruct chain;
 	public unsafe void* window;
 }
 
-public partial struct WGPUSurfaceDescriptorFromCanvasHTMLSelector
-{
-	public WGPUChainedStruct chain;
-	public unsafe byte* selector;
-}
-
-public partial struct WGPUSurfaceDescriptorFromMetalLayer
+public partial struct WGPUSurfaceSourceMetalLayer
 {
 	public WGPUChainedStruct chain;
 	public unsafe void* layer;
 }
 
-public partial struct WGPUSurfaceDescriptorFromWaylandSurface
+public partial struct WGPUSurfaceSourceWaylandSurface
 {
 	public WGPUChainedStruct chain;
 	public unsafe void* display;
 	public unsafe void* surface;
 }
 
-public partial struct WGPUSurfaceDescriptorFromWindowsHWND
+public partial struct WGPUSurfaceSourceWindowsHWND
 {
 	public WGPUChainedStruct chain;
 	public unsafe void* hinstance;
 	public unsafe void* hwnd;
 }
 
-public partial struct WGPUSurfaceDescriptorFromXcbWindow
+public partial struct WGPUSurfaceSourceXCBWindow
 {
 	public WGPUChainedStruct chain;
 	public unsafe void* connection;
 	public uint window;
 }
 
-public partial struct WGPUSurfaceDescriptorFromXlibWindow
+public partial struct WGPUSurfaceSourceXlibWindow
 {
 	public WGPUChainedStruct chain;
 	public unsafe void* display;
@@ -401,9 +412,16 @@ public partial struct WGPUSurfaceDescriptorFromXlibWindow
 
 public partial struct WGPUSurfaceTexture
 {
+	public unsafe WGPUChainedStructOut* nextInChain;
 	public WGPUTexture texture;
-	public WGPUBool suboptimal;
 	public WGPUSurfaceGetCurrentTextureStatus status;
+}
+
+public partial struct WGPUTexelCopyBufferLayout
+{
+	public ulong offset;
+	public uint bytesPerRow;
+	public uint rowsPerImage;
 }
 
 public partial struct WGPUTextureBindingLayout
@@ -414,18 +432,10 @@ public partial struct WGPUTextureBindingLayout
 	public WGPUBool multisampled;
 }
 
-public partial struct WGPUTextureDataLayout
-{
-	public unsafe WGPUChainedStruct* nextInChain;
-	public ulong offset;
-	public uint bytesPerRow;
-	public uint rowsPerImage;
-}
-
 public partial struct WGPUTextureViewDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 	public WGPUTextureFormat format;
 	public WGPUTextureViewDimension dimension;
 	public uint baseMipLevel;
@@ -433,13 +443,7 @@ public partial struct WGPUTextureViewDescriptor
 	public uint baseArrayLayer;
 	public uint arrayLayerCount;
 	public WGPUTextureAspect aspect;
-}
-
-public partial struct WGPUUncapturedErrorCallbackInfo
-{
-	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe delegate* unmanaged<WGPUErrorType, byte*, void*, void> callback;
-	public unsafe void* userdata;
+	public WGPUTextureUsage usage;
 }
 
 public partial struct WGPUVertexAttribute
@@ -452,7 +456,7 @@ public partial struct WGPUVertexAttribute
 public partial struct WGPUBindGroupDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 	public WGPUBindGroupLayout layout;
 	public nuint entryCount;
 	public unsafe WGPUBindGroupEntry* entries;
@@ -485,7 +489,7 @@ public partial struct WGPUCompilationInfo
 public partial struct WGPUComputePassDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 	public unsafe WGPUComputePassTimestampWrites* timestampWrites;
 }
 
@@ -493,7 +497,7 @@ public partial struct WGPUDepthStencilState
 {
 	public unsafe WGPUChainedStruct* nextInChain;
 	public WGPUTextureFormat format;
-	public WGPUBool depthWriteEnabled;
+	public WGPUOptionalBool depthWriteEnabled;
 	public WGPUCompareFunction depthCompare;
 	public WGPUStencilFaceState stencilFront;
 	public WGPUStencilFaceState stencilBack;
@@ -504,27 +508,35 @@ public partial struct WGPUDepthStencilState
 	public float depthBiasClamp;
 }
 
-public partial struct WGPUImageCopyBuffer
+public partial struct WGPUDeviceDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public WGPUTextureDataLayout layout;
-	public WGPUBuffer buffer;
+	public WGPUStringView label;
+	public nuint requiredFeatureCount;
+	public unsafe WGPUFeatureName* requiredFeatures;
+	public unsafe WGPULimits* requiredLimits;
+	public WGPUQueueDescriptor defaultQueue;
+	public WGPUDeviceLostCallbackInfo deviceLostCallbackInfo;
+	public WGPUUncapturedErrorCallbackInfo uncapturedErrorCallbackInfo;
 }
 
-public partial struct WGPUImageCopyTexture
+public partial struct WGPUFutureWaitInfo
+{
+	public WGPUFuture future;
+	public WGPUBool completed;
+}
+
+public partial struct WGPUInstanceDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public WGPUTexture texture;
-	public uint mipLevel;
-	public WGPUOrigin3D origin;
-	public WGPUTextureAspect aspect;
+	public WGPUInstanceCapabilities features;
 }
 
 public partial struct WGPUProgrammableStageDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
 	public WGPUShaderModule module;
-	public unsafe byte* entryPoint;
+	public WGPUStringView entryPoint;
 	public nuint constantCount;
 	public unsafe WGPUConstantEntry* constants;
 }
@@ -540,30 +552,24 @@ public partial struct WGPURenderPassColorAttachment
 	public WGPUColor clearValue;
 }
 
-public partial struct WGPURequiredLimits
+public partial struct WGPUTexelCopyBufferInfo
 {
-	public unsafe WGPUChainedStruct* nextInChain;
-	public WGPULimits limits;
+	public WGPUTexelCopyBufferLayout layout;
+	public WGPUBuffer buffer;
 }
 
-public partial struct WGPUShaderModuleDescriptor
+public partial struct WGPUTexelCopyTextureInfo
 {
-	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
-	public nuint hintCount;
-	public unsafe WGPUShaderModuleCompilationHint* hints;
-}
-
-public partial struct WGPUSupportedLimits
-{
-	public unsafe WGPUChainedStructOut* nextInChain;
-	public WGPULimits limits;
+	public WGPUTexture texture;
+	public uint mipLevel;
+	public WGPUOrigin3D origin;
+	public WGPUTextureAspect aspect;
 }
 
 public partial struct WGPUTextureDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 	public WGPUTextureUsage usage;
 	public WGPUTextureDimension dimension;
 	public WGPUExtent3D size;
@@ -576,8 +582,8 @@ public partial struct WGPUTextureDescriptor
 
 public partial struct WGPUVertexBufferLayout
 {
-	public ulong arrayStride;
 	public WGPUVertexStepMode stepMode;
+	public ulong arrayStride;
 	public nuint attributeCount;
 	public unsafe WGPUVertexAttribute* attributes;
 }
@@ -585,7 +591,7 @@ public partial struct WGPUVertexBufferLayout
 public partial struct WGPUBindGroupLayoutDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 	public nuint entryCount;
 	public unsafe WGPUBindGroupLayoutEntry* entries;
 }
@@ -601,28 +607,15 @@ public partial struct WGPUColorTargetState
 public partial struct WGPUComputePipelineDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 	public WGPUPipelineLayout layout;
 	public WGPUProgrammableStageDescriptor compute;
-}
-
-public partial struct WGPUDeviceDescriptor
-{
-	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
-	public nuint requiredFeatureCount;
-	public unsafe WGPUFeatureName* requiredFeatures;
-	public unsafe WGPURequiredLimits* requiredLimits;
-	public WGPUQueueDescriptor defaultQueue;
-	public unsafe delegate* unmanaged<WGPUDeviceLostReason, byte*, void*, void> deviceLostCallback;
-	public unsafe void* deviceLostUserdata;
-	public WGPUUncapturedErrorCallbackInfo uncapturedErrorCallbackInfo;
 }
 
 public partial struct WGPURenderPassDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 	public nuint colorAttachmentCount;
 	public unsafe WGPURenderPassColorAttachment* colorAttachments;
 	public unsafe WGPURenderPassDepthStencilAttachment* depthStencilAttachment;
@@ -634,7 +627,7 @@ public partial struct WGPUVertexState
 {
 	public unsafe WGPUChainedStruct* nextInChain;
 	public WGPUShaderModule module;
-	public unsafe byte* entryPoint;
+	public WGPUStringView entryPoint;
 	public nuint constantCount;
 	public unsafe WGPUConstantEntry* constants;
 	public nuint bufferCount;
@@ -645,7 +638,7 @@ public partial struct WGPUFragmentState
 {
 	public unsafe WGPUChainedStruct* nextInChain;
 	public WGPUShaderModule module;
-	public unsafe byte* entryPoint;
+	public WGPUStringView entryPoint;
 	public nuint constantCount;
 	public unsafe WGPUConstantEntry* constants;
 	public nuint targetCount;
@@ -655,13 +648,102 @@ public partial struct WGPUFragmentState
 public partial struct WGPURenderPipelineDescriptor
 {
 	public unsafe WGPUChainedStruct* nextInChain;
-	public unsafe byte* label;
+	public WGPUStringView label;
 	public WGPUPipelineLayout layout;
 	public WGPUVertexState vertex;
 	public WGPUPrimitiveState primitive;
 	public unsafe WGPUDepthStencilState* depthStencil;
 	public WGPUMultisampleState multisample;
 	public unsafe WGPUFragmentState* fragment;
+}
+
+public partial struct WGPUBufferMapCallbackInfo
+{
+	public unsafe WGPUChainedStruct* nextInChain;
+	public WGPUCallbackMode mode;
+	public unsafe delegate* unmanaged<WGPUMapAsyncStatus, WGPUStringView, void*, void*, void> callback;
+	public unsafe void* userdata1;
+	public unsafe void* userdata2;
+}
+
+public partial struct WGPUCompilationInfoCallbackInfo
+{
+	public unsafe WGPUChainedStruct* nextInChain;
+	public WGPUCallbackMode mode;
+	public unsafe delegate* unmanaged<WGPUCompilationInfoRequestStatus, WGPUCompilationInfo*, void*, void*, void> callback;
+	public unsafe void* userdata1;
+	public unsafe void* userdata2;
+}
+
+public partial struct WGPUCreateComputePipelineAsyncCallbackInfo
+{
+	public unsafe WGPUChainedStruct* nextInChain;
+	public WGPUCallbackMode mode;
+	public unsafe delegate* unmanaged<WGPUCreatePipelineAsyncStatus, WGPUComputePipeline, WGPUStringView, void*, void*, void> callback;
+	public unsafe void* userdata1;
+	public unsafe void* userdata2;
+}
+
+public partial struct WGPUCreateRenderPipelineAsyncCallbackInfo
+{
+	public unsafe WGPUChainedStruct* nextInChain;
+	public WGPUCallbackMode mode;
+	public unsafe delegate* unmanaged<WGPUCreatePipelineAsyncStatus, WGPURenderPipeline, WGPUStringView, void*, void*, void> callback;
+	public unsafe void* userdata1;
+	public unsafe void* userdata2;
+}
+
+public partial struct WGPUDeviceLostCallbackInfo
+{
+	public unsafe WGPUChainedStruct* nextInChain;
+	public WGPUCallbackMode mode;
+	public unsafe delegate* unmanaged<WGPUDevice*, WGPUDeviceLostReason, WGPUStringView, void*, void*, void> callback;
+	public unsafe void* userdata1;
+	public unsafe void* userdata2;
+}
+
+public partial struct WGPUPopErrorScopeCallbackInfo
+{
+	public unsafe WGPUChainedStruct* nextInChain;
+	public WGPUCallbackMode mode;
+	public unsafe delegate* unmanaged<WGPUPopErrorScopeStatus, WGPUErrorType, WGPUStringView, void*, void*, void> callback;
+	public unsafe void* userdata1;
+	public unsafe void* userdata2;
+}
+
+public partial struct WGPUQueueWorkDoneCallbackInfo
+{
+	public unsafe WGPUChainedStruct* nextInChain;
+	public WGPUCallbackMode mode;
+	public unsafe delegate* unmanaged<WGPUQueueWorkDoneStatus, void*, void*, void> callback;
+	public unsafe void* userdata1;
+	public unsafe void* userdata2;
+}
+
+public partial struct WGPURequestAdapterCallbackInfo
+{
+	public unsafe WGPUChainedStruct* nextInChain;
+	public WGPUCallbackMode mode;
+	public unsafe delegate* unmanaged<WGPURequestAdapterStatus, WGPUAdapter, WGPUStringView, void*, void*, void> callback;
+	public unsafe void* userdata1;
+	public unsafe void* userdata2;
+}
+
+public partial struct WGPURequestDeviceCallbackInfo
+{
+	public unsafe WGPUChainedStruct* nextInChain;
+	public WGPUCallbackMode mode;
+	public unsafe delegate* unmanaged<WGPURequestDeviceStatus, WGPUDevice, WGPUStringView, void*, void*, void> callback;
+	public unsafe void* userdata1;
+	public unsafe void* userdata2;
+}
+
+public partial struct WGPUUncapturedErrorCallbackInfo
+{
+	public unsafe WGPUChainedStruct* nextInChain;
+	public unsafe delegate* unmanaged<WGPUDevice*, WGPUErrorType, WGPUStringView, void*, void*, void> callback;
+	public unsafe void* userdata1;
+	public unsafe void* userdata2;
 }
 
 public partial struct WGPUChainedStruct
@@ -680,35 +762,24 @@ public partial struct WGPUInstanceExtras
 {
 	public WGPUChainedStruct chain;
 	public WGPUInstanceBackend backends;
-	public WGPUInstanceFlags flags;
+	public WGPUInstanceFlag flags;
 	public WGPUDx12Compiler dx12ShaderCompiler;
 	public WGPUGles3MinorVersion gles3MinorVersion;
-	public unsafe byte* dxilPath;
-	public unsafe byte* dxcPath;
+	public WGPUStringView dxilPath;
+	public WGPUStringView dxcPath;
 }
 
 public partial struct WGPUDeviceExtras
 {
 	public WGPUChainedStruct chain;
-	public unsafe byte* tracePath;
+	public WGPUStringView tracePath;
 }
 
 public partial struct WGPUNativeLimits
 {
+	public WGPUChainedStructOut chain;
 	public uint maxPushConstantSize;
 	public uint maxNonSamplerBindings;
-}
-
-public partial struct WGPURequiredLimitsExtras
-{
-	public WGPUChainedStruct chain;
-	public WGPUNativeLimits limits;
-}
-
-public partial struct WGPUSupportedLimitsExtras
-{
-	public WGPUChainedStructOut chain;
-	public WGPUNativeLimits limits;
 }
 
 public partial struct WGPUPushConstantRange
@@ -725,25 +796,26 @@ public partial struct WGPUPipelineLayoutExtras
 	public unsafe WGPUPushConstantRange* pushConstantRanges;
 }
 
-public partial struct WGPUWrappedSubmissionIndex
-{
-	public WGPUQueue queue;
-	public ulong submissionIndex;
-}
-
 public partial struct WGPUShaderDefine
 {
-	public unsafe byte* name;
-	public unsafe byte* value;
+	public WGPUStringView name;
+	public WGPUStringView value;
 }
 
 public partial struct WGPUShaderModuleGLSLDescriptor
 {
 	public WGPUChainedStruct chain;
 	public WGPUShaderStage stage;
-	public unsafe byte* code;
+	public WGPUStringView code;
 	public uint defineCount;
 	public unsafe WGPUShaderDefine* defines;
+}
+
+public partial struct WGPUShaderModuleDescriptorSpirV
+{
+	public WGPUStringView label;
+	public uint sourceSize;
+	public unsafe uint* source;
 }
 
 public partial struct WGPURegistryReport
@@ -751,7 +823,6 @@ public partial struct WGPURegistryReport
 	public nuint numAllocated;
 	public nuint numKeptFromUser;
 	public nuint numReleasedFromUser;
-	public nuint numError;
 	public nuint elementSize;
 }
 
@@ -768,6 +839,7 @@ public partial struct WGPUHubReport
 	public WGPURegistryReport renderBundles;
 	public WGPURegistryReport renderPipelines;
 	public WGPURegistryReport computePipelines;
+	public WGPURegistryReport pipelineCaches;
 	public WGPURegistryReport querySets;
 	public WGPURegistryReport buffers;
 	public WGPURegistryReport textures;
@@ -778,11 +850,7 @@ public partial struct WGPUHubReport
 public partial struct WGPUGlobalReport
 {
 	public WGPURegistryReport surfaces;
-	public WGPUBackendType backendType;
-	public WGPUHubReport vulkan;
-	public WGPUHubReport metal;
-	public WGPUHubReport dx12;
-	public WGPUHubReport gl;
+	public WGPUHubReport hub;
 }
 
 public partial struct WGPUInstanceEnumerateAdapterOptions

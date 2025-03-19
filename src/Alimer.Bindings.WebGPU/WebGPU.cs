@@ -142,13 +142,16 @@ public static unsafe partial class WebGPU
 
     public static ReadOnlySpan<WGPUFeatureName> wgpuAdapterEnumerateFeatures(WGPUAdapter adapter)
     {
-        nuint count = wgpuAdapterEnumerateFeatures(adapter, null);
+        WGPUSupportedFeatures supportedFeatures = new();
+        wgpuAdapterGetFeatures(adapter, &supportedFeatures);
 
-        ReadOnlySpan<WGPUFeatureName> features = new WGPUFeatureName[(int)count];
-        fixed (WGPUFeatureName* pFeatures = features)
+        WGPUFeatureName[] features = new WGPUFeatureName[(int)supportedFeatures.featureCount];
+        for (nuint i = 0; i < supportedFeatures.featureCount; i++)
         {
-            wgpuAdapterEnumerateFeatures(adapter, pFeatures);
+            features[i] = supportedFeatures.features[i];
         }
+
+        wgpuSupportedFeaturesFreeMembers(supportedFeatures);
 
         return features;
     }
@@ -201,7 +204,7 @@ public static unsafe partial class WebGPU
         }
     }
 
-    public static void wgpuQueueWriteTexture<T>(WGPUQueue queue, WGPUImageCopyTexture* destination, ref T data, nuint dataSize, WGPUTextureDataLayout* dataLayout, WGPUExtent3D* writeSize)
+    public static void wgpuQueueWriteTexture<T>(WGPUQueue queue, WGPUTexelCopyTextureInfo* destination, ref T data, nuint dataSize, WGPUTexelCopyBufferLayout* dataLayout, WGPUExtent3D* writeSize)
         where T : unmanaged
     {
         fixed (void* dataPointer = &data)
@@ -210,7 +213,7 @@ public static unsafe partial class WebGPU
         }
     }
 
-    public static void wgpuQueueWriteTexture<T>(WGPUQueue queue, WGPUImageCopyTexture* destination, ReadOnlySpan<T> data, nuint dataSize, WGPUTextureDataLayout* dataLayout, WGPUExtent3D* writeSize)
+    public static void wgpuQueueWriteTexture<T>(WGPUQueue queue, WGPUTexelCopyTextureInfo* destination, ReadOnlySpan<T> data, nuint dataSize, WGPUTexelCopyBufferLayout* dataLayout, WGPUExtent3D* writeSize)
         where T : unmanaged
     {
         fixed (void* dataPointer = data)
@@ -219,7 +222,7 @@ public static unsafe partial class WebGPU
         }
     }
 
-    public static void wgpuQueueWriteTexture<T>(WGPUQueue queue, WGPUImageCopyTexture* destination, T[] data, nuint dataSize, WGPUTextureDataLayout* dataLayout, WGPUExtent3D* writeSize)
+    public static void wgpuQueueWriteTexture<T>(WGPUQueue queue, WGPUTexelCopyTextureInfo* destination, T[] data, nuint dataSize, WGPUTexelCopyBufferLayout* dataLayout, WGPUExtent3D* writeSize)
         where T : unmanaged
     {
         fixed (void* dataPointer = data)
@@ -230,12 +233,13 @@ public static unsafe partial class WebGPU
 
     public static WGPUCommandEncoder wgpuDeviceCreateCommandEncoder(WGPUDevice device, string? label = default, WGPUChainedStruct* nextInChain = default)
     {
-        fixed (byte* pLabel = label.GetUtf8Span())
+        ReadOnlySpan<byte> labelSpan = label.GetUtf8Span();
+        fixed (byte* pLabel = labelSpan)
         {
             WGPUCommandEncoderDescriptor descriptor = new()
             {
                 nextInChain = nextInChain,
-                label = pLabel
+                label = new WGPUStringView(pLabel, labelSpan.Length)
             };
 
             return wgpuDeviceCreateCommandEncoder(device, &descriptor);
@@ -244,12 +248,13 @@ public static unsafe partial class WebGPU
 
     public static WGPUCommandBuffer wgpuCommandEncoderFinish(WGPUCommandEncoder commandEncoder, string? label = default, WGPUChainedStruct* nextInChain = default)
     {
-        fixed (byte* pLabel = label.GetUtf8Span())
+        ReadOnlySpan<byte> labelSpan = label.GetUtf8Span();
+        fixed (byte* pLabel = labelSpan)
         {
             WGPUCommandBufferDescriptor descriptor = new()
             {
                 nextInChain = nextInChain,
-                label = pLabel
+                label = new WGPUStringView(pLabel, labelSpan.Length)
             };
 
             return wgpuCommandEncoderFinish(commandEncoder, &descriptor);
@@ -260,17 +265,16 @@ public static unsafe partial class WebGPU
     {
         fixed (byte* pShaderSource = wgslShaderSource)
         {
+            WGPUStringView wgpuStringView = new(pShaderSource, wgslShaderSource.Length);
             // Use the extension mechanism to load a WGSL shader source code
-            WGPUShaderModuleWGSLDescriptor shaderCodeDesc = new();
+            WGPUShaderSourceWGSL shaderCodeDesc = new();
             shaderCodeDesc.chain.next = null;
-            shaderCodeDesc.chain.sType = WGPUSType.ShaderModuleWGSLDescriptor;
-            shaderCodeDesc.code = pShaderSource;
+            shaderCodeDesc.chain.sType = WGPUSType.ShaderSourceWGSL;
+            shaderCodeDesc.code = wgpuStringView;
 
             WGPUShaderModuleDescriptor shaderDesc = new()
             {
                 nextInChain = &shaderCodeDesc.chain,
-                hintCount = 0,
-                hints = null
             };
 
             return wgpuDeviceCreateShaderModule(device, &shaderDesc);
@@ -329,12 +333,12 @@ public static unsafe partial class WebGPU
 
     #region Native Callbacks
     [UnmanagedCallersOnly]
-    private static void NativeLogCallback(WGPULogLevel level, byte* pMessage, void* userData)
+    private static void NativeLogCallback(WGPULogLevel level, WGPUStringView message, void* userData)
     {
         if (s_logCallback != null)
         {
-            string message = Interop.GetString(pMessage)!;
-            s_logCallback(level, message, (nint)userData);
+            string strMessage = Interop.GetString(message.data, (int)message.length)!;
+            s_logCallback(level, strMessage, (nint)userData);
         }
     }
     #endregion
