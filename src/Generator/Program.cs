@@ -34,6 +34,8 @@ public static class Program
         CppParserOptions? parseOptions = default;
         CsCodeGeneratorOptions? generateOptions = default;
 
+        Console.WriteLine(outputPath);
+
         if (outputPath.Contains("Alimer.Bindings.MeshOptimizer"))
         {
             headerFile = Path.Combine(AppContext.BaseDirectory, "headers", "meshoptimizer.h");

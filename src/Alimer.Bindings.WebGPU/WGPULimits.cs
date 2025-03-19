@@ -29,7 +29,6 @@ partial struct WGPULimits
         maxBufferSize = 256 * 1024 * 1024,
         maxVertexAttributes = 16,
         maxVertexBufferArrayStride = 2048,
-        maxInterStageShaderComponents = 60,
         maxInterStageShaderVariables = 16,
         maxComputeWorkgroupStorageSize = 16384,
         maxComputeInvocationsPerWorkgroup = 256,

@@ -14,6 +14,54 @@ partial class CsCodeGenerator
         using CodeWriter writer = new(Path.Combine(_options.OutputPath, "Enums.cs"), false, _options.Namespace, new string[] { "System" });
         Dictionary<string, string> createdEnums = new();
 
+        Dictionary<string, List<CppField>> flagsEnums = new();
+
+        // new webgpu.h use static const to define flags enum values
+        foreach (CppField cppField in compilation.Fields)
+        {
+            //cppField.Type.FullName is like WGPUTextureUsage const, so we need to get the first part
+            string typeName = cppField.Type.FullName.Split(' ').First();
+            
+            bool isBitmask =
+                typeName == "WGPUBufferUsage" ||
+                typeName == "WGPUTextureUsage" ||
+                typeName == "WGPUShaderStage" ||
+                typeName == "WGPUColorWriteMask" ||
+                typeName == "WGPUMapMode" ||
+                typeName == "WGPUInstanceBackend" ||
+                typeName == "WGPUInstanceFlags" ||
+                typeName.EndsWith("Flag") ||
+                typeName.EndsWith("Flags");
+
+
+
+            if (!isBitmask)
+            {
+                continue;
+            }
+
+            
+            if (flagsEnums.TryGetValue(typeName, out List<CppField>? values))
+            {
+                values.Add(cppField);
+            }
+            else
+            {
+                flagsEnums[typeName] = new List<CppField> { cppField };
+            }
+        }
+
+        foreach (KeyValuePair<string, List<CppField>> flags in flagsEnums)
+        {
+            using (writer.PushBlock($"public enum {flags.Key}: ulong"))
+            {
+                foreach (CppField field in flags.Value)
+                {
+                    writer.WriteLine($"{GetEnumItemName(field.Name)} = {field.InitValue},");
+                }
+            }
+        }
+
         foreach (CppEnum cppEnum in compilation.Enums)
         {
             if (string.IsNullOrEmpty(cppEnum.Name))
@@ -21,20 +69,7 @@ partial class CsCodeGenerator
                 continue;
             }
 
-            bool isBitmask =
-                cppEnum.Name == "WGPUBufferUsage" ||
-                cppEnum.Name == "WGPUTextureUsage" ||
-                cppEnum.Name == "WGPUShaderStage" ||
-                cppEnum.Name == "WGPUColorWriteMask" ||
-                cppEnum.Name == "WGPUMapMode" ||
-                cppEnum.Name == "WGPUInstanceBackend" ||
-                cppEnum.Name.EndsWith("Flag") ||
-                cppEnum.Name.EndsWith("Flags");
-
-            if (isBitmask)
-            {
-                writer.WriteLine("[Flags]");
-            }
+            
 
             string enumName = GetCsCleanName(cppEnum.Name);
             if (!string.IsNullOrEmpty(_options.EnumPrefixRemap)
@@ -50,8 +85,7 @@ partial class CsCodeGenerator
             bool noneAdded = false;
             using (writer.PushBlock($"{visibility} enum {enumName}"))
             {
-                if (isBitmask &&
-                    !cppEnum.Items.Any(enumItem => GetEnumItemName(enumItem.Name) == "None"))
+                if (!cppEnum.Items.Any(enumItem => GetEnumItemName(enumItem.Name) == "None"))
                 {
                     writer.WriteLine("None = 0,");
                     noneAdded = true;

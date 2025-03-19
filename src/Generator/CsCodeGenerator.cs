@@ -36,7 +36,7 @@ public partial class CsCodeGenerator
 
         { "WGPUSubmissionIndex", "ulong" },
         { "WGPUProc", "nint" },
-        { "WGPUInstanceFlag", "WGPUInstanceFlags" },
+        // { "WGPUInstanceFlag", "WGPUInstanceFlags" },
     };
 
     private readonly Dictionary<string, string> _csNameMappings = [];
