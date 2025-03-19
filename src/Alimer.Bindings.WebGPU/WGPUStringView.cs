@@ -14,5 +14,9 @@ public unsafe partial struct WGPUStringView
         this.length = (nuint)length;
     }
 
+    public override string ToString() => Interop.GetString(data, (int)length)!;
+
+    public static implicit operator string(WGPUStringView view) => view.ToString();
+
 }
 

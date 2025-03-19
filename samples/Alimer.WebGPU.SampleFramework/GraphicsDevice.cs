@@ -16,7 +16,7 @@ public unsafe sealed class GraphicsDevice : IDisposable
     public readonly WGPUSurface Surface;
     public WGPUAdapter Adapter;
     public WGPUAdapterInfo AdapterInfo;
-    public WGPUSupportedLimits AdapterLimits;
+    public WGPULimits AdapterLimits;
     public WGPUDevice Device;
     public readonly WGPUQueue Queue;
 
@@ -30,7 +30,7 @@ public unsafe sealed class GraphicsDevice : IDisposable
         WGPUInstanceExtras extras = new()
         {
 #if DEBUG
-            flags = WGPUInstanceFlags.Validation
+            flags = WGPUInstanceFlag.Validation
 #endif
         };
 
@@ -54,29 +54,36 @@ public unsafe sealed class GraphicsDevice : IDisposable
         wgpuInstanceRequestAdapter(
             Instance /* equivalent of navigator.gpu */,
             &options,
-            &OnAdapterRequestEnded,
-            &result
+            new WGPURequestAdapterCallbackInfo()
+            {
+                callback = &OnAdapterRequestEnded,
+                userdata1 = &result,
+                userdata2 = null
+            }
         );
         Adapter = result;
         wgpuAdapterGetInfo(Adapter, out WGPUAdapterInfo adapterInfo);
 
-        WGPUSupportedLimits limits;
+        WGPULimits limits;
         wgpuAdapterGetLimits(Adapter, &limits);
 
         AdapterInfo = adapterInfo;
         AdapterLimits = limits;
 
-        fixed (byte* pDeviceName = "My Device".GetUtf8Span())
+        ReadOnlySpan<byte> deviceName = "My Device".GetUtf8Span();
+        fixed (byte* pDeviceName = deviceName)
         {
             WGPUDeviceDescriptor deviceDesc = new()
             {
                 nextInChain = null,
-                label = pDeviceName,
+                label = new WGPUStringView(pDeviceName, deviceName.Length),
                 requiredFeatureCount = 0,
                 requiredLimits = null,
                 uncapturedErrorCallbackInfo = new WGPUUncapturedErrorCallbackInfo()
                 {
-                    callback = &HandleUncapturedErrorCallback
+                    callback = &HandleUncapturedErrorCallback,
+                    userdata1 = null,
+                    userdata2 = null
                 }
             };
             deviceDesc.defaultQueue.nextInChain = null;
@@ -86,8 +93,12 @@ public unsafe sealed class GraphicsDevice : IDisposable
             wgpuAdapterRequestDevice(
                 Adapter,
                 &deviceDesc,
-                &OnDeviceRequestEnded,
-                &device
+                new WGPURequestDeviceCallbackInfo()
+                {
+                    callback = &OnDeviceRequestEnded,
+                    userdata1 = &device,
+                    userdata2 = null
+                }
             );
             Device = device;
         }
@@ -127,28 +138,28 @@ public unsafe sealed class GraphicsDevice : IDisposable
     }
 
     [UnmanagedCallersOnly]
-    private static void OnAdapterRequestEnded(WGPURequestAdapterStatus status, WGPUAdapter candidateAdapter, byte* message, void* pUserData)
+    private static void OnAdapterRequestEnded(WGPURequestAdapterStatus status, WGPUAdapter candidateAdapter, WGPUStringView message, void* pUserData1, void* pUserData2)
     {
         if (status == WGPURequestAdapterStatus.Success)
         {
-            *(WGPUAdapter*)pUserData = candidateAdapter;
+            *(WGPUAdapter*)pUserData1 = candidateAdapter;
         }
         else
         {
-            Log.Error("Could not get WebGPU adapter: " + Interop.GetString(message));
+            Log.Error("Could not get WebGPU adapter: " + message.ToString());
         }
     }
 
     [UnmanagedCallersOnly]
-    private static void OnDeviceRequestEnded(WGPURequestDeviceStatus status, WGPUDevice device, byte* message, void* pUserData)
+    private static void OnDeviceRequestEnded(WGPURequestDeviceStatus status, WGPUDevice device, WGPUStringView message, void* pUserData1, void* pUserData2)
     {
         if (status == WGPURequestDeviceStatus.Success)
         {
-            *(WGPUDevice*)pUserData = device;
+            *(WGPUDevice*)pUserData1 = device;
         }
         else
         {
-            Log.Error("Could not get WebGPU device: " + Interop.GetString(message));
+            Log.Error("Could not get WebGPU device: " + message.ToString());
         }
     }
 
@@ -171,9 +182,8 @@ public unsafe sealed class GraphicsDevice : IDisposable
     }
 
     [UnmanagedCallersOnly]
-    private static void HandleUncapturedErrorCallback(WGPUErrorType type, byte* pMessage, void* userData)
+    private static void HandleUncapturedErrorCallback(WGPUDevice* device, WGPUErrorType type, WGPUStringView message, void* userData1, void* userData2)
     {
-        string message = Interop.GetString(pMessage)!;
         Log.Error($"Uncaptured device error: type: {type} ({message})");
     }
 
@@ -198,8 +208,12 @@ public unsafe sealed class GraphicsDevice : IDisposable
 
         switch (surfaceTexture.status)
         {
-            case WGPUSurfaceGetCurrentTextureStatus.Success:
+            case WGPUSurfaceGetCurrentTextureStatus.SuccessOptimal:
+                // All good, could check for `surface_texture.optimal` here.
+                break;
+            case WGPUSurfaceGetCurrentTextureStatus.SuccessSuboptimal:
                 // All good, could check for `surface_texture.suboptimal` here.
+                Log.Warn("Surface texture is suboptimal");
                 break;
             case WGPUSurfaceGetCurrentTextureStatus.Timeout:
             case WGPUSurfaceGetCurrentTextureStatus.Outdated:

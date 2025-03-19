@@ -49,8 +49,11 @@ public static unsafe class Program
                 stepMode = WGPUVertexStepMode.Vertex
             };
 
-            fixed (byte* pVertexEntryPoint = "vertexMain".GetUtf8Span())
-            fixed (byte* pFragmentEntryPoint = "fragmentMain".GetUtf8Span())
+            ReadOnlySpan<byte> vertexEntryPoint = "vertexMain".GetUtf8Span();
+            ReadOnlySpan<byte> fragmentEntryPoint = "fragmentMain".GetUtf8Span();
+
+            fixed (byte* pVertexEntryPoint = vertexEntryPoint)
+            fixed (byte* pFragmentEntryPoint = fragmentEntryPoint)
             {
                 WGPURenderPipelineDescriptor pipelineDesc = new();
                 pipelineDesc.layout = _pipelineLayout;
@@ -60,7 +63,7 @@ public static unsafe class Program
 
                 // Vertex shader
                 pipelineDesc.vertex.module = shaderModule;
-                pipelineDesc.vertex.entryPoint = pVertexEntryPoint;
+                pipelineDesc.vertex.entryPoint = new WGPUStringView(pVertexEntryPoint, vertexEntryPoint.Length);
                 pipelineDesc.vertex.constantCount = 0;
                 pipelineDesc.vertex.constants = null;
 
@@ -84,7 +87,7 @@ public static unsafe class Program
                 {
                     nextInChain = null,
                     module = shaderModule,
-                    entryPoint = pFragmentEntryPoint,
+                    entryPoint = new WGPUStringView(pFragmentEntryPoint, fragmentEntryPoint.Length),
                     constantCount = 0,
                     constants = null
                 };

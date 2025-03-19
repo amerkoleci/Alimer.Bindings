@@ -92,13 +92,13 @@ public sealed unsafe partial class Window
     {
         if (OperatingSystem.IsWindows())
         {
-            WGPUSurfaceDescriptorFromWindowsHWND chain = new()
+            WGPUSurfaceSourceWindowsHWND chain = new()
             {
                 hwnd = (void*)SDL_GetPointerProperty(SDL_GetWindowProperties(_window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, 0),
                 hinstance = GetModuleHandleW(null),
                 chain = new WGPUChainedStruct()
                 {
-                    sType = WGPUSType.SurfaceDescriptorFromWindowsHWND
+                    sType = WGPUSType.SurfaceSourceWindowsHWND
                 }
             };
             WGPUSurfaceDescriptor descriptor = new()
@@ -114,12 +114,12 @@ public sealed unsafe partial class Window
             ns_window.contentView.wantsLayer = true;
             ns_window.contentView.layer = metal_layer.Handle;
 
-            WGPUSurfaceDescriptorFromMetalLayer chain = new()
+            WGPUSurfaceSourceMetalLayer chain = new()
             {
                 layer = metal_layer.Handle.ToPointer(),
                 chain = new WGPUChainedStruct()
                 {
-                    sType = WGPUSType.SurfaceDescriptorFromMetalLayer
+                    sType = WGPUSType.SurfaceSourceMetalLayer
                 }
             };
             WGPUSurfaceDescriptor descriptor = new()
@@ -132,13 +132,13 @@ public sealed unsafe partial class Window
         {
             if (useWayland)
             {
-                WGPUSurfaceDescriptorFromWaylandSurface chain = new()
+                WGPUSurfaceSourceWaylandSurface chain = new()
                 {
                     display = (void*)SDL_GetPointerProperty(SDL_GetWindowProperties(_window), SDL_PROP_WINDOW_WAYLAND_DISPLAY_POINTER, 0),
                     surface = (void*)SDL_GetPointerProperty(SDL_GetWindowProperties(_window), SDL_PROP_WINDOW_WAYLAND_SURFACE_POINTER, 0),
                     chain = new WGPUChainedStruct()
                     {
-                        sType = WGPUSType.SurfaceDescriptorFromWaylandSurface
+                        sType = WGPUSType.SurfaceSourceWaylandSurface
                     }
                 };
                 WGPUSurfaceDescriptor descriptor = new()
@@ -149,13 +149,13 @@ public sealed unsafe partial class Window
             }
             else
             {
-                WGPUSurfaceDescriptorFromXlibWindow chain = new()
+                WGPUSurfaceSourceXlibWindow chain = new()
                 {
                     display = (void*)SDL_GetPointerProperty(SDL_GetWindowProperties(_window), SDL_PROP_WINDOW_X11_DISPLAY_POINTER, 0),
                     window = (ulong)SDL_GetNumberProperty(SDL_GetWindowProperties(_window), SDL_PROP_WINDOW_X11_WINDOW_NUMBER, 0),
                     chain = new WGPUChainedStruct()
                     {
-                        sType = WGPUSType.SurfaceDescriptorFromXlibWindow
+                        sType = WGPUSType.SurfaceSourceXlibWindow
                     }
                 };
                 WGPUSurfaceDescriptor descriptor = new()
