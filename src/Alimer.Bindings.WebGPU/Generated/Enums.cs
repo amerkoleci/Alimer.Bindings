@@ -11,7 +11,7 @@ using System;
 
 namespace WebGPU;
 
-public enum WGPUBufferUsage: ulong
+public enum WGPUBufferUsage : ulong
 {
 	None = 0,
 	MapRead = 1,
@@ -25,7 +25,7 @@ public enum WGPUBufferUsage: ulong
 	Indirect = 256,
 	QueryResolve = 512,
 }
-public enum WGPUColorWriteMask: ulong
+public enum WGPUColorWriteMask : ulong
 {
 	None = 0,
 	Red = 1,
@@ -34,20 +34,20 @@ public enum WGPUColorWriteMask: ulong
 	Alpha = 8,
 	All = 15,
 }
-public enum WGPUMapMode: ulong
+public enum WGPUMapMode : ulong
 {
 	None = 0,
 	Read = 1,
 	Write = 2,
 }
-public enum WGPUShaderStage: ulong
+public enum WGPUShaderStage : ulong
 {
 	None = 0,
 	Vertex = 1,
 	Fragment = 2,
 	Compute = 4,
 }
-public enum WGPUTextureUsage: ulong
+public enum WGPUTextureUsage : ulong
 {
 	None = 0,
 	CopySrc = 1,
@@ -56,7 +56,7 @@ public enum WGPUTextureUsage: ulong
 	StorageBinding = 8,
 	RenderAttachment = 16,
 }
-public enum WGPUInstanceBackend: ulong
+public enum WGPUInstanceBackend : ulong
 {
 	All = 0,
 	Vulkan = 1,
@@ -69,7 +69,7 @@ public enum WGPUInstanceBackend: ulong
 	Secondary = 18,
 	Force32 = 2147483647,
 }
-public enum WGPUInstanceFlag: ulong
+public enum WGPUInstanceFlag : ulong
 {
 	Default = 0,
 	Debug = 1,

@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace WebGPU;
 
 public unsafe partial struct WGPUStringView : IEquatable<WGPUStringView>
@@ -5,7 +7,7 @@ public unsafe partial struct WGPUStringView : IEquatable<WGPUStringView>
     /// <summary>
     /// An <see cref="WGPUStringView"/> with empty string data.
     /// </summary>
-    public static readonly WGPUStringView Empty = new(null, 0);
+    public static WGPUStringView Empty => new(null, 0);
 
     /// <summary>
     /// Initializes a new instance of <see cref="WGPUStringView"/> structure.
@@ -30,10 +32,10 @@ public unsafe partial struct WGPUStringView : IEquatable<WGPUStringView>
     }
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj) => obj is WGPUStringView other && Equals(other);
+    public override readonly bool Equals([NotNullWhen(true)] object? obj) => obj is WGPUStringView other && Equals(other);
 
     /// <inheritdoc/>
-    public bool Equals(WGPUStringView other) => data == other.data && length == other.length;
+    public readonly bool Equals(WGPUStringView other) => data == other.data && length == other.length;
 
     /// <summary>
     /// Compares two <see cref="WGPUStringView"/> objects for equality.
@@ -52,10 +54,17 @@ public unsafe partial struct WGPUStringView : IEquatable<WGPUStringView>
     public static bool operator !=(WGPUStringView left, WGPUStringView right) => !left.Equals(right);
 
     /// <inheritdoc/>
-    public override string ToString() => Interop.GetString(data, (int)length)!;
+    public override readonly int GetHashCode()
+    {
+        var hash = new HashCode();
+        hash.AddBytes(new ReadOnlySpan<byte>(data, (int)length));
+        return hash.ToHashCode();
+    }
+
+    /// <inheritdoc/>
+    public override readonly string ToString() => Interop.GetString(data, (int)length)!;
 
 
     public static implicit operator string(WGPUStringView view) => view.ToString();
-
 }
 

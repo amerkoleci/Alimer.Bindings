@@ -21,7 +21,7 @@ partial class CsCodeGenerator
         {
             //cppField.Type.FullName is like WGPUTextureUsage const, so we need to get the first part
             string typeName = cppField.Type.FullName.Split(' ').First();
-            
+
             bool isBitmask =
                 typeName == "WGPUBufferUsage" ||
                 typeName == "WGPUTextureUsage" ||
@@ -40,20 +40,20 @@ partial class CsCodeGenerator
                 continue;
             }
 
-            
+
             if (flagsEnums.TryGetValue(typeName, out List<CppField>? values))
             {
                 values.Add(cppField);
             }
             else
             {
-                flagsEnums[typeName] = new List<CppField> { cppField };
+                flagsEnums[typeName] = [cppField];
             }
         }
 
         foreach (KeyValuePair<string, List<CppField>> flags in flagsEnums)
         {
-            using (writer.PushBlock($"public enum {flags.Key}: ulong"))
+            using (writer.PushBlock($"public enum {flags.Key} : ulong"))
             {
                 foreach (CppField field in flags.Value)
                 {
@@ -69,7 +69,7 @@ partial class CsCodeGenerator
                 continue;
             }
 
-            
+
 
             string enumName = GetCsCleanName(cppEnum.Name);
             if (!string.IsNullOrEmpty(_options.EnumPrefixRemap)

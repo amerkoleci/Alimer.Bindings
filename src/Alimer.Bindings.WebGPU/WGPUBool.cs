@@ -12,8 +12,8 @@ namespace WebGPU;
 [StructLayout(LayoutKind.Sequential, Size = 4)]
 public readonly struct WGPUBool : IEquatable<WGPUBool>
 {
-    public static readonly WGPUBool True = new(true);
-    public static readonly WGPUBool False = new(false);
+    public static WGPUBool True => new(true);
+    public static WGPUBool False => new(false);
 
     private readonly uint _value;
 
