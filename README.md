@@ -9,8 +9,8 @@ Collection of cross platform **.net9.0** and **.net8.0** bindings.
 
 | Library               | Description                                                                           | Status   | NuGet |
 | -------               | -----------                                                                           | ------   |------ |
-| [wgpu](https://github.com/gfx-rs/wgpu-native) | wgpu bindings [v22.1.0.3](https://github.com/gfx-rs/wgpu-native/releases/tag/v22.1.0.3.1)                                            | Done ✔️ | [![NuGet](https://img.shields.io/nuget/v/Alimer.Bindings.WebGPU.svg)](https://www.nuget.org/packages/Alimer.Bindings.WebGPU)|
-| [meshoptimizer](https://github.com/zeux/meshoptimizer) | meshoptimizer bindings [v0.22](https://github.com/zeux/meshoptimizer/releases/tag/v0.22)                                           | Done ✔️ | [![NuGet](https://img.shields.io/nuget/v/Alimer.Bindings.MeshOptimizer.svg)](https://www.nuget.org/packages/Alimer.Bindings.MeshOptimizer)|
+| [wgpu](https://github.com/gfx-rs/wgpu-native) | wgpu bindings [v27.0.4.0]([https://github.com/gfx-rs/wgpu-native/releases/tag/v22.1.0.3.1](https://github.com/gfx-rs/wgpu-native/releases/tag/v27.0.4.0))                                            | Done ✔️ | [![NuGet](https://img.shields.io/nuget/v/Alimer.Bindings.WebGPU.svg)](https://www.nuget.org/packages/Alimer.Bindings.WebGPU)|
+| [meshoptimizer](https://github.com/zeux/meshoptimizer) | meshoptimizer bindings [v1.0]([https://github.com/zeux/meshoptimizer/releases/tag/v0.22](https://github.com/zeux/meshoptimizer/releases/tag/v1.0))                                           | Done ✔️ | [![NuGet](https://img.shields.io/nuget/v/Alimer.Bindings.MeshOptimizer.svg)](https://www.nuget.org/packages/Alimer.Bindings.MeshOptimizer)|
 
 ## Sponsors
 Please consider [SPONSOR](https://github.com/sponsors/amerkoleci) me to further help development and to allow faster issue triaging and new features to be implemented.
