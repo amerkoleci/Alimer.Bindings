@@ -85,6 +85,10 @@ partial class CsCodeGenerator
 
     private void WriteField(CodeWriter writer, CppField field, bool isUnion = false, bool isReadOnly = false)
     {
+        if (field.Type.ToString() == "size_t")
+        {
+        }
+
         string csFieldName = NormalizeFieldName(field.Name);
 
         if (isUnion)

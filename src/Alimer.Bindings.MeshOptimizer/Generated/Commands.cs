@@ -34,6 +34,9 @@ public unsafe partial class Meshopt
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_generateShadowIndexBufferMulti")]
 	public static partial void GenerateShadowIndexBufferMulti(uint* destination, uint* indices, nuint index_count, nuint vertex_count, Stream* streams, nuint stream_count);
 
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_generatePositionRemap")]
+	public static partial void GeneratePositionRemap(uint* destination, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride);
+
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_generateAdjacencyIndexBuffer")]
 	public static partial void GenerateAdjacencyIndexBuffer(uint* destination, uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride);
 
@@ -73,6 +76,9 @@ public unsafe partial class Meshopt
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_decodeIndexBuffer")]
 	public static partial int DecodeIndexBuffer(void* destination, nuint index_count, nuint index_size, byte* buffer, nuint buffer_size);
 
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_decodeIndexVersion")]
+	public static partial int DecodeIndexVersion(byte* buffer, nuint buffer_size);
+
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_encodeIndexSequence")]
 	public static partial nuint EncodeIndexSequence(byte* buffer, nuint buffer_size, uint* indices, nuint index_count);
 
@@ -89,13 +95,16 @@ public unsafe partial class Meshopt
 	public static partial nuint EncodeVertexBufferBound(nuint vertex_count, nuint vertex_size);
 
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_encodeVertexBufferLevel")]
-	public static partial nuint EncodeVertexBufferLevel(byte* buffer, nuint buffer_size, void* vertices, nuint vertex_count, nuint vertex_size, int level);
+	public static partial nuint EncodeVertexBufferLevel(byte* buffer, nuint buffer_size, void* vertices, nuint vertex_count, nuint vertex_size, int level, int version);
 
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_encodeVertexVersion")]
 	public static partial void EncodeVertexVersion(int version);
 
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_decodeVertexBuffer")]
 	public static partial int DecodeVertexBuffer(void* destination, nuint vertex_count, nuint vertex_size, byte* buffer, nuint buffer_size);
+
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_decodeVertexVersion")]
+	public static partial int DecodeVertexVersion(byte* buffer, nuint buffer_size);
 
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_decodeFilterOct")]
 	public static partial void DecodeFilterOct(void* buffer, nuint count, nuint stride);
@@ -106,6 +115,9 @@ public unsafe partial class Meshopt
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_decodeFilterExp")]
 	public static partial void DecodeFilterExp(void* buffer, nuint count, nuint stride);
 
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_decodeFilterColor")]
+	public static partial void DecodeFilterColor(void* buffer, nuint count, nuint stride);
+
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_encodeFilterOct")]
 	public static partial void EncodeFilterOct(void* destination, nuint count, nuint stride, int bits, float* data);
 
@@ -115,14 +127,23 @@ public unsafe partial class Meshopt
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_encodeFilterExp")]
 	public static partial void EncodeFilterExp(void* destination, nuint count, nuint stride, int bits, float* data, EncodeExpMode mode);
 
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_encodeFilterColor")]
+	public static partial void EncodeFilterColor(void* destination, nuint count, nuint stride, int bits, float* data);
+
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_simplify")]
 	public static partial nuint Simplify(uint* destination, uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride, nuint target_index_count, float target_error, SimplificationOptions options, float* result_error);
 
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_simplifyWithAttributes")]
 	public static partial nuint SimplifyWithAttributes(uint* destination, uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride, float* vertex_attributes, nuint vertex_attributes_stride, float* attribute_weights, nuint attribute_count, byte* vertex_lock, nuint target_index_count, float target_error, SimplificationOptions options, float* result_error);
 
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_simplifyWithUpdate")]
+	public static partial nuint SimplifyWithUpdate(uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride, float* vertex_attributes, nuint vertex_attributes_stride, float* attribute_weights, nuint attribute_count, byte* vertex_lock, nuint target_index_count, float target_error, uint options, float* result_error);
+
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_simplifySloppy")]
-	public static partial nuint SimplifySloppy(uint* destination, uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride, nuint target_index_count, float target_error, float* result_error);
+	public static partial nuint SimplifySloppy(uint* destination, uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride, byte* vertex_lock, nuint target_index_count, float target_error, float* result_error);
+
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_simplifyPrune")]
+	public static partial nuint SimplifyPrune(uint* destination, uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride, float target_error);
 
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_simplifyPoints")]
 	public static partial nuint SimplifyPoints(uint* destination, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride, float* vertex_colors, nuint vertex_colors_stride, float color_weight, nuint target_vertex_count);
@@ -145,11 +166,14 @@ public unsafe partial class Meshopt
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_analyzeVertexCache")]
 	public static partial VertexCacheStatistics AnalyzeVertexCache(uint* indices, nuint index_count, nuint vertex_count, uint cache_size, uint warp_size, uint primgroup_size);
 
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_analyzeVertexFetch")]
+	public static partial VertexFetchStatistics AnalyzeVertexFetch(uint* indices, nuint index_count, nuint vertex_count, nuint vertex_size);
+
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_analyzeOverdraw")]
 	public static partial OverdrawStatistics AnalyzeOverdraw(uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride);
 
-	[LibraryImport(LibraryName, EntryPoint = "meshopt_analyzeVertexFetch")]
-	public static partial VertexFetchStatistics AnalyzeVertexFetch(uint* indices, nuint index_count, nuint vertex_count, nuint vertex_size);
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_analyzeCoverage")]
+	public static partial CoverageStatistics AnalyzeCoverage(uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride);
 
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_buildMeshlets")]
 	public static partial nuint BuildMeshlets(Meshlet* meshlets, uint* meshlet_vertices, byte* meshlet_triangles, uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride, nuint max_vertices, nuint max_triangles, float cone_weight);
@@ -160,6 +184,12 @@ public unsafe partial class Meshopt
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_buildMeshletsBound")]
 	public static partial nuint BuildMeshletsBound(nuint index_count, nuint max_vertices, nuint max_triangles);
 
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_buildMeshletsFlex")]
+	public static partial nuint BuildMeshletsFlex(Meshlet* meshlets, uint* meshlet_vertices, byte* meshlet_triangles, uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride, nuint max_vertices, nuint min_triangles, nuint max_triangles, float cone_weight, float split_factor);
+
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_buildMeshletsSpatial")]
+	public static partial nuint BuildMeshletsSpatial(Meshlet* meshlets, uint* meshlet_vertices, byte* meshlet_triangles, uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride, nuint max_vertices, nuint min_triangles, nuint max_triangles, float fill_weight);
+
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_optimizeMeshlet")]
 	public static partial void OptimizeMeshlet(uint* meshlet_vertices, byte* meshlet_triangles, nuint triangle_count, nuint vertex_count);
 
@@ -169,11 +199,20 @@ public unsafe partial class Meshopt
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_computeMeshletBounds")]
 	public static partial Bounds ComputeMeshletBounds(uint* meshlet_vertices, byte* meshlet_triangles, nuint triangle_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride);
 
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_computeSphereBounds")]
+	public static partial Bounds ComputeSphereBounds(float* positions, nuint count, nuint positions_stride, float* radii, nuint radii_stride);
+
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_partitionClusters")]
+	public static partial nuint PartitionClusters(uint* destination, uint* cluster_indices, nuint total_index_count, uint* cluster_index_counts, nuint cluster_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride, nuint target_partition_size);
+
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_spatialSortRemap")]
 	public static partial void SpatialSortRemap(uint* destination, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride);
 
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_spatialSortTriangles")]
 	public static partial void SpatialSortTriangles(uint* destination, uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride);
+
+	[LibraryImport(LibraryName, EntryPoint = "meshopt_spatialClusterPoints")]
+	public static partial void SpatialClusterPoints(uint* destination, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride, nuint cluster_size);
 
 	[LibraryImport(LibraryName, EntryPoint = "meshopt_quantizeHalf")]
 	public static partial ushort QuantizeHalf(float v);

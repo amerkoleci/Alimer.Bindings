@@ -80,6 +80,10 @@ public static unsafe partial class Meshopt
     }
     #endregion
 
+    [LibraryImport(LibraryName, EntryPoint = "meshopt_generateVertexRemapCustom")]
+    public static partial nuint GenerateVertexRemapCustom(uint* destination, uint* indices, nuint index_count, float* vertex_positions, nuint vertex_count, nuint vertex_positions_stride, delegate* unmanaged<nint, uint, uint, int> callback, nint context);
+
+
     [LibraryImport(LibraryName, EntryPoint = "meshopt_setAllocator")]
     public static partial void SetAllocator(delegate* unmanaged<nuint, void*> allocate, delegate* unmanaged<void*, void> deallocate);
 
@@ -320,12 +324,12 @@ public static unsafe partial class Meshopt
 
     public static nuint EncodeVertexBufferLevel<TVertex>(
         Span<byte> buffer,
-        ReadOnlySpan<TVertex> vertices, int level)
+        ReadOnlySpan<TVertex> vertices, int level, int version = -1)
         where TVertex : unmanaged
     {
         fixed (byte* bufferPtr = buffer)
         fixed (TVertex* verticesPtr = vertices)
-            return EncodeVertexBufferLevel(bufferPtr, (nuint)buffer.Length, verticesPtr, (nuint)vertices.Length, (nuint)sizeof(TVertex), level);
+            return EncodeVertexBufferLevel(bufferPtr, (nuint)buffer.Length, verticesPtr, (nuint)vertices.Length, (nuint)sizeof(TVertex), level, version);
     }
 
     public static int DecodeVertexBuffer<TVertex>(
@@ -501,6 +505,34 @@ public static unsafe partial class Meshopt
             return SimplifySloppy(destinationPtr,
                 indicesPtr, (nuint)indices.Length,
                 vertexPositionsPtr, (nuint)vertexPositions.Length, vertexPositionsStride,
+                null,
+                targetIndexCount,
+                targetError,
+                errorPtr);
+        }
+    }
+
+    public static nuint SimplifySloppy(
+        Span<uint> destination,
+        ReadOnlySpan<uint> indices,
+        ReadOnlySpan<float> vertexPositions,
+        nuint vertexPositionsStride,
+        byte* vertexLock,
+        nuint targetIndexCount,
+        float targetError,
+        out float error)
+    {
+        Unsafe.SkipInit(out error);
+
+        fixed (uint* destinationPtr = destination)
+        fixed (uint* indicesPtr = indices)
+        fixed (float* vertexPositionsPtr = vertexPositions)
+        fixed (float* errorPtr = &error)
+        {
+            return SimplifySloppy(destinationPtr,
+                indicesPtr, (nuint)indices.Length,
+                vertexPositionsPtr, (nuint)vertexPositions.Length, vertexPositionsStride,
+                vertexLock,
                 targetIndexCount,
                 targetError,
                 errorPtr);

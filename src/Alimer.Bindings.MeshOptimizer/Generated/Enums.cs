@@ -13,6 +13,7 @@ namespace MeshOptimizer;
 
 public enum EncodeExpMode
 {
+	None = 0,
 	EncodeExpSeparate = 0,
 	EncodeExpSharedVector = 1,
 	EncodeExpSharedComponent = 2,

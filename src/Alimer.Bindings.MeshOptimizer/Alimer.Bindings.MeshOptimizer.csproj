@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
     <Description>meshoptimizer low level bindings.</Description>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression></PackageLicenseExpression>
@@ -12,7 +12,7 @@
 
   <!-- Version -->
   <PropertyGroup>
-    <VersionPrefix>1.1.1</VersionPrefix>
+    <VersionPrefix>1.2.0</VersionPrefix>
     <VersionSuffix Condition="'$(VersionSuffix)' == ''"></VersionSuffix>
   </PropertyGroup>
 
@@ -35,6 +35,11 @@
     </Content>
     <Content Include="$(NativeLibDirectory)linux-x64\libmeshoptimizer.so">
       <PackagePath>runtimes\linux-x64\native</PackagePath>
+      <Pack>True</Pack>
+      <Visible>False</Visible>
+    </Content>
+    <Content Include="$(NativeLibDirectory)linux-arm64\libmeshoptimizer.so">
+      <PackagePath>runtimes\linux-arm64\native</PackagePath>
       <Pack>True</Pack>
       <Visible>False</Visible>
     </Content>

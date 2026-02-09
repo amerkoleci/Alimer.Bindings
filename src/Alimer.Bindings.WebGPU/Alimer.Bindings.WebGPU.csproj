@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
     <Description>WebGPU low level bindings.</Description>
     <PackageTags>3D graphics vulkan standard game gamedev</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -10,7 +10,7 @@
 
   <!-- Version -->
   <PropertyGroup>
-    <VersionPrefix>1.5.1</VersionPrefix>
+    <VersionPrefix>1.6.0</VersionPrefix>
     <VersionSuffix Condition="'$(VersionSuffix)' == ''"></VersionSuffix>
   </PropertyGroup>
 

@@ -1004,8 +1004,11 @@ public unsafe partial class WebGPU
 	[LibraryImport(LibraryName, EntryPoint = "wgpuQueueSubmitForIndex")]
 	public static partial ulong wgpuQueueSubmitForIndex(WGPUQueue queue, nuint commandCount, WGPUCommandBuffer* commands);
 
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQueueGetTimestampPeriod")]
+	public static partial float wgpuQueueGetTimestampPeriod(WGPUQueue queue);
+
 	[LibraryImport(LibraryName, EntryPoint = "wgpuDevicePoll")]
-	public static partial WGPUBool wgpuDevicePoll(WGPUDevice device, WGPUBool wait, ulong* wrappedSubmissionIndex);
+	public static partial WGPUBool wgpuDevicePoll(WGPUDevice device, WGPUBool wait, ulong* submissionIndex);
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateShaderModuleSpirV")]
 	public static partial WGPUShaderModule wgpuDeviceCreateShaderModuleSpirV(WGPUDevice device, WGPUShaderModuleDescriptorSpirV* descriptor);

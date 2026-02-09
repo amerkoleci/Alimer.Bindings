@@ -765,8 +765,12 @@ public partial struct WGPUInstanceExtras
 	public WGPUInstanceFlag flags;
 	public WGPUDx12Compiler dx12ShaderCompiler;
 	public WGPUGles3MinorVersion gles3MinorVersion;
-	public WGPUStringView dxilPath;
+	public WGPUGLFenceBehaviour glFenceBehaviour;
 	public WGPUStringView dxcPath;
+	public WGPUDxcMaxShaderModel dxcMaxShaderModel;
+	public WGPUDx12SwapchainKind dx12PresentationSystem;
+	public unsafe byte* budgetForDeviceCreation;
+	public unsafe byte* budgetForDeviceLoss;
 }
 
 public partial struct WGPUDeviceExtras
@@ -802,7 +806,7 @@ public partial struct WGPUShaderDefine
 	public WGPUStringView value;
 }
 
-public partial struct WGPUShaderModuleGLSLDescriptor
+public partial struct WGPUShaderSourceGLSL
 {
 	public WGPUChainedStruct chain;
 	public WGPUShaderStage stage;
@@ -887,5 +891,18 @@ public partial struct WGPUSurfaceConfigurationExtras
 {
 	public WGPUChainedStruct chain;
 	public uint desiredMaximumFrameLatency;
+}
+
+public partial struct WGPUSurfaceSourceSwapChainPanel
+{
+	public WGPUChainedStruct chain;
+	public unsafe void* panelNative;
+}
+
+public partial struct WGPUPrimitiveStateExtras
+{
+	public WGPUChainedStruct chain;
+	public WGPUPolygonMode polygonMode;
+	public WGPUBool conservative;
 }
 

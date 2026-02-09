@@ -95,6 +95,26 @@ public partial class CsCodeGenerator
 
     private string GetCsTypeName(CppType? type)
     {
+        // Check typedef FIRST to catch size_t, intptr_t, etc. before they resolve to primitives
+        if (type is CppTypedef typedef)
+        {
+            string originalTypeName = typedef.GetDisplayName();
+
+            // Check if we have a known mapping for the typedef name
+            if (s_knownTypeNameMappings.ContainsKey(typedef.Name))
+            {
+                return GetCsCleanName(typedef.Name);
+            }
+
+            if (typedef.ElementType is CppClass classElementType)
+            {
+                return GetCsTypeName(classElementType);
+            }
+
+            string typeDefCsName = GetCsCleanName(typedef.Name);
+            return typeDefCsName;
+        }
+
         if (type is CppPrimitiveType primitiveType)
         {
             return GetCsTypeName(primitiveType);
@@ -109,17 +129,6 @@ public partial class CsCodeGenerator
         {
             string enumCsName = GetCsCleanName(enumType.Name);
             return enumCsName;
-        }
-
-        if (type is CppTypedef typedef)
-        {
-            if (typedef.ElementType is CppClass classElementType)
-            {
-                return GetCsTypeName(classElementType);
-            }
-
-            string typeDefCsName = GetCsCleanName(typedef.Name);
-            return typeDefCsName;
         }
 
         if (type is CppClass @class)
@@ -167,15 +176,15 @@ public partial class CsCodeGenerator
                 return "short";
             case CppPrimitiveKind.Int:
                 return "int";
-
-            case CppPrimitiveKind.LongLong:
-                return "long";
             case CppPrimitiveKind.UnsignedChar:
                 return "byte";
             case CppPrimitiveKind.UnsignedShort:
                 return "ushort";
             case CppPrimitiveKind.UnsignedInt:
                 return "uint";
+
+            case CppPrimitiveKind.LongLong:
+                return "long";
 
             case CppPrimitiveKind.UnsignedLongLong:
                 return "ulong";

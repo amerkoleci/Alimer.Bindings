@@ -713,12 +713,14 @@ public enum WGPUNativeSType
 	DeviceExtras = 0x00030001,
 	NativeLimits = 0x00030002,
 	PipelineLayoutExtras = 0x00030003,
-	ShaderModuleGLSLDescriptor = 0x00030004,
+	ShaderSourceGLSL = 0x00030004,
 	InstanceExtras = 0x00030006,
 	BindGroupEntryExtras = 0x00030007,
 	BindGroupLayoutEntryExtras = 0x00030008,
 	QuerySetDescriptorExtras = 0x00030009,
 	SurfaceConfigurationExtras = 0x0003000A,
+	SurfaceSourceSwapChainPanel = 0x0003000B,
+	PrimitiveStateExtras = 0x0003000C,
 }
 
 public enum WGPUNativeFeature
@@ -726,7 +728,6 @@ public enum WGPUNativeFeature
 	None = 0,
 	PushConstants = 0x00030001,
 	TextureAdapterSpecificFormatFeatures = 0x00030002,
-	MultiDrawIndirect = 0x00030003,
 	MultiDrawIndirectCount = 0x00030004,
 	VertexWritableStorage = 0x00030005,
 	TextureBindingArray = 0x00030006,
@@ -739,10 +740,12 @@ public enum WGPUNativeFeature
 	MappablePrimaryBuffers = 0x0003000E,
 	BufferBindingArray = 0x0003000F,
 	UniformBufferAndStorageTextureArrayNonUniformIndexing = 0x00030010,
+	PolygonModeLine = 0x00030013,
+	PolygonModePoint = 0x00030014,
+	ConservativeRasterization = 0x00030015,
 	SpirvShaderPassthrough = 0x00030017,
 	VertexAttribute64bit = 0x00030019,
 	TextureFormatNv12 = 0x0003001A,
-	RayTracingAccelerationStructure = 0x0003001B,
 	RayQuery = 0x0003001C,
 	ShaderF64 = 0x0003001D,
 	ShaderI16 = 0x0003001E,
@@ -753,6 +756,7 @@ public enum WGPUNativeFeature
 	SubgroupBarrier = 0x00030023,
 	TimestampQueryInsideEncoders = 0x00030024,
 	TimestampQueryInsidePasses = 0x00030025,
+	ShaderInt64 = 0x00030026,
 }
 
 public enum WGPULogLevel
@@ -799,6 +803,42 @@ public enum WGPUNativeQueryType
 	PipelineStatistics = 0x00030000,
 }
 
+public enum WGPUDxcMaxShaderModel
+{
+	None = 0,
+	V60 = 0x00000000,
+	V61 = 0x00000001,
+	V62 = 0x00000002,
+	V63 = 0x00000003,
+	V64 = 0x00000004,
+	V65 = 0x00000005,
+	V66 = 0x00000006,
+	V67 = 0x00000007,
+}
+
+public enum WGPUGLFenceBehaviour
+{
+	None = 0,
+	Normal = 0x00000000,
+	AutoFinish = 0x00000001,
+}
+
+public enum WGPUDx12SwapchainKind
+{
+	None = 0,
+	Undefined = 0x00000000,
+	DxgiFromHwnd = 0x00000001,
+	DxgiFromVisual = 0x00000002,
+}
+
+public enum WGPUPolygonMode
+{
+	None = 0,
+	Fill = 0,
+	Line = 1,
+	Point = 2,
+}
+
 public enum WGPUNativeTextureFormat
 {
 	None = 0,
@@ -809,5 +849,6 @@ public enum WGPUNativeTextureFormat
 	Rgba16Unorm = 0x00030005,
 	Rgba16Snorm = 0x00030006,
 	NV12 = 0x00030007,
+	P010 = 0x00030008,
 }
 

@@ -29,6 +29,12 @@ public partial struct VertexCacheStatistics
 	public float atvr;
 }
 
+public partial struct VertexFetchStatistics
+{
+	public uint bytes_fetched;
+	public float overfetch;
+}
+
 public partial struct OverdrawStatistics
 {
 	public uint pixels_covered;
@@ -36,10 +42,10 @@ public partial struct OverdrawStatistics
 	public float overdraw;
 }
 
-public partial struct VertexFetchStatistics
+public partial struct CoverageStatistics
 {
-	public uint bytes_fetched;
-	public float overfetch;
+	public unsafe fixed float coverage[3];
+	public float extent;
 }
 
 public partial struct Meshlet

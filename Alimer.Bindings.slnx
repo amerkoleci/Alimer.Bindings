@@ -1,0 +1,33 @@
+<Solution>
+  <Folder Name="/.github/">
+    <File Path=".github/FUNDING.yml" />
+  </Folder>
+  <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/build.yml" />
+  </Folder>
+  <Folder Name="/.root/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="LICENSE" />
+    <File Path="NuGet.config" />
+    <File Path="README.md" />
+    <File Path="src/Alimer.Bindings.WebGPU.Native.targets" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/01-ClearScreen/01-ClearScreen.csproj" />
+    <Project Path="samples/02-DrawTriangle/02-DrawTriangle.csproj" />
+    <Project Path="samples/03-DrawIndexedQuad/03-DrawIndexedQuad.csproj" />
+    <Project Path="samples/Alimer.WebGPU.SampleFramework/Alimer.WebGPU.SampleFramework.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Alimer.Bindings.WebGPU.Tests/Alimer.Bindings.WebGPU.Tests.csproj" />
+  </Folder>
+  <Project Path="src/Alimer.Bindings.MeshOptimizer/Alimer.Bindings.MeshOptimizer.csproj" />
+  <Project Path="src/Alimer.Bindings.WebGPU/Alimer.Bindings.WebGPU.csproj" />
+  <Project Path="src/Alimer.WebGPU.Native/Alimer.WebGPU.Native.csproj" />
+  <Project Path="src/Generator/Generator.csproj" />
+</Solution>

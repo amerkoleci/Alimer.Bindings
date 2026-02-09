@@ -31,15 +31,14 @@ public static class Program
         }
 
         string? headerFile = default;
-        CppParserOptions? parseOptions = default;
+        CppParserOptions parserOptions;
         CsCodeGeneratorOptions? generateOptions = default;
 
-        Console.WriteLine(outputPath);
 
         if (outputPath.Contains("Alimer.Bindings.MeshOptimizer"))
         {
             headerFile = Path.Combine(AppContext.BaseDirectory, "headers", "meshoptimizer.h");
-            parseOptions = new()
+            parserOptions = new()
             {
                 ParseMacros = true
             };
@@ -59,7 +58,8 @@ public static class Program
                 },
                 ExcludeFunctions =
                 {
-                    "meshopt_setAllocator"
+                    "meshopt_setAllocator",
+                    "meshopt_generateVertexRemapCustom"
                 },
                 FunctionParametersRemap =
                 {
@@ -71,7 +71,7 @@ public static class Program
         else if (outputPath.Contains("Alimer.Bindings.WebGPU"))
         {
             headerFile = Path.Combine(AppContext.BaseDirectory, "webgpu", "wgpu.h");
-            parseOptions = new()
+            parserOptions = new()
             {
                 ParseMacros = true
             };
@@ -89,7 +89,28 @@ public static class Program
             return;
         }
 
-        CppCompilation compilation = CppParser.ParseFile(headerFile, parseOptions!);
+        if (OperatingSystem.IsWindows())
+        {
+            //@"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0"
+            parserOptions.SystemIncludeFolders.AddRange(SdkResolver.ResolveStdLib());
+
+            // Windows Sdk candidates 10.0.22621.0, 10.0.26100.0
+            List<string> sdkPaths = SdkResolver.ResolveWindowsSdk("10.0.26100.0");
+            if (sdkPaths.Count > 0)
+            {
+                parserOptions.SystemIncludeFolders.AddRange(sdkPaths);
+            }
+            else
+            {
+                sdkPaths = SdkResolver.ResolveWindowsSdk("10.0.22621.0");
+                if (sdkPaths.Count > 0)
+                {
+                    parserOptions.SystemIncludeFolders.AddRange(sdkPaths);
+                }
+            }
+        }
+
+        CppCompilation compilation = CppParser.ParseFile(headerFile, parserOptions);
 
         // Print diagnostic messages
         if (compilation.HasErrors)
@@ -98,7 +119,7 @@ public static class Program
             {
                 if (message.Type == CppLogMessageType.Error)
                 {
-                    var currentColor = Console.ForegroundColor;
+                    ConsoleColor currentColor = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(message);
                     Console.ForegroundColor = currentColor;
