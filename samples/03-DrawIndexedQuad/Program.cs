@@ -48,6 +48,23 @@ public static unsafe class Program
                 {
                 }
 
+                nuint size = cgltf_write(&options, data);
+                byte[] buffer = new byte[(int)size];
+
+                nuint written = cgltf_write(&options, buffer, data);
+                if (written != size)
+                {
+                    /* TODO handle error */
+                }
+
+                string glbSaveFilePath = Path.Combine(AppContext.BaseDirectory, "Assets", "Meshes", $"Out.glb");
+                options.type = cgltf_file_type_glb;
+                result = cgltf_write_file(&options, glbSaveFilePath, data);
+                if (result != cgltf_result_success)
+                {
+                    /* TODO handle error */
+                }
+
                 /* TODO make awesome stuff */
                 cgltf_free(data);
             }

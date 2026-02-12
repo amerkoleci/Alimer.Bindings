@@ -125,4 +125,10 @@ public unsafe partial class Cgltf
 	[LibraryImport(LibraryName, EntryPoint = "cgltf_animation_channel_index")]
 	public static partial nuint cgltf_animation_channel_index(cgltf_animation* animation, cgltf_animation_channel* @object);
 
+	[LibraryImport(LibraryName, EntryPoint = "cgltf_write_file")]
+	public static partial cgltf_result cgltf_write_file(cgltf_options* options, byte* path, cgltf_data* data);
+
+	[LibraryImport(LibraryName, EntryPoint = "cgltf_write")]
+	public static partial nuint cgltf_write(cgltf_options* options, byte* buffer, nuint size, cgltf_data* data);
+
 }

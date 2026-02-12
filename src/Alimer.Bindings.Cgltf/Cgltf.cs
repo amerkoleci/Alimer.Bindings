@@ -133,4 +133,32 @@ public static unsafe partial class Cgltf
 
     [LibraryImport(LibraryName, EntryPoint = "cgltf_decode_uri", StringMarshalling = StringMarshalling.Utf8)]
     public static partial nuint cgltf_decode_uri(string uri);
+
+
+    [LibraryImport(LibraryName, EntryPoint = "cgltf_write_file")]
+    public static partial cgltf_result cgltf_write_file(cgltf_options* options, ReadOnlySpan<byte> path, cgltf_data* data);
+
+    [LibraryImport(LibraryName, EntryPoint = "cgltf_write_file", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial cgltf_result cgltf_write_file(cgltf_options* options, string path, cgltf_data* data);
+
+    public static nuint cgltf_write(cgltf_options* options, cgltf_data* data)
+    {
+        return cgltf_write(options, (byte*)null, 0u, data);
+    }
+
+    public static nuint cgltf_write(cgltf_options* options, Span<byte> buffer, cgltf_data* data)
+    {
+        fixed (byte* bufferPtr = buffer)
+        {
+            return cgltf_write(options, bufferPtr, (nuint)buffer.Length, data);
+        }
+    }
+
+    public static nuint cgltf_write(cgltf_options* options, Span<byte> buffer, nuint size, cgltf_data* data)
+    {
+        fixed (byte* bufferPtr = buffer)
+        {
+            return cgltf_write(options, bufferPtr, size, data);
+        }
+    }
 }

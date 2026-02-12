@@ -30,13 +30,13 @@ public static class Program
             Directory.CreateDirectory(outputPath);
         }
 
-        string? headerFile = default;
+        List<string> headerFiles = [];
         CppParserOptions parserOptions;
         CsCodeGeneratorOptions? generateOptions = default;
 
         if (outputPath.Contains("Alimer.Bindings.MeshOptimizer"))
         {
-            headerFile = Path.Combine(AppContext.BaseDirectory, "headers", "meshoptimizer.h");
+            headerFiles.Add(Path.Combine(AppContext.BaseDirectory, "headers", "meshoptimizer.h"));
             parserOptions = new()
             {
                 ParseMacros = true
@@ -69,7 +69,8 @@ public static class Program
         }
         else if (outputPath.Contains("Alimer.Bindings.Cgltf"))
         {
-            headerFile = Path.Combine(AppContext.BaseDirectory, "headers", "cgltf.h");
+            headerFiles.Add(Path.Combine(AppContext.BaseDirectory, "headers", "cgltf.h"));
+            headerFiles.Add(Path.Combine(AppContext.BaseDirectory, "headers", "cgltf_write.h"));
             parserOptions = new()
             {
                 ParseMacros = true
@@ -107,7 +108,7 @@ public static class Program
         }
         else if (outputPath.Contains("Alimer.Bindings.WebGPU"))
         {
-            headerFile = Path.Combine(AppContext.BaseDirectory, "webgpu", "wgpu.h");
+            headerFiles.Add(Path.Combine(AppContext.BaseDirectory, "webgpu", "wgpu.h"));
             parserOptions = new()
             {
                 ParseMacros = true
@@ -147,7 +148,7 @@ public static class Program
             }
         }
 
-        CppCompilation compilation = CppParser.ParseFile(headerFile, parserOptions);
+        CppCompilation compilation = CppParser.ParseFiles(headerFiles, parserOptions);
 
         // Print diagnostic messages
         if (compilation.HasErrors)
