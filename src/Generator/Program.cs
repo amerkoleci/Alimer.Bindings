@@ -34,7 +34,6 @@ public static class Program
         CppParserOptions parserOptions;
         CsCodeGeneratorOptions? generateOptions = default;
 
-
         if (outputPath.Contains("Alimer.Bindings.MeshOptimizer"))
         {
             headerFile = Path.Combine(AppContext.BaseDirectory, "headers", "meshoptimizer.h");
@@ -66,6 +65,44 @@ public static class Program
                     { "meshopt_simplify::options", "SimplificationOptions" },
                     { "meshopt_simplifyWithAttributes::options", "SimplificationOptions" },
                 }
+            };
+        }
+        else if (outputPath.Contains("Alimer.Bindings.Cgltf"))
+        {
+            headerFile = Path.Combine(AppContext.BaseDirectory, "headers", "cgltf.h");
+            parserOptions = new()
+            {
+                ParseMacros = true
+            };
+
+            generateOptions = new()
+            {
+                ClassName = "Cgltf",
+                //Namespace = "Cgltf",
+                PublicVisiblity = true,
+                SkipEnumItemRemap = true,
+                OutReturnFunctions =
+                {
+                    //"cgltf_parse_file"
+                }
+                //EnumPrefixRemap = "meshopt_",
+                //StructPrefixRemap = "meshopt_",
+                //FunctionPrefixRemap = "meshopt_",
+                //ExcludeConstants =
+                //{
+                //    "MESHOPTIMIZER_ALLOC_CALLCONV",
+                //    "MESHOPTIMIZER_EXPERIMENTAL",
+                //},
+                //ExcludeFunctions =
+                //{
+                //    "meshopt_setAllocator",
+                //    "meshopt_generateVertexRemapCustom"
+                //},
+                //FunctionParametersRemap =
+                //{
+                //    { "meshopt_simplify::options", "SimplificationOptions" },
+                //    { "meshopt_simplifyWithAttributes::options", "SimplificationOptions" },
+                //}
             };
         }
         else if (outputPath.Contains("Alimer.Bindings.WebGPU"))

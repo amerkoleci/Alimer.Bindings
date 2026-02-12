@@ -18,9 +18,4 @@
     <None Include="$(RepoRootPath)/README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="build\**" PackagePath="build" Pack="true" />
-    <Content Include="runtimes\**" PackagePath="runtimes" Pack="true" />
-  </ItemGroup>
-
 </Project>

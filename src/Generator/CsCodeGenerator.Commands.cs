@@ -108,7 +108,7 @@ partial class CsCodeGenerator
             foreach (KeyValuePair<string, CppFunction> command in commands)
             {
                 CppFunction cppFunction = command.Value;
-                bool canUseOut = s_outReturnFunctions.Contains(cppFunction.Name);
+                bool canUseOut = s_outReturnFunctions.Contains(cppFunction.Name) || _options.OutReturnFunctions.Contains(cppFunction.Name);
 
                 WriteFunctionInvocation(writer, cppFunction, false);
 

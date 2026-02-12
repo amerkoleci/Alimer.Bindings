@@ -15,6 +15,7 @@
     <File Path="LICENSE" />
     <File Path="NuGet.config" />
     <File Path="README.md" />
+    <File Path="src/Alimer.Bindings.Cgltf.Native.targets" />
     <File Path="src/Alimer.Bindings.WebGPU.Native.targets" />
   </Folder>
   <Folder Name="/samples/">
@@ -26,6 +27,7 @@
   <Folder Name="/tests/">
     <Project Path="tests/Alimer.Bindings.WebGPU.Tests/Alimer.Bindings.WebGPU.Tests.csproj" />
   </Folder>
+  <Project Path="src/Alimer.Bindings.Cgltf/Alimer.Bindings.Cgltf.csproj" />
   <Project Path="src/Alimer.Bindings.MeshOptimizer/Alimer.Bindings.MeshOptimizer.csproj" />
   <Project Path="src/Alimer.Bindings.WebGPU/Alimer.Bindings.WebGPU.csproj" />
   <Project Path="src/Alimer.WebGPU.Native/Alimer.WebGPU.Native.csproj" />

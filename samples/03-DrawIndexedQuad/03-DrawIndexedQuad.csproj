@@ -1,13 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IsPackable>false</IsPackable>
     <RootNamespace>Alimer.WebGPU.Samples</RootNamespace>
   </PropertyGroup>
 
   <Import Project="$(SrcDirectory)Alimer.Bindings.WebGPU.Native.targets" />
+  <Import Project="$(SrcDirectory)Alimer.Bindings.Cgltf.Native.targets" />
 
   <PropertyGroup>
     <PublishAot>true</PublishAot>
@@ -20,7 +21,9 @@
   
   <ItemGroup>
     <Content Include="Assets\*.*" CopyToOutputDirectory="Always" />
+    <Content Include="Assets\Meshes\*.*" CopyToOutputDirectory="Always" />
     
+    <ProjectReference Include="..\..\src\Alimer.Bindings.Cgltf\Alimer.Bindings.Cgltf.csproj" />
     <ProjectReference Include="..\Alimer.WebGPU.SampleFramework\Alimer.WebGPU.SampleFramework.csproj" />
   </ItemGroup>
   

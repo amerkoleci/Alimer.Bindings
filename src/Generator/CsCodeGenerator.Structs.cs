@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Amer Koleci and Contributors.
 // Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
+using System.Text;
 using CppAst;
 
 namespace Generator;
@@ -9,8 +10,6 @@ partial class CsCodeGenerator
 {
     private void GenerateStructAndUnions(CppCompilation compilation)
     {
-        string visibility = _options.PublicVisiblity ? "public" : "internal";
-
         // Generate Structures
         using var writer = new CodeWriter(Path.Combine(_options.OutputPath, "Structs.cs"),
             false,
@@ -44,48 +43,54 @@ partial class CsCodeGenerator
                 continue;
             }
 
-            string structName = cppClass.Name;
-            bool isUnion = cppClass.ClassKind == CppClassKind.Union;
-            if (isUnion)
-            {
-                writer.WriteLine("[StructLayout(LayoutKind.Explicit)]");
-            }
-
-            bool isReadOnly = false;
-            string modifier = "partial";
-
-            if (!string.IsNullOrEmpty(_options.StructPrefixRemap)
-                && structName.StartsWith(_options.StructPrefixRemap))
-            {
-                structName = structName.Replace(_options.StructPrefixRemap, string.Empty);
-                structName = PrettyString(structName);
-                AddCsMapping(cppClass.Name, structName);
-            }
-
-            using (writer.PushBlock($"{visibility} {modifier} struct {structName}"))
-            {
-                if (_options.GenerateSizeOfStructs && cppClass.SizeOf > 0)
-                {
-                    writer.WriteLine("/// <summary>");
-                    writer.WriteLine($"/// The size of the <see cref=\"{structName}\"/> type, in bytes.");
-                    writer.WriteLine("/// </summary>");
-                    writer.WriteLine($"public static readonly int SizeInBytes = {cppClass.SizeOf};");
-                    writer.WriteLine();
-                }
-
-                foreach (CppField cppField in cppClass.Fields)
-                {
-                    WriteField(writer, cppField, isUnion, isReadOnly);
-                }
-            }
-
-            writer.WriteLine();
+            WriteStruct(writer, cppClass, cppClass.Name);
         }
     }
 
-    private void WriteField(CodeWriter writer, CppField field, bool isUnion = false, bool isReadOnly = false)
+    private void WriteStruct(CodeWriter writer, CppClass cppClass, string structName)
     {
-        if (field.Type.ToString() == "size_t")
+        string visibility = _options.PublicVisiblity ? "public" : "internal";
+
+        bool isUnion = cppClass.ClassKind == CppClassKind.Union;
+        if (isUnion)
+        {
+            writer.WriteLine("[StructLayout(LayoutKind.Explicit)]");
+        }
+
+        bool isReadOnly = false;
+        string modifier = "partial";
+
+        if (!string.IsNullOrEmpty(_options.StructPrefixRemap)
+            && structName.StartsWith(_options.StructPrefixRemap))
+        {
+            structName = structName.Replace(_options.StructPrefixRemap, string.Empty);
+            structName = PrettyString(structName);
+            AddCsMapping(cppClass.Name, structName);
+        }
+
+        using (writer.PushBlock($"{visibility} {modifier} struct {structName}"))
+        {
+            if (_options.GenerateSizeOfStructs && cppClass.SizeOf > 0)
+            {
+                writer.WriteLine("/// <summary>");
+                writer.WriteLine($"/// The size of the <see cref=\"{structName}\"/> type, in bytes.");
+                writer.WriteLine("/// </summary>");
+                writer.WriteLine($"public static readonly int SizeInBytes = {cppClass.SizeOf};");
+                writer.WriteLine();
+            }
+
+            foreach (CppField cppField in cppClass.Fields)
+            {
+                WriteField(writer, cppClass.Name, cppField, isUnion, isReadOnly);
+            }
+        }
+
+        writer.WriteLine();
+    }
+
+    private void WriteField(CodeWriter writer, string name, CppField field, bool isUnion = false, bool isReadOnly = false)
+    {
+        if (name == "cgltf_memory_options")
         {
         }
 
@@ -172,15 +177,74 @@ partial class CsCodeGenerator
                 }
             }
         }
+        else if (field.Type is CppClass cppClass && (cppClass.IsAnonymous || cppClass.FullName.StartsWith($"{field.FullParentName}::")))
+        {
+            if (cppClass.IsAnonymous)
+            {
+                string fullParentName = field.FullParentName;
+                if (fullParentName.EndsWith("::"))
+                {
+                    fullParentName = fullParentName.Substring(0, fullParentName.Length - 2);
+                }
+                string csFieldType = $"{fullParentName}_{csFieldName}";
+                writer.WriteLine($"public {csFieldType} {csFieldName};");
+                writer.WriteLine("");
+
+                WriteStruct(writer, cppClass, csFieldType);
+            }
+            else
+            {
+                string csFieldType = cppClass.Name;
+                writer.WriteLine($"public {csFieldType} {csFieldName};");
+                writer.WriteLine("");
+
+                WriteStruct(writer, cppClass, csFieldType);
+            }
+        }
+        else if (field.Type is CppPointerType cppPointer
+            && cppPointer.ElementType is CppClass cppPointerClass
+            && (cppPointerClass.IsAnonymous || cppPointerClass.FullName.StartsWith($"{field.FullParentName}::")))
+        {
+            if (cppPointerClass.IsAnonymous)
+            {
+                string fullParentName = field.FullParentName;
+                if (fullParentName.EndsWith("::"))
+                {
+                    fullParentName = fullParentName.Substring(0, fullParentName.Length - 2);
+                }
+                string csFieldType = $"{fullParentName}_{csFieldName}";
+                writer.WriteLine($"public {csFieldType} {csFieldName};");
+                writer.WriteLine("");
+
+                WriteStruct(writer, cppPointerClass, csFieldType);
+            }
+            else
+            {
+                string csFieldType = cppPointerClass.Name;
+                writer.WriteLine($"public {csFieldType}* {csFieldName};");
+                writer.WriteLine("");
+
+                WriteStruct(writer, cppPointerClass, csFieldType);
+            }
+        }
         else
         {
             // VkAllocationCallbacks members
             string csFieldType = string.Empty;
-            if (field.Type is CppTypedef typedef &&
-                typedef.ElementType is CppPointerType pointerType &&
+
+            // Inline callback (cgltf_memory_options)
+            if (field.Type is CppPointerType pointerType &&
                 pointerType.ElementType is CppFunctionType functionType)
             {
                 csFieldType = GetCallbackMemberSignature(functionType);
+                writer.WriteLine($"public unsafe {csFieldType} {csFieldName};");
+                return;
+            }
+            else if (field.Type is CppTypedef typedef &&
+                typedef.ElementType is CppPointerType typedefPointerType &&
+                typedefPointerType.ElementType is CppFunctionType PointerTypeFunctionType)
+            {
+                csFieldType = GetCallbackMemberSignature(PointerTypeFunctionType);
                 writer.WriteLine($"public unsafe {csFieldType} {csFieldName};");
                 return;
             }

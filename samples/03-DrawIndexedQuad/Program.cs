@@ -4,6 +4,7 @@
 using System.Numerics;
 using WebGPU;
 using static WebGPU.WebGPU;
+using static Cgltf;
 
 namespace Alimer.WebGPU.Samples;
 
@@ -26,6 +27,32 @@ public static unsafe class Program
 
         protected override void Initialize()
         {
+            // Test cgltf
+            string glbFilePath = Path.Combine(AppContext.BaseDirectory, "Assets", "Meshes", $"DamagedHelmet.glb");
+            byte[] glbFileContent = File.ReadAllBytes(glbFilePath);
+
+            cgltf_options options = new();
+            cgltf_data* data = default;
+            //cgltf_result result = cgltf_parse_file(&options, glbFilePath, out data);
+            //if (result == cgltf_result_success)
+            //{
+            //    /* TODO make awesome stuff */
+            //    cgltf_free(data);
+            //}
+
+            cgltf_result result = cgltf_parse(&options, glbFileContent, &data);
+            if (result == cgltf_result_success)
+            {
+                cgltf_result loadResult = cgltf_load_buffers(&options, data, glbFilePath);
+                if (loadResult != cgltf_result_success)
+                {
+                }
+
+                /* TODO make awesome stuff */
+                cgltf_free(data);
+            }
+
+
             WGPUPipelineLayoutDescriptor layoutDesc = new()
             {
                 nextInChain = null,

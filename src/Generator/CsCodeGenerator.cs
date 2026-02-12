@@ -15,6 +15,8 @@ public partial class CsCodeGenerator
         "delegate",
         "string",
         "int",
+        "in",
+        "out",
     ];
 
     private static readonly Dictionary<string, string> s_knownTypeNameMappings = new()
@@ -34,6 +36,12 @@ public partial class CsCodeGenerator
         { "intptr_t", "nint" },
         { "uintptr_t", "nuint" },
 
+        { "cgltf_int", "int" },
+        { "cgltf_uint", "uint" },
+        { "cgltf_float", "float" },
+        { "cgltf_size", "nuint" },
+        { "cgltf_bool", "CgltfBool" },
+
         { "WGPUSubmissionIndex", "ulong" },
         { "WGPUProc", "nint" },
         // { "WGPUInstanceFlag", "WGPUInstanceFlags" },
@@ -50,8 +58,8 @@ public partial class CsCodeGenerator
 
     public void Generate(CppCompilation compilation)
     {
-        GenerateConstants(compilation);
         GenerateEnums(compilation);
+        GenerateConstants(compilation);
         GenerateHandles(compilation);
         GenerateStructAndUnions(compilation);
         GenerateCommands(compilation);

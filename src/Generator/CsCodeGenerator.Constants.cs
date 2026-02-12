@@ -8,12 +8,15 @@ namespace Generator;
 
 partial class CsCodeGenerator
 {
+    private readonly HashSet<string> _enumConstants = [];
+
     private void GenerateConstants(CppCompilation compilation)
     {
         string visibility = _options.PublicVisiblity ? "public" : "internal";
         using var writer = new CodeWriter(Path.Combine(_options.OutputPath, "Constants.cs"), false, _options.Namespace, Array.Empty<string>());
         using (writer.PushBlock($"{visibility} static partial class {_options.ClassName}"))
         {
+            bool needNewLine = false;
             foreach (CppMacro cppMacro in compilation.Macros)
             {
                 if (string.IsNullOrEmpty(cppMacro.Value)
@@ -60,6 +63,17 @@ partial class CsCodeGenerator
 
                 writer.WriteLine($"/// <unmanaged>{cppMacro.Name}</unmanaged>");
                 writer.WriteLine($"public {modifier} {csDataType} {cppMacro.Name} = {macroValue};");
+                needNewLine = true;
+            }
+
+            if (needNewLine)
+            {
+                writer.WriteLine();
+            }
+
+            foreach (string enumConstant in _enumConstants)
+            {
+                writer.WriteLine($"public const {enumConstant};");
             }
         }
     }

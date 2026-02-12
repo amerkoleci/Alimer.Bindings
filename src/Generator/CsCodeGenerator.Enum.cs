@@ -11,10 +11,10 @@ partial class CsCodeGenerator
     public void GenerateEnums(CppCompilation compilation)
     {
         string visibility = _options.PublicVisiblity ? "public" : "internal";
-        using CodeWriter writer = new(Path.Combine(_options.OutputPath, "Enums.cs"), false, _options.Namespace, new string[] { "System" });
-        Dictionary<string, string> createdEnums = new();
+        using CodeWriter writer = new(Path.Combine(_options.OutputPath, "Enums.cs"), false, _options.Namespace, ["System"]);
+        Dictionary<string, string> createdEnums = [];
 
-        Dictionary<string, List<CppField>> flagsEnums = new();
+        Dictionary<string, List<CppField>> flagsEnums = [];
 
         // new webgpu.h use static const to define flags enum values
         foreach (CppField cppField in compilation.Fields)
@@ -31,9 +31,8 @@ partial class CsCodeGenerator
                 typeName == "WGPUInstanceBackend" ||
                 typeName == "WGPUInstanceFlags" ||
                 typeName.EndsWith("Flag") ||
-                typeName.EndsWith("Flags");
-
-
+                typeName.EndsWith("Flags")
+                ;
 
             if (!isBitmask)
             {
@@ -69,7 +68,17 @@ partial class CsCodeGenerator
                 continue;
             }
 
-
+            bool isBitmask =
+                cppEnum.Name == "WGPUBufferUsage" ||
+                cppEnum.Name == "WGPUTextureUsage" ||
+                cppEnum.Name == "WGPUShaderStage" ||
+                cppEnum.Name == "WGPUColorWriteMask" ||
+                cppEnum.Name == "WGPUMapMode" ||
+                cppEnum.Name == "WGPUInstanceBackend" ||
+                cppEnum.Name == "WGPUInstanceFlags" ||
+                cppEnum.Name.EndsWith("Flag") ||
+                cppEnum.Name.EndsWith("Flags")
+                ;
 
             string enumName = GetCsCleanName(cppEnum.Name);
             if (!string.IsNullOrEmpty(_options.EnumPrefixRemap)
@@ -85,7 +94,8 @@ partial class CsCodeGenerator
             bool noneAdded = false;
             using (writer.PushBlock($"{visibility} enum {enumName}"))
             {
-                if (!cppEnum.Items.Any(enumItem => GetEnumItemName(enumItem.Name) == "None"))
+                if (isBitmask
+                    && !cppEnum.Items.Any(enumItem => GetEnumItemName(enumItem.Name) == "None"))
                 {
                     writer.WriteLine("None = 0,");
                     noneAdded = true;
@@ -138,6 +148,8 @@ partial class CsCodeGenerator
                     {
                         writer.WriteLine($"{enumItemName} = {enumItem.Value},");
                     }
+
+                    _enumConstants.Add($"{enumName} {enumItem.Name} = {enumName}.{enumItemName}");
                 }
             }
 
@@ -169,7 +181,7 @@ partial class CsCodeGenerator
         }
     }
 
-    private static void FormatExpression(CppExpression expression, StringBuilder builder)
+    private void FormatExpression(CppExpression expression, StringBuilder builder)
     {
         if (expression is CppRawExpression rawExpression)
         {
@@ -185,7 +197,7 @@ partial class CsCodeGenerator
         }
     }
 
-    private static void FormatCppBinaryExpression(CppBinaryExpression expression, StringBuilder builder)
+    private void FormatCppBinaryExpression(CppBinaryExpression expression, StringBuilder builder)
     {
         if (expression.Arguments != null && expression.Arguments.Count > 0)
         {
@@ -202,8 +214,11 @@ partial class CsCodeGenerator
         }
     }
 
-    private static string GetEnumItemName(string cppEnumItemName)
+    private string GetEnumItemName(string cppEnumItemName)
     {
+        if (_options.SkipEnumItemRemap)
+            return cppEnumItemName;
+
         string[] splits = cppEnumItemName.Split('_', StringSplitOptions.RemoveEmptyEntries);
         string enumItemName = string.Join("", splits.Skip(1));
         if (char.IsNumber(enumItemName[0]))

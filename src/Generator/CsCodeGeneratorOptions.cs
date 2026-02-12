@@ -21,9 +21,13 @@ public sealed class CsCodeGeneratorOptions
     /// </summary>
     public HashSet<string> ExcludeFunctions { get; private set; } = [];
 
+
+    public HashSet<string> OutReturnFunctions { get; private set; } = [];
+
     public string? EnumPrefixRemap { get; set; }
     public string? StructPrefixRemap { get; set; }
     public string? FunctionPrefixRemap { get; set; }
+    public bool SkipEnumItemRemap { get; set; }
 
     public Dictionary<string, string> FunctionParametersRemap { get; set; } = [];
 }
