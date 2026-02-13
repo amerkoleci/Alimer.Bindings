@@ -89,6 +89,10 @@ public partial class CsCodeGenerator
         {
             return GetCsCleanName(knownMappedName);
         }
+        else if (_options.TypeNameMappings.TryGetValue(name, out string? knownMappedName2))
+        {
+            return GetCsCleanName(knownMappedName2);
+        }
         else if(_csNameMappings.TryGetValue(name, out string? mappedName))
         {
             return GetCsCleanName(mappedName);
@@ -110,6 +114,10 @@ public partial class CsCodeGenerator
 
             // Check if we have a known mapping for the typedef name
             if (s_knownTypeNameMappings.ContainsKey(typedef.Name))
+            {
+                return GetCsCleanName(typedef.Name);
+            }
+            else if (_options.TypeNameMappings.ContainsKey(typedef.Name))
             {
                 return GetCsCleanName(typedef.Name);
             }

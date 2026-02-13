@@ -7,7 +7,7 @@
     <RootNamespace>Alimer.WebGPU.Samples</RootNamespace>
   </PropertyGroup>
 
-  <Import Project="$(SrcDirectory)Alimer.Bindings.WebGPU.Native.targets" />
+  <Import Project="$(SrcDirectory)Alimer.Bindings.Cgltf.Native.targets" />
 
   <PropertyGroup>
     <PublishAot>true</PublishAot>
@@ -21,7 +21,7 @@
   <ItemGroup>
     <Content Include="Assets\*.*" CopyToOutputDirectory="Always" />
     
-    <ProjectReference Include="..\Alimer.WebGPU.SampleFramework\Alimer.WebGPU.SampleFramework.csproj" />
+    <ProjectReference Include="..\..\src\Alimer.Bindings.Cgltf\Alimer.Bindings.Cgltf.csproj" />
   </ItemGroup>
   
 </Project>

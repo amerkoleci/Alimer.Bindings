@@ -1,6 +1,7 @@
 // Copyright (c) Amer Koleci and Contributors.
 // Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using CppAst;
 
@@ -135,6 +136,11 @@ partial class CsCodeGenerator
 
         string modifier = "public static partial";
         writer.WriteLine($"[LibraryImport(LibraryName, EntryPoint = \"{cppFunction.Name}\")]");
+        if (returnCsName == "bool")
+        {
+            writer.WriteLine($"[return: MarshalAs(UnmanagedType.U1)]");
+        }
+
         writer.WriteLine($"{modifier} {returnCsName} {functionName}({argumentsString});");
         writer.WriteLine();
 
@@ -206,11 +212,9 @@ partial class CsCodeGenerator
             string paramCsTypeName;
             string direction = string.Empty;
             // Callback parameters
-            if (cppParameter.Type is CppTypedef typedef
-                && typedef.ElementType is CppPointerType pointerType
-                && pointerType.ElementType is CppFunctionType functionType)
+            if (ResolveCallbackType(cppParameter.Type, out string? resolvedType))
             {
-                paramCsTypeName = GetCallbackMemberSignature(functionType);
+                paramCsTypeName = resolvedType!;
             }
             else
             {
@@ -225,22 +229,13 @@ partial class CsCodeGenerator
 
             string paramCsName = GetParameterName(cppParameter.Name);
 
-            //if (cppParameter.Name.EndsWith("Count"))
-            //{
-            //    if (functionName.StartsWith("vkEnumerate") ||
-            //        functionName.StartsWith("vkGet"))
-            //    {
-            //        paramCsTypeName = "int*";
-            //    }
-            //    else
-            //    {
-            //        paramCsTypeName = "int";
-            //    }
-            //}
-
-            if (paramCsName == "sbyte*" && unsafeStrings == false)
+            if (paramCsTypeName == "bool")
             {
-                paramCsName = "ReadOnlySpan<sbyte>";
+                argumentBuilder.Append("[MarshalAs(UnmanagedType.U1)] ");
+            }
+            else if (paramCsName == "byte*" && unsafeStrings == false)
+            {
+                paramCsName = "ReadOnlySpan<byte>";
             }
 
 
@@ -296,6 +291,38 @@ partial class CsCodeGenerator
         return argumentBuilder.ToString();
     }
 
+    private bool ResolveCallbackType(CppType type, [NotNullWhen(true)] out string? resolvedType)
+    {
+        resolvedType = default;
+
+        if (type is CppTypedef typedef
+            && typedef.ElementType is CppPointerType typedefPointerType
+            && typedefPointerType.ElementType is CppFunctionType typedefFunctionType)
+        {
+            resolvedType = GetCallbackMemberSignature(typedefFunctionType);
+            return true;
+        }
+        else if (type is CppPointerType pointerType)
+        {
+            if (pointerType.ElementType is CppFunctionType pointerTypeFunctionType)
+            {
+                resolvedType = GetCallbackMemberSignature(pointerTypeFunctionType);
+                return true;
+            }
+            else if (pointerType.ElementType is CppTypedef pointerTypedefType)
+            {
+                if (pointerTypedefType.ElementType is CppFunctionType pointerTypedefFunctionType)
+                {
+                    resolvedType = GetCallbackMemberSignature(pointerTypedefFunctionType);
+                    return true;
+                }
+            }
+
+        }
+
+        return false;
+    }
+
     private static string GetParameterName(string name)
     {
         name = NormalizeFieldName(name);
@@ -315,7 +342,16 @@ partial class CsCodeGenerator
         StringBuilder builder = new();
         foreach (CppParameter parameter in functionType.Parameters)
         {
-            string paramCsType = GetCsTypeName(parameter.Type);
+            string paramCsType;
+            if (ResolveCallbackType(parameter.Type, out string? resolvedType))
+            {
+                paramCsType = resolvedType;
+            }
+            else
+            {
+                paramCsType = GetCsTypeName(parameter.Type);
+            }
+
             // Otherwise we get interop issues with non blittable types
             if (paramCsType == "WGPUBool")
                 paramCsType = "uint";

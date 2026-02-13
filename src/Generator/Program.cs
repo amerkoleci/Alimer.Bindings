@@ -86,24 +86,54 @@ public static class Program
                 {
                     //"cgltf_parse_file"
                 }
-                //EnumPrefixRemap = "meshopt_",
-                //StructPrefixRemap = "meshopt_",
-                //FunctionPrefixRemap = "meshopt_",
-                //ExcludeConstants =
-                //{
-                //    "MESHOPTIMIZER_ALLOC_CALLCONV",
-                //    "MESHOPTIMIZER_EXPERIMENTAL",
-                //},
-                //ExcludeFunctions =
-                //{
-                //    "meshopt_setAllocator",
-                //    "meshopt_generateVertexRemapCustom"
-                //},
-                //FunctionParametersRemap =
-                //{
-                //    { "meshopt_simplify::options", "SimplificationOptions" },
-                //    { "meshopt_simplifyWithAttributes::options", "SimplificationOptions" },
-                //}
+            };
+        }
+        else if (outputPath.Contains("Alimer.Bindings.Box2D"))
+        {
+            headerFiles.Add(Path.Combine(AppContext.BaseDirectory, "headers", "box2d", "box2d.h"));
+            parserOptions = new()
+            {
+                ParseMacros = true
+            };
+
+            generateOptions = new()
+            {
+                ClassName = "Box2D",
+                //Namespace = "Cgltf",
+                PublicVisiblity = true,
+                SkipEnumItemRemap = true,
+                OutReturnFunctions =
+                {
+                    //"cgltf_parse_file"
+                },
+                ExcludeConstants =
+                {
+                    "B2_API",
+                    "B2_INLINE",
+                    "B2_LITERAL",
+                    "B2_ZERO_INIT",
+                    "B2_BREAKPOINT",
+                    "B2_ASSERT",
+                    "B2_HASH_INIT",
+                    "B2_PI",
+                    "B2_MAX_POLYGON_VERTICES",
+                    "B2_NULL_ID",
+                    "B2_ID_INLINE",
+                    "B2_IS_NULL",
+                    "B2_IS_NON_NULL",
+                    "B2_ID_EQUALS",
+                    "B2_DEFAULT_CATEGORY_BITS",
+                    "B2_DEFAULT_MASK_BITS",
+                },
+                ExcludeStructs =
+                {
+                    "b2Vec2"
+                },
+                TypeNameMappings =
+                {
+                    { "b2TreeNode", "nint" },
+                    { "b2Vec2", "System.Numerics.Vector2" }
+                }
             };
         }
         else if (outputPath.Contains("Alimer.Bindings.WebGPU"))

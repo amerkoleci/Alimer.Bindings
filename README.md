@@ -12,6 +12,7 @@ Collection of cross platform **.net9.0** and **.net8.0** bindings.
 | [wgpu](https://github.com/gfx-rs/wgpu-native) | wgpu bindings v27.0.4.0                                            | Done ✔️ | [![NuGet](https://img.shields.io/nuget/v/Alimer.Bindings.WebGPU.svg)](https://www.nuget.org/packages/Alimer.Bindings.WebGPU)|
 | [meshoptimizer](https://github.com/zeux/meshoptimizer) | meshoptimizer bindings v1.0                                        | Done ✔️ | [![NuGet](https://img.shields.io/nuget/v/Alimer.Bindings.MeshOptimizer.svg)](https://www.nuget.org/packages/Alimer.Bindings.MeshOptimizer)|
 | [cgltf](https://github.com/jkuhlmann/cgltf) | cgltf bindings                                            | Done ✔️ | [![NuGet](https://img.shields.io/nuget/v/Alimer.Bindings.Cgltf.svg)](https://www.nuget.org/packages/Alimer.Bindings.Cgltf)|
+| [box2d](https://github.com/erincatto/box2d) | box2d bindings                                            | Done ✔️ | [![NuGet](https://img.shields.io/nuget/v/Alimer.Bindings.Box2D.svg)](https://www.nuget.org/packages/Alimer.Bindings.Box2D)|
 
 ## Sponsors
 Please consider [SPONSOR](https://github.com/sponsors/amerkoleci) me to further help development and to allow faster issue triaging and new features to be implemented.

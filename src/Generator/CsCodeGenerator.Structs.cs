@@ -43,6 +43,9 @@ partial class CsCodeGenerator
                 continue;
             }
 
+            if (_options.ExcludeStructs.Contains(cppClass.Name))
+                continue;
+
             WriteStruct(writer, cppClass, cppClass.Name);
         }
     }
@@ -90,10 +93,6 @@ partial class CsCodeGenerator
 
     private void WriteField(CodeWriter writer, string name, CppField field, bool isUnion = false, bool isReadOnly = false)
     {
-        if (name == "cgltf_memory_options")
-        {
-        }
-
         string csFieldName = NormalizeFieldName(field.Name);
 
         if (isUnion)
@@ -229,57 +228,48 @@ partial class CsCodeGenerator
         }
         else
         {
-            // VkAllocationCallbacks members
-            string csFieldType = string.Empty;
-
-            // Inline callback (cgltf_memory_options)
-            if (field.Type is CppPointerType pointerType &&
-                pointerType.ElementType is CppFunctionType functionType)
+            string csFieldType;
+            // Callbacks member?
+            if (ResolveCallbackType(field.Type, out string? resolvedType))
             {
-                csFieldType = GetCallbackMemberSignature(functionType);
+                csFieldType = resolvedType;
                 writer.WriteLine($"public unsafe {csFieldType} {csFieldName};");
                 return;
             }
-            else if (field.Type is CppTypedef typedef &&
-                typedef.ElementType is CppPointerType typedefPointerType &&
-                typedefPointerType.ElementType is CppFunctionType PointerTypeFunctionType)
+            else
             {
-                csFieldType = GetCallbackMemberSignature(PointerTypeFunctionType);
-                writer.WriteLine($"public unsafe {csFieldType} {csFieldName};");
-                return;
-            }
+                csFieldType = GetCsTypeName(field.Type);
+                if (csFieldName.Equals("specVersion", StringComparison.OrdinalIgnoreCase) ||
+                    csFieldName.Equals("applicationVersion", StringComparison.OrdinalIgnoreCase) ||
+                    csFieldName.Equals("engineVersion", StringComparison.OrdinalIgnoreCase) ||
+                    csFieldName.Equals("apiVersion", StringComparison.OrdinalIgnoreCase))
+                {
+                    csFieldType = "VkVersion";
+                }
 
-            csFieldType = GetCsTypeName(field.Type);
-            if (csFieldName.Equals("specVersion", StringComparison.OrdinalIgnoreCase) ||
-                csFieldName.Equals("applicationVersion", StringComparison.OrdinalIgnoreCase) ||
-                csFieldName.Equals("engineVersion", StringComparison.OrdinalIgnoreCase) ||
-                csFieldName.Equals("apiVersion", StringComparison.OrdinalIgnoreCase))
-            {
-                csFieldType = "VkVersion";
-            }
+                if (field.Type.ToString() == "ANativeWindow*")
+                {
+                    csFieldType = "IntPtr";
+                }
+                else if (field.Type.ToString() == "CAMetalLayer*"
+                    || field.Type.ToString() == "const CAMetalLayer*")
+                {
+                    csFieldType = "IntPtr";
+                }
 
-            if (field.Type.ToString() == "ANativeWindow*")
-            {
-                csFieldType = "IntPtr";
-            }
-            else if (field.Type.ToString() == "CAMetalLayer*"
-                || field.Type.ToString() == "const CAMetalLayer*")
-            {
-                csFieldType = "IntPtr";
-            }
+                string fieldPrefix = isReadOnly ? "readonly " : string.Empty;
+                if (csFieldType.EndsWith('*'))
+                {
+                    fieldPrefix += "unsafe ";
+                }
 
-            string fieldPrefix = isReadOnly ? "readonly " : string.Empty;
-            if (csFieldType.EndsWith('*'))
-            {
-                fieldPrefix += "unsafe ";
+                //if (field.Comment is not null && string.IsNullOrEmpty(field.Comment.ToString()) == false)
+                //{
+                //    writer.WriteLine($"/// <summary>{field.Comment}</summary>");
+                //}
+
+                writer.WriteLine($"public {fieldPrefix}{csFieldType} {csFieldName};");
             }
-
-            //if (field.Comment is not null && string.IsNullOrEmpty(field.Comment.ToString()) == false)
-            //{
-            //    writer.WriteLine($"/// <summary>{field.Comment}</summary>");
-            //}
-
-            writer.WriteLine($"public {fieldPrefix}{csFieldType} {csFieldName};");
         }
     }
 }

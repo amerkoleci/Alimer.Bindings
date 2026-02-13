@@ -22,7 +22,13 @@ public sealed class CsCodeGeneratorOptions
     public HashSet<string> ExcludeFunctions { get; private set; } = [];
 
 
+    /// <summary>
+    /// List of the excluded structures.
+    /// </summary>
+    public HashSet<string> ExcludeStructs { get; private set; } = [];
+
     public HashSet<string> OutReturnFunctions { get; private set; } = [];
+    public Dictionary<string, string> TypeNameMappings { get; private set; } = [];
 
     public string? EnumPrefixRemap { get; set; }
     public string? StructPrefixRemap { get; set; }
