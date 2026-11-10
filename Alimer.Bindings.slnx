@@ -4,6 +4,7 @@
   </Folder>
   <Folder Name="/.github/workflows/">
     <File Path=".github/workflows/build.yml" />
+    <File Path=".github/workflows/build_native.yml" />
   </Folder>
   <Folder Name="/.root/">
     <File Path=".editorconfig" />
@@ -33,6 +34,7 @@
   <Project Path="src/Alimer.Bindings.Box2D/Alimer.Bindings.Box2D.csproj" />
   <Project Path="src/Alimer.Bindings.Cgltf/Alimer.Bindings.Cgltf.csproj" />
   <Project Path="src/Alimer.Bindings.MeshOptimizer/Alimer.Bindings.MeshOptimizer.csproj" />
+  <Project Path="src/Alimer.Bindings.Ufbx/Alimer.Bindings.Ufbx.csproj" />
   <Project Path="src/Alimer.Bindings.WebGPU/Alimer.Bindings.WebGPU.csproj" />
   <Project Path="src/Alimer.WebGPU.Native/Alimer.WebGPU.Native.csproj" />
   <Project Path="src/Generator/Generator.csproj" />

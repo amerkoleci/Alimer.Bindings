@@ -12,7 +12,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>14</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>

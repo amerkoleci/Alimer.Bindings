@@ -7,76 +7,7 @@ using System.Runtime.InteropServices;
 
 public static unsafe partial class Cgltf
 {
-    #region Dll Loading
-    private const DllImportSearchPath DefaultDllImportSearchPath = DllImportSearchPath.ApplicationDirectory | DllImportSearchPath.UserDirectories | DllImportSearchPath.UseDllDirectoryForDependencies;
-
     public const string LibraryName = "cgltf";
-    private const string LibraryNameAlternate = "libcgltf";
-    private const string LibraryNameWindows = "cgltf.dll";
-    private const string LibraryNameUnix = "libcgltf.so";
-    private const string LibraryNameMacOS = "libcgltf.dylib";
-
-    public static event DllImportResolver? ResolveLibrary;
-
-    static Cgltf()
-    {
-        NativeLibrary.SetDllImportResolver(typeof(Cgltf).Assembly, OnDllImport);
-    }
-
-    private static nint OnDllImport(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
-    {
-        if (libraryName != LibraryName)
-            return IntPtr.Zero;
-
-        IntPtr nativeLibrary = IntPtr.Zero;
-        DllImportResolver? resolver = ResolveLibrary;
-        if (resolver != null)
-        {
-            nativeLibrary = resolver(libraryName, assembly, searchPath);
-        }
-
-        if (nativeLibrary != IntPtr.Zero)
-        {
-            return nativeLibrary;
-        }
-
-        if (OperatingSystem.IsWindows())
-        {
-            if (NativeLibrary.TryLoad(LibraryNameUnix, assembly, DefaultDllImportSearchPath, out nativeLibrary))
-            {
-                return nativeLibrary;
-            }
-        }
-        else if (OperatingSystem.IsLinux())
-        {
-            if (NativeLibrary.TryLoad(LibraryNameUnix, assembly, DefaultDllImportSearchPath, out nativeLibrary))
-            {
-                return nativeLibrary;
-            }
-        }
-        else if (OperatingSystem.IsMacOS() || OperatingSystem.IsMacCatalyst())
-        {
-            if (NativeLibrary.TryLoad(LibraryNameMacOS, assembly, DefaultDllImportSearchPath, out nativeLibrary))
-            {
-                return nativeLibrary;
-            }
-        }
-        else
-        {
-            if (NativeLibrary.TryLoad(LibraryName, assembly, DefaultDllImportSearchPath, out nativeLibrary))
-            {
-                return nativeLibrary;
-            }
-
-            if (NativeLibrary.TryLoad(LibraryNameAlternate, assembly, DefaultDllImportSearchPath, out nativeLibrary))
-            {
-                return nativeLibrary;
-            }
-        }
-
-        return IntPtr.Zero;
-    }
-    #endregion
 
     [LibraryImport(LibraryName, EntryPoint = "cgltf_parse")]
     public static partial cgltf_result cgltf_parse(cgltf_options* options, void* data, nuint size, out cgltf_data* out_data);
