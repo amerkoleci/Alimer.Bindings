@@ -29,6 +29,9 @@ partial class CsCodeGenerator
                     || cppMacro.Name.Equals("_wgpu_MAKE_INIT_STRUCT", StringComparison.OrdinalIgnoreCase)
                     || cppMacro.Name.Equals("WGPU_STRING_VIEW_INIT", StringComparison.OrdinalIgnoreCase)
                     || cppMacro.Name.Equals("WGPU_STRLEN", StringComparison.OrdinalIgnoreCase)
+                    || cppMacro.Name.Equals("_wgpu_ENUM_ZERO_INIT", StringComparison.OrdinalIgnoreCase)
+                    || cppMacro.Name.Equals("_wgpu_STRUCT_ZERO_INIT", StringComparison.OrdinalIgnoreCase)
+                    || (cppMacro.Name.StartsWith("WGPU_", StringComparison.OrdinalIgnoreCase) && cppMacro.Name.EndsWith("_INIT", StringComparison.OrdinalIgnoreCase))
                 )
                 {
                     continue;
@@ -58,6 +61,19 @@ partial class CsCodeGenerator
                     case "WGPU_MIP_LEVEL_COUNT_UNDEFINED":
                     case "WGPU_QUERY_SET_INDEX_UNDEFINED":
                         macroValue = "0xffffffffu";
+                        break;
+
+                    case "WGPU_TRUE":
+                        macroValue = "1u";
+                        break;
+
+                    case "WGPU_FALSE":
+                        macroValue = "0u";
+                        break;
+
+                    case "WGPU_DEPTH_CLEAR_VALUE_UNDEFINED":
+                        csDataType = "float";
+                        macroValue = "float.NaN";
                         break;
                 }
 

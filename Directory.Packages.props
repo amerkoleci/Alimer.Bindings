@@ -7,8 +7,8 @@
 
   <ItemGroup>
     <!-- Generator -->
-    <!--<PackageVersion Include="CppAst" Version="0.22.0" />-->
-    <PackageVersion Include="CppAst" Version="0.26.0" />
+    <PackageVersion Include="CppAst" Version="0.22.0" />
+    <!--<PackageVersion Include="CppAst" Version="0.26.0" />-->
 
     <!-- Samples -->
     <PackageVersion Include="Alimer.Bindings.SDL" Version="3.9.8" />

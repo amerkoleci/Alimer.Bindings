@@ -29,9 +29,10 @@ partial class CsCodeGenerator
                 typeName == "WGPUColorWriteMask" ||
                 typeName == "WGPUMapMode" ||
                 typeName == "WGPUInstanceBackend" ||
-                typeName == "WGPUInstanceFlags" ||
-                typeName.EndsWith("Flag") ||
-                typeName.EndsWith("Flags")
+                typeName == "WGPUInstanceFlags"
+                || typeName == "WGPUShaderRuntimeChecks"
+                || typeName.EndsWith("Flag")
+                || typeName.EndsWith("Flags")
                 ;
 
             if (!isBitmask)
@@ -75,9 +76,10 @@ partial class CsCodeGenerator
                 cppEnum.Name == "WGPUColorWriteMask" ||
                 cppEnum.Name == "WGPUMapMode" ||
                 cppEnum.Name == "WGPUInstanceBackend" ||
-                cppEnum.Name == "WGPUInstanceFlags" ||
-                cppEnum.Name.EndsWith("Flag") ||
-                cppEnum.Name.EndsWith("Flags")
+                cppEnum.Name == "WGPUInstanceFlags"
+                || cppEnum.Name == "WGPUShaderRuntimeChecks"
+                || cppEnum.Name.EndsWith("Flag")
+                || cppEnum.Name.EndsWith("Flags")
                 ;
 
             string enumName = GetCsCleanName(cppEnum.Name);

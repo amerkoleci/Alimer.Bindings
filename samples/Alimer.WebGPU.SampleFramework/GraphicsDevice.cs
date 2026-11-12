@@ -227,11 +227,11 @@ public unsafe sealed class GraphicsDevice : IDisposable
                 Resize(Window.ClientSize.width, Window.ClientSize.height);
                 return;
 
-            case WGPUSurfaceGetCurrentTextureStatus.OutOfMemory:
-            case WGPUSurfaceGetCurrentTextureStatus.DeviceLost:
-                // Fatal error
-                Log.Error($"{nameof(wgpuSurfaceGetCurrentTexture)} status = {surfaceTexture.status}");
-                throw new Exception();
+            //case WGPUSurfaceGetCurrentTextureStatus.OutOfMemory:
+            //case WGPUSurfaceGetCurrentTextureStatus.DeviceLost:
+            //    // Fatal error
+            //    Log.Error($"{nameof(wgpuSurfaceGetCurrentTexture)} status = {surfaceTexture.status}");
+            //    throw new Exception();
         }
         Debug.Assert(surfaceTexture.texture.IsNotNull);
 

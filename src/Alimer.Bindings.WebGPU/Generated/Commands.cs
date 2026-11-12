@@ -33,7 +33,7 @@ public unsafe delegate void WGPUDeviceLostCallback(WGPUDevice* device, WGPUDevic
 public unsafe delegate void WGPUPopErrorScopeCallback(WGPUPopErrorScopeStatus status, WGPUErrorType type, WGPUStringView message, void* userdata1, void* userdata2);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public unsafe delegate void WGPUQueueWorkDoneCallback(WGPUQueueWorkDoneStatus status, void* userdata1, void* userdata2);
+public unsafe delegate void WGPUQueueWorkDoneCallback(WGPUQueueWorkDoneStatus status, WGPUStringView message, void* userdata1, void* userdata2);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 public unsafe delegate void WGPURequestAdapterCallback(WGPURequestAdapterStatus status, WGPUAdapter adapter, WGPUStringView message, void* userdata1, void* userdata2);
@@ -49,8 +49,14 @@ public unsafe partial class WebGPU
 	[LibraryImport(LibraryName, EntryPoint = "wgpuCreateInstance")]
 	public static partial WGPUInstance wgpuCreateInstance(WGPUInstanceDescriptor* descriptor);
 
-	[LibraryImport(LibraryName, EntryPoint = "wgpuGetInstanceCapabilities")]
-	public static partial WGPUStatus wgpuGetInstanceCapabilities(WGPUInstanceCapabilities* capabilities);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuGetInstanceFeatures")]
+	public static partial void wgpuGetInstanceFeatures(WGPUSupportedInstanceFeatures* features);
+
+	[LibraryImport(LibraryName, EntryPoint = "wgpuGetInstanceLimits")]
+	public static partial WGPUStatus wgpuGetInstanceLimits(WGPUInstanceLimits* limits);
+
+	[LibraryImport(LibraryName, EntryPoint = "wgpuHasInstanceFeature")]
+	public static partial WGPUBool wgpuHasInstanceFeature(WGPUInstanceFeatureName feature);
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuGetProcAddress")]
 	public static partial nint wgpuGetProcAddress(WGPUStringView procName);
@@ -135,11 +141,11 @@ public unsafe partial class WebGPU
 	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferGetConstMappedRange")]
 	public static partial void* wgpuBufferGetConstMappedRange(WGPUBuffer buffer, nuint offset, nuint size);
 
-	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferGetMapState")]
-	public static partial WGPUBufferMapState wgpuBufferGetMapState(WGPUBuffer buffer);
-
 	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferGetMappedRange")]
 	public static partial void* wgpuBufferGetMappedRange(WGPUBuffer buffer, nuint offset, nuint size);
+
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferGetMapState")]
+	public static partial WGPUBufferMapState wgpuBufferGetMapState(WGPUBuffer buffer);
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferGetSize")]
 	public static partial ulong wgpuBufferGetSize(WGPUBuffer buffer);
@@ -149,6 +155,9 @@ public unsafe partial class WebGPU
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferMapAsync")]
 	public static partial WGPUFuture wgpuBufferMapAsync(WGPUBuffer buffer, WGPUMapMode mode, nuint offset, nuint size, WGPUBufferMapCallbackInfo callbackInfo);
+
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferReadMappedRange")]
+	public static partial WGPUStatus wgpuBufferReadMappedRange(WGPUBuffer buffer, nuint offset, void* data, nuint size);
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferSetLabel")]
 	public static partial void wgpuBufferSetLabel(WGPUBuffer buffer, WGPUStringView label);
@@ -168,6 +177,9 @@ public unsafe partial class WebGPU
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferUnmap")]
 	public static partial void wgpuBufferUnmap(WGPUBuffer buffer);
+
+	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferWriteMappedRange")]
+	public static partial WGPUStatus wgpuBufferWriteMappedRange(WGPUBuffer buffer, nuint offset, void* data, nuint size);
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuBufferAddRef")]
 	public static partial void wgpuBufferAddRef(WGPUBuffer buffer);
@@ -331,6 +343,9 @@ public unsafe partial class WebGPU
 	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderSetBindGroup")]
 	public static partial void wgpuComputePassEncoderSetBindGroup(WGPUComputePassEncoder computePassEncoder, uint groupIndex, WGPUBindGroup group, nuint dynamicOffsetCount, uint* dynamicOffsets);
 
+	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderSetImmediates")]
+	public static partial void wgpuComputePassEncoderSetImmediates(WGPUComputePassEncoder computePassEncoder, uint offset, void* data, nuint size);
+
 	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderSetLabel")]
 	public static partial void wgpuComputePassEncoderSetLabel(WGPUComputePassEncoder computePassEncoder, WGPUStringView label);
 
@@ -427,7 +442,7 @@ public unsafe partial class WebGPU
 	public static partial void wgpuDeviceDestroy(WGPUDevice device);
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceGetAdapterInfo")]
-	public static partial WGPUAdapterInfo wgpuDeviceGetAdapterInfo(WGPUDevice device);
+	public static partial WGPUStatus wgpuDeviceGetAdapterInfo(WGPUDevice device, WGPUAdapterInfo* adapterInfo);
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceGetFeatures")]
 	public static partial void wgpuDeviceGetFeatures(WGPUDevice device, WGPUSupportedFeatures* features);
@@ -475,11 +490,33 @@ public unsafe partial class WebGPU
 	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceRelease")]
 	public static partial void wgpuDeviceRelease(WGPUDevice device);
 
+	[LibraryImport(LibraryName, EntryPoint = "wgpuExternalTextureSetLabel")]
+	public static partial void wgpuExternalTextureSetLabel(WGPUExternalTexture externalTexture, WGPUStringView label);
+
+	public static void wgpuExternalTextureSetLabel(WGPUExternalTexture externalTexture, ReadOnlySpan<byte> label)
+	{
+		fixed (byte* pLabel = label)
+		{
+			wgpuExternalTextureSetLabel(externalTexture, new WGPUStringView(pLabel, label.Length));
+		}
+	}
+
+	public static void wgpuExternalTextureSetLabel(WGPUExternalTexture externalTexture, string? label = default)
+	{
+		wgpuExternalTextureSetLabel(externalTexture, label.GetUtf8Span());
+	}
+
+	[LibraryImport(LibraryName, EntryPoint = "wgpuExternalTextureAddRef")]
+	public static partial void wgpuExternalTextureAddRef(WGPUExternalTexture externalTexture);
+
+	[LibraryImport(LibraryName, EntryPoint = "wgpuExternalTextureRelease")]
+	public static partial void wgpuExternalTextureRelease(WGPUExternalTexture externalTexture);
+
 	[LibraryImport(LibraryName, EntryPoint = "wgpuInstanceCreateSurface")]
 	public static partial WGPUSurface wgpuInstanceCreateSurface(WGPUInstance instance, WGPUSurfaceDescriptor* descriptor);
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuInstanceGetWGSLLanguageFeatures")]
-	public static partial WGPUStatus wgpuInstanceGetWGSLLanguageFeatures(WGPUInstance instance, WGPUSupportedWGSLLanguageFeatures* features);
+	public static partial void wgpuInstanceGetWGSLLanguageFeatures(WGPUInstance instance, WGPUSupportedWGSLLanguageFeatures* features);
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuInstanceHasWGSLLanguageFeature")]
 	public static partial WGPUBool wgpuInstanceHasWGSLLanguageFeature(WGPUInstance instance, WGPUWGSLLanguageFeatureName feature);
@@ -661,6 +698,9 @@ public unsafe partial class WebGPU
 	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderSetBindGroup")]
 	public static partial void wgpuRenderBundleEncoderSetBindGroup(WGPURenderBundleEncoder renderBundleEncoder, uint groupIndex, WGPUBindGroup group, nuint dynamicOffsetCount, uint* dynamicOffsets);
 
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderSetImmediates")]
+	public static partial void wgpuRenderBundleEncoderSetImmediates(WGPURenderBundleEncoder renderBundleEncoder, uint offset, void* data, nuint size);
+
 	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderSetIndexBuffer")]
 	public static partial void wgpuRenderBundleEncoderSetIndexBuffer(WGPURenderBundleEncoder renderBundleEncoder, WGPUBuffer buffer, WGPUIndexFormat format, ulong offset = 0, ulong size = WGPU_WHOLE_SIZE);
 
@@ -756,6 +796,9 @@ public unsafe partial class WebGPU
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderSetBlendConstant")]
 	public static partial void wgpuRenderPassEncoderSetBlendConstant(WGPURenderPassEncoder renderPassEncoder, WGPUColor* color);
+
+	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderSetImmediates")]
+	public static partial void wgpuRenderPassEncoderSetImmediates(WGPURenderPassEncoder renderPassEncoder, uint offset, void* data, nuint size);
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderSetIndexBuffer")]
 	public static partial void wgpuRenderPassEncoderSetIndexBuffer(WGPURenderPassEncoder renderPassEncoder, WGPUBuffer buffer, WGPUIndexFormat format, ulong offset = 0, ulong size = WGPU_WHOLE_SIZE);
@@ -872,6 +915,9 @@ public unsafe partial class WebGPU
 	[LibraryImport(LibraryName, EntryPoint = "wgpuSupportedFeaturesFreeMembers")]
 	public static partial void wgpuSupportedFeaturesFreeMembers(WGPUSupportedFeatures supportedFeatures);
 
+	[LibraryImport(LibraryName, EntryPoint = "wgpuSupportedInstanceFeaturesFreeMembers")]
+	public static partial void wgpuSupportedInstanceFeaturesFreeMembers(WGPUSupportedInstanceFeatures supportedInstanceFeatures);
+
 	[LibraryImport(LibraryName, EntryPoint = "wgpuSupportedWGSLLanguageFeaturesFreeMembers")]
 	public static partial void wgpuSupportedWGSLLanguageFeaturesFreeMembers(WGPUSupportedWGSLLanguageFeatures supportedWGSLLanguageFeatures);
 
@@ -944,6 +990,9 @@ public unsafe partial class WebGPU
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureGetSampleCount")]
 	public static partial uint wgpuTextureGetSampleCount(WGPUTexture texture);
+
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureGetTextureBindingViewDimension")]
+	public static partial WGPUTextureViewDimension wgpuTextureGetTextureBindingViewDimension(WGPUTexture texture);
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureGetUsage")]
 	public static partial WGPUTextureUsage wgpuTextureGetUsage(WGPUTexture texture);
@@ -1022,14 +1071,14 @@ public unsafe partial class WebGPU
 	[LibraryImport(LibraryName, EntryPoint = "wgpuGetVersion")]
 	public static partial uint wgpuGetVersion();
 
-	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderSetPushConstants")]
-	public static partial void wgpuRenderPassEncoderSetPushConstants(WGPURenderPassEncoder encoder, WGPUShaderStage stages, uint offset, uint sizeBytes, void* data);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceGetNativeMetalDevice")]
+	public static partial void* wgpuDeviceGetNativeMetalDevice(WGPUDevice device);
 
-	[LibraryImport(LibraryName, EntryPoint = "wgpuComputePassEncoderSetPushConstants")]
-	public static partial void wgpuComputePassEncoderSetPushConstants(WGPUComputePassEncoder encoder, uint offset, uint sizeBytes, void* data);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuQueueGetNativeMetalCommandQueue")]
+	public static partial void* wgpuQueueGetNativeMetalCommandQueue(WGPUQueue queue);
 
-	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderBundleEncoderSetPushConstants")]
-	public static partial void wgpuRenderBundleEncoderSetPushConstants(WGPURenderBundleEncoder encoder, WGPUShaderStage stages, uint offset, uint sizeBytes, void* data);
+	[LibraryImport(LibraryName, EntryPoint = "wgpuTextureGetNativeMetalTexture")]
+	public static partial void* wgpuTextureGetNativeMetalTexture(WGPUTexture texture);
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderMultiDrawIndirect")]
 	public static partial void wgpuRenderPassEncoderMultiDrawIndirect(WGPURenderPassEncoder encoder, WGPUBuffer buffer, ulong offset, uint count);
@@ -1060,5 +1109,17 @@ public unsafe partial class WebGPU
 
 	[LibraryImport(LibraryName, EntryPoint = "wgpuRenderPassEncoderWriteTimestamp")]
 	public static partial void wgpuRenderPassEncoderWriteTimestamp(WGPURenderPassEncoder renderPassEncoder, WGPUQuerySet querySet, uint queryIndex);
+
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceStartGraphicsDebuggerCapture")]
+	public static partial WGPUBool wgpuDeviceStartGraphicsDebuggerCapture(WGPUDevice device);
+
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceStopGraphicsDebuggerCapture")]
+	public static partial void wgpuDeviceStopGraphicsDebuggerCapture(WGPUDevice device);
+
+	[LibraryImport(LibraryName, EntryPoint = "wgpuCommandEncoderClearTexture")]
+	public static partial void wgpuCommandEncoderClearTexture(WGPUCommandEncoder commandEncoder, WGPUTexture texture, WGPUImageSubresourceRange* range);
+
+	[LibraryImport(LibraryName, EntryPoint = "wgpuDeviceCreateShaderModuleTrusted")]
+	public static partial WGPUShaderModule wgpuDeviceCreateShaderModuleTrusted(WGPUDevice device, WGPUShaderModuleDescriptor* descriptor, WGPUShaderRuntimeChecks runtimeChecks);
 
 }

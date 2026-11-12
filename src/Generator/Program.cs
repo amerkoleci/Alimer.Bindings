@@ -136,33 +136,13 @@ public static class Program
                 }
             };
         }
-        else if (outputPath.Contains("Alimer.Bindings.Ufbx"))
-        {
-            headerFiles.Add(Path.Combine(AppContext.BaseDirectory, "headers", "ufbx.h"));
-            parserOptions = new()
-            {
-                ParseMacros = false,
-                ParseComments = false,
-            };
-
-            generateOptions = new()
-            {
-                ClassName = "Ufbx",
-                //Namespace = "Cgltf",
-                PublicVisiblity = true,
-                SkipEnumItemRemap = true,
-                OutReturnFunctions =
-                {
-                    //"cgltf_parse_file"
-                }
-            };
-        }
         else if (outputPath.Contains("Alimer.Bindings.WebGPU"))
         {
             headerFiles.Add(Path.Combine(AppContext.BaseDirectory, "webgpu", "wgpu.h"));
             parserOptions = new()
             {
-                ParseMacros = true
+                ParseMacros = true,
+                ParserKind = CppParserKind.C,
             };
 
             generateOptions = new()
@@ -198,6 +178,7 @@ public static class Program
                 }
             }
         }
+
 
         CppCompilation compilation = CppParser.ParseFiles(headerFiles, parserOptions);
 
