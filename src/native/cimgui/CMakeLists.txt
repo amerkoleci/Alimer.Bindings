@@ -66,3 +66,11 @@ target_include_directories(cimgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/cimplot/imp
 target_include_directories(cimgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/cimguizmo)
 target_include_directories(cimgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/cimguizmo/ImGuizmo/src)
 set_target_properties(cimgui PROPERTIES PREFIX "")
+
+if (NATIVE_ENABLE_INSTALL)
+    install(TARGETS cimgui
+        ARCHIVE DESTINATION  ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION  ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION  ${CMAKE_INSTALL_BINDIR}
+    )
+endif ()
