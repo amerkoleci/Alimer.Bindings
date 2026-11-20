@@ -71,5 +71,7 @@ option(NATIVE_ENABLE_INSTALL "Generate the install target" ${NATIVE_MASTER_PROJE
 
 # Add dependencies now
 add_subdirectory(box2d)
+add_subdirectory(box3d)
 add_subdirectory(cgltf)
 add_subdirectory(ufbx)
+add_subdirectory(cimgui)
