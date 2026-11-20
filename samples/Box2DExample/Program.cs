@@ -4,8 +4,6 @@
 using System.Numerics;
 using static Box2D;
 
-namespace Alimer.WebGPU.Samples;
-
 public static unsafe class Program
 {
     public static void Main()

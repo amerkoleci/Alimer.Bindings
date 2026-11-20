@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <Import Project="$(SrcDirectory)Alimer.Bindings.Box3D.Native.targets" />
+
+  <PropertyGroup>
+    <PublishAot>true</PublishAot>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <OptimizationPreference>Speed</OptimizationPreference>
+    <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
+    <IlcDisableReflection>false</IlcDisableReflection>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Content Include="Assets\*.*" CopyToOutputDirectory="Always" />
+    
+    <ProjectReference Include="..\..\src\Alimer.Bindings.Box3D\Alimer.Bindings.Box3D.csproj" />
+  </ItemGroup>
+  
+</Project>

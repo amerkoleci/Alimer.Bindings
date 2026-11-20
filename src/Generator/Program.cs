@@ -99,12 +99,10 @@ public static class Program
             generateOptions = new()
             {
                 ClassName = "Box2D",
-                //Namespace = "Cgltf",
                 PublicVisiblity = true,
                 SkipEnumItemRemap = true,
                 OutReturnFunctions =
                 {
-                    //"cgltf_parse_file"
                 },
                 ExcludeConstants =
                 {
@@ -133,6 +131,57 @@ public static class Program
                 {
                     { "b2TreeNode", "nint" },
                     { "b2Vec2", "System.Numerics.Vector2" }
+                }
+            };
+        }
+        else if (outputPath.Contains("Alimer.Bindings.Box3D"))
+        {
+            headerFiles.Add(Path.Combine(AppContext.BaseDirectory, "headers", "box3d", "box3d.h"));
+            parserOptions = new()
+            {
+                ParseMacros = true
+            };
+
+            generateOptions = new()
+            {
+                ClassName = "Box3D",
+                PublicVisiblity = true,
+                SkipEnumItemRemap = true,
+                OutReturnFunctions =
+                {
+                },
+                ExcludeConstants =
+                {
+                    "B3_API",
+                    "B3_INLINE",
+                    "B3_LITERAL",
+                    "B3_ZERO_INIT",
+                    "B3_BREAKPOINT",
+                    "B3_ASSERT",
+                    "B3_HASH_INIT",
+                    "B3_ALIGN_AS",
+                    "B3_FORCE_INLINE",
+                    "B3_PRINTF_FORMAT",
+                    "B3_VALIDATE",
+                    "B3_ID_INLINE",
+                    "B3_IS_NULL",
+                    "B3_IS_NON_NULL",
+                    "B3_ID_EQUALS",
+                    "B3_NULL_ID",
+                },
+                ExcludeStructs =
+                {
+                    "b3Vec2",
+                    "b3Vec3",
+                    "b3Quat"
+                },
+                TypeNameMappings =
+                {
+                    { "b3RecPlayer", "nint" },
+                    { "b3Recording", "nint" },
+                    { "b3Vec2", "System.Numerics.Vector2" },
+                    { "b3Vec3", "System.Numerics.Vector3" },
+                    { "b3Quat", "System.Numerics.Quaternion" },
                 }
             };
         }

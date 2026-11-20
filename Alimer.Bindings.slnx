@@ -17,6 +17,7 @@
     <File Path="NuGet.config" />
     <File Path="README.md" />
     <File Path="src/Alimer.Bindings.Box2D.Native.targets" />
+    <File Path="src/Alimer.Bindings.Box3D.Native.targets" />
     <File Path="src/Alimer.Bindings.Cgltf.Native.targets" />
     <File Path="src/Alimer.Bindings.WebGPU.Native.targets" />
   </Folder>
@@ -26,12 +27,14 @@
     <Project Path="samples/03-DrawIndexedQuad/03-DrawIndexedQuad.csproj" />
     <Project Path="samples/Alimer.WebGPU.SampleFramework/Alimer.WebGPU.SampleFramework.csproj" />
     <Project Path="samples/Box2DExample/Box2DExample.csproj" />
+    <Project Path="samples/Box3DExample/Box3DExample.csproj" />
     <Project Path="samples/CgltfExample/CgltfExample.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Alimer.Bindings.WebGPU.Tests/Alimer.Bindings.WebGPU.Tests.csproj" />
   </Folder>
   <Project Path="src/Alimer.Bindings.Box2D/Alimer.Bindings.Box2D.csproj" />
+  <Project Path="src/Alimer.Bindings.Box3D/Alimer.Bindings.Box3D.csproj" />
   <Project Path="src/Alimer.Bindings.Cgltf/Alimer.Bindings.Cgltf.csproj" />
   <Project Path="src/Alimer.Bindings.MeshOptimizer/Alimer.Bindings.MeshOptimizer.csproj" />
   <Project Path="src/Alimer.Bindings.WebGPU/Alimer.Bindings.WebGPU.csproj" />

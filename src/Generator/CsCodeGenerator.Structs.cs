@@ -185,6 +185,12 @@ partial class CsCodeGenerator
                 {
                     fullParentName = fullParentName.Substring(0, fullParentName.Length - 2);
                 }
+
+                if (string.IsNullOrWhiteSpace(csFieldName))
+                {
+                    csFieldName = "anonymous";
+                }
+
                 string csFieldType = $"{fullParentName}_{csFieldName}";
                 writer.WriteLine($"public {csFieldType} {csFieldName};");
                 writer.WriteLine("");

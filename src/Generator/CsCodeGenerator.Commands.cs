@@ -325,6 +325,9 @@ partial class CsCodeGenerator
 
     private static string GetParameterName(string name)
     {
+        if (name == "p")
+            return "p";
+
         name = NormalizeFieldName(name);
 
         if (name.StartsWith('p')

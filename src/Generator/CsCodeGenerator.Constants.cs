@@ -41,6 +41,7 @@ partial class CsCodeGenerator
 
                 string modifier = "const";
                 string macroValue = NormalizeEnumValue(cppMacro.Value, out string csDataType);
+                string assignmentOperator = "=";
 
                 switch (cppMacro.Name)
                 {
@@ -75,10 +76,85 @@ partial class CsCodeGenerator
                         csDataType = "float";
                         macroValue = "float.NaN";
                         break;
+
+                    // box3d
+                    case "B3_NULL_INDEX":
+                        csDataType = "int";
+                        break;
+
+                    case "B3_PI":
+                    case "B3_DEG_TO_RAD":
+                    case "B3_RAD_TO_DEG":
+                    case "B3_MIN_SCALE":
+                    case "B3_MAX_ROTATION":
+                    case "B3_CONTACT_RECYCLE_ANGULAR_DISTANCE":
+                    case "B3_TIME_TO_SLEEP":
+                    case "B3_PARALLEL_EDGE_TOL":
+                    case "B3_AABB_MARGIN_FRACTION":
+                        csDataType = "float";
+                        break;
+
+                    case "B3_HUGE":
+                    case "B3_LINEAR_SLOP":
+                    case "B3_MIN_CAPSULE_LENGTH":
+                    case "B3_MIN_FRICTION_WEIGHT":
+                    case "B3_OVERLAP_SLOP":
+                    case "B3_SPECULATIVE_DISTANCE":
+                    case "B3_MESH_REST_OFFSET":
+                    case "B3_CONTACT_RECYCLE_DISTANCE":
+                    case "B3_MAX_AABB_MARGIN":
+                        modifier = "static";
+                        csDataType = "float";
+                        assignmentOperator = "=>";
+                        break;
+
+                    case "B3_MAX_SHAPE_CAST_POINTS":
+                        csDataType = "uint";
+                        macroValue = "B3_MAX_HULL_VERTICES";
+                        break;
+
+                    case "B3_DEFAULT_CATEGORY_BITS":
+                    case "B3_DEFAULT_MASK_BITS":
+                        csDataType = "ulong";
+                        macroValue = "ulong.MaxValue";
+                        break;
+
+                    case "B3_BOUNDARY_EDGE_ANGLE":
+                    case "B3_CHILD_POWER":
+                    case "B3_SHAPE_POWER":
+                    case "B3_MAX_SHAPES":
+                    case "B3_MAX_CHILD_SHAPES":
+                        csDataType = "int";
+                        break;
+
+                    case "B3_DYNAMIC_TREE_VERSION":
+                        csDataType = "ulong";
+                        macroValue = "0x1D6F4C2A73B80E91ul";
+                        break;
+
+                    case "B3_HULL_VERSION":
+                        csDataType = "ulong";
+                        macroValue = "0x6B1E39D4A87C25F3ul";
+                        break;
+
+                    case "B3_MESH_VERSION":
+                        csDataType = "ulong";
+                        macroValue = "0x24AA0BF74682501Dul";
+                        break;
+
+                    case "B3_HEIGHT_FIELD_VERSION":
+                        csDataType = "ulong";
+                        macroValue = "0x5A69A297D7ACE1CDul";
+                        break;
+
+                    case "B3_COMPOUND_VERSION":
+                        csDataType = "ulong";
+                        macroValue = "0x9E4B17D3A25C68F1ul^B3_MESH_VERSION^B3_HULL_VERSION";
+                        break;
                 }
 
                 writer.WriteLine($"/// <unmanaged>{cppMacro.Name}</unmanaged>");
-                writer.WriteLine($"public {modifier} {csDataType} {cppMacro.Name} = {macroValue};");
+                writer.WriteLine($"public {modifier} {csDataType} {cppMacro.Name} {assignmentOperator} {macroValue};");
                 needNewLine = true;
             }
 
